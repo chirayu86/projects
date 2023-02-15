@@ -19,10 +19,26 @@ class TabBarViewController: UITabBarController {
     func setTabBarApperance() {
         
         self.tabBar.layer.borderWidth = 0.25
-        self.tabBar.layer.borderColor = UIColor.black.cgColor
-        tabBar.tintColor = .black
+        self.tabBar.layer.borderColor = UIColor.label.cgColor
+        tabBar.tintColor = .systemPurple
         
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+      
+        self.tabBar.layer.borderColor = UIColor.label.cgColor
+        
+        if self.traitCollection.userInterfaceStyle == .dark {
+            
+            tabBar.tintColor = .systemPurple
+            
+        } else {
+            
+            tabBar.tintColor = .black
+        }
+    }
+    
     
     func setTabBarItems() {
         

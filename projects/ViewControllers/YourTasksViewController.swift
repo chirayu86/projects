@@ -9,18 +9,15 @@ import UIKit
 
 class YourTasksViewController: UIViewController {
     
-    var sectionTitles = ["High","Medium","Low"]
+   private var sectionTitles = ["High","Medium","Low"]
     
     lazy var projectButton = {
 
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
+        let button = AppThemedButton(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
         button.setTitle("All Project", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20)
-        button.backgroundColor = .purple
+        button.backgroundColor = .systemPurple
        
-        
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.black.cgColor
 
         return button
     }()
@@ -40,28 +37,43 @@ class YourTasksViewController: UIViewController {
     }()
     
     
-    let filterBarButtonItem = {
+    lazy var filterBarButtonItem = {
         
         let barButton = UIBarButtonItem()
         barButton.title = "Filter"
         barButton.image = UIImage(systemName: "line.3.horizontal.decrease")
-        barButton.tintColor = .black
+        barButton.tintColor = .systemPurple
         barButton.primaryAction = nil
         
         return barButton
+        
+    }()
+    
+    lazy var addTaskBarButtonItem = {
+        
+        let barButton = UIBarButtonItem()
+        barButton.title = "ADD"
+        barButton.tintColor = .systemPurple
+        barButton.target = self
+        return barButton
+        
     }()
 
     
     override func viewDidLoad() {
       
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         self.title = "Your Tasks"
      
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.setRightBarButton(filterBarButtonItem, animated: true)
+              
+        navigationItem.setLeftBarButtonItems([filterBarButtonItem,addTaskBarButtonItem], animated: true)
+
+        
         view.addSubview(taskTableView)
         taskTableView.tableHeaderView = projectButton
+        addTaskBarButtonItem.action = #selector(addTask)
         
         projectButton.addTarget(self, action: #selector(selectProject), for: .touchUpInside)
         
@@ -104,6 +116,12 @@ class YourTasksViewController: UIViewController {
         ])
     }
     
+    
+    
+    @objc func addTask() {
+        print(#function)
+        navigationController?.pushViewController(AddEditTaskVc(), animated: true)
+    }
     
     @objc func selectProject() {
         
@@ -148,7 +166,7 @@ extension YourTasksViewController:UITableViewDataSource,UITableViewDelegate {
 }
 
 
-extension YourTasksViewController:SelectionDelegate {
+extension YourTasksViewController:ProjectSelectionDelegate {
     
     func showSelectedProject(_ project:String) {
         self.projectButton.setTitle(project, for: .normal)

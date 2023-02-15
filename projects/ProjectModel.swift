@@ -9,6 +9,5 @@ import Foundation
 
 
 struct Project {
-    
     let projectName:String
 }

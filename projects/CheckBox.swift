@@ -9,8 +9,9 @@ import UIKit
 
 class CheckBox: UIButton {
 
-    let uncheckedImage = UIImage(named: "uncheckedCheckbox")
-    let checkedImage = UIImage(named: "checkedCheckbox")
+    let uncheckedImage = UIImage(named: "uncheckedCheckbox")?.withTintColor(.label)
+    let checkedImage = UIImage(named: "checkedCheckbox")?.withTintColor(.label)
+    
 
     var isChecked = false {
         didSet {
@@ -26,6 +27,7 @@ class CheckBox: UIButton {
         
         super.init(frame: frame)
         self.setImage(uncheckedImage, for: .normal)
+     
        
         self.contentVerticalAlignment = .fill
         self.contentHorizontalAlignment = .fill

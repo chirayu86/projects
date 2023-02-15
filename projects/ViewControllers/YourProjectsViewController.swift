@@ -9,6 +9,8 @@ import UIKit
 
 class YourProjectsViewController: UIViewController {
     
+    let status = ["Ongoing","Witheld","OverDue"]
+    
     lazy var projectsTableView = {
         
         let table = UITableView()
@@ -16,6 +18,7 @@ class YourProjectsViewController: UIViewController {
         table.delegate = self
         table.dataSource = self
         table.register(ProjectTableViewCell.self, forCellReuseIdentifier: "projectCell")
+        table.rowHeight = UITableView.automaticDimension
         
         return table
         
@@ -24,7 +27,7 @@ class YourProjectsViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         self.title = "Projects"
         view.addSubview(projectsTableView)
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -47,9 +50,19 @@ class YourProjectsViewController: UIViewController {
 
 
 extension YourProjectsViewController:UITableViewDelegate,UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 15
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return status.count
     }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return status[section]
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+ 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "projectCell")

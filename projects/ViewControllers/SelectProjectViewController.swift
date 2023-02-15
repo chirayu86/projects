@@ -8,7 +8,7 @@
 import UIKit
 
 // delegate to be implemented by view using the viewController
-protocol SelectionDelegate {
+protocol ProjectSelectionDelegate {
     
     func showSelectedProject(_ project: String)
 }
@@ -23,7 +23,7 @@ class SelectProjectViewController: UIViewController {
     
     var selectedProject:Project?
     
-    var selectionDelegate: SelectionDelegate?
+    var selectionDelegate: ProjectSelectionDelegate?
     
     lazy var searchBar = {
         
@@ -64,9 +64,11 @@ class SelectProjectViewController: UIViewController {
     func setSearchBarConstraints() {
         
         NSLayoutConstraint.activate([
+            
             searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10),
             searchBar.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
             searchBar.heightAnchor.constraint(equalToConstant: 40)
+            
             ])
     }
     
@@ -74,9 +76,11 @@ class SelectProjectViewController: UIViewController {
     func setTableViewConstraints() {
         
         NSLayoutConstraint.activate ([
+            
            projectsListTableView.topAnchor.constraint(equalTo:searchBar.bottomAnchor,constant: 10),
            projectsListTableView.widthAnchor.constraint(equalTo: view.widthAnchor),
            projectsListTableView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor,multiplier: 0.75)
+           
         ])
         
     }
@@ -92,6 +96,7 @@ extension SelectProjectViewController:UITableViewDelegate,UITableViewDataSource 
         return allProjects.count
     }
     
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
      
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
@@ -100,6 +105,7 @@ extension SelectProjectViewController:UITableViewDelegate,UITableViewDataSource 
         
         return cell!
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         

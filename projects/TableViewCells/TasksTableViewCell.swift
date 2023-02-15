@@ -23,6 +23,7 @@ class TasksTableViewCell: UITableViewCell {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .label
         label.font = .systemFont(ofSize: 15, weight: .bold)
         label.numberOfLines = 0
         label.text = "New Task"
@@ -35,6 +36,7 @@ class TasksTableViewCell: UITableViewCell {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .label
         label.font = .systemFont(ofSize: 15)
         label.numberOfLines = 0
         label.text = "Project Name"
@@ -45,13 +47,10 @@ class TasksTableViewCell: UITableViewCell {
     
     lazy var dateLabel = {
         
-        let label = UILabel()
+        let label = AppThemedLabel(frame: .zero)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 10, weight: .semibold)
         label.text = "2/02/2022"
-        label.textColor = .purple
-   
-        
+      
         return label
     }()
     

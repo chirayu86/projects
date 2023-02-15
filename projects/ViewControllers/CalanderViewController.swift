@@ -14,7 +14,7 @@ class CalendarViewController: UIViewController {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .inline
-        datePicker.tintColor = .purple
+        datePicker.tintColor = .systemPurple
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
         return datePicker
@@ -35,7 +35,7 @@ class CalendarViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         self.title = "Calendar"
         view.addSubview(datePicker)
         view.addSubview(tasksTableView)
@@ -43,8 +43,17 @@ class CalendarViewController: UIViewController {
         setTableViewConstraints()
         setDatePickerContraints()
     }
-    
-
+//    
+//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+//
+//        super.traitCollectionDidChange(previousTraitCollection)
+//        if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight {
+//            datePicker.preferredDatePickerStyle = .compact
+//        } else {
+//            datePicker.preferredDatePickerStyle = .inline
+//        }
+//    }
+//    
     func setDatePickerContraints() {
         
         NSLayoutConstraint.activate([

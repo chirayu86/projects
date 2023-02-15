@@ -14,7 +14,9 @@ class ProjectTableViewCell: UITableViewCell {
         
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        nameLabel.font = .systemFont(ofSize: 15, weight: .bold)
+        nameLabel.textColor = .label
+        nameLabel.numberOfLines = 0
         nameLabel.text = "Project Name"
         
         return nameLabel
@@ -24,6 +26,7 @@ class ProjectTableViewCell: UITableViewCell {
     lazy var startDateLabel = {
         
         let startDate = UILabel()
+        startDate.textColor = .label
         startDate.translatesAutoresizingMaskIntoConstraints = false
         startDate.font = .systemFont(ofSize: 15, weight: .semibold)
         startDate.text = "02/02/2023"
@@ -37,46 +40,35 @@ class ProjectTableViewCell: UITableViewCell {
         let endDate = UILabel()
         endDate.translatesAutoresizingMaskIntoConstraints = false
         endDate.font = .systemFont(ofSize: 15, weight: .bold)
-        endDate.textColor = .purple
+        endDate.textColor = .systemPurple
         endDate.text = "05/02/2023"
         
         return endDate
         
     }()
     
-    lazy var statusButton = {
-        
-        let btn = UIButton()
-        btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.setTitle("Status", for: .normal)
-        btn.layer.borderWidth = 2
-        btn.setTitleColor(UIColor.black, for: .normal)
-        
-        return btn
-    }()
-    
+
     lazy var progressView = {
         
         let progressView = UIProgressView()
         progressView.translatesAutoresizingMaskIntoConstraints = false
         progressView.clipsToBounds = true
-        progressView.layer.borderWidth = 1
-        progressView.tintColor = .purple
+        progressView.tintColor = .systemPurple
+        progressView.backgroundColor = .systemFill
         
         return progressView
         
     }()
     
-    lazy var horizontalStack = {
+    lazy var datehorizontalStack = {
         
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
-        stack.distribution = .equalSpacing
-        stack.alignment = .center
-        stack.spacing = 10
+        stack.spacing = 20
         
         return stack
+        
     }()
     
     
@@ -85,78 +77,92 @@ class ProjectTableViewCell: UITableViewCell {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
+        stack.alignment = .top
         stack.distribution = .fillProportionally
-        stack.alignment = .leading
+        stack.spacing = 5
+        
+        return stack
+        
+    }()
+    
+    lazy var horizontalStack = {
+        
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.distribution = .fillProportionally
         stack.spacing = 5
         
         return stack
     }()
     
+
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-       
+        
         contentView.addSubview(verticalStack)
         
+        
         verticalStack.addArrangedSubview(projectNameLabel)
-        verticalStack.addArrangedSubview(horizontalStack)
+        verticalStack.addArrangedSubview(datehorizontalStack)
+    
+        datehorizontalStack.addArrangedSubview(startDateLabel)
+        datehorizontalStack.addArrangedSubview(endDateLabel)
+    
+        datehorizontalStack.addArrangedSubview(progressView)
         
-        horizontalStack.addArrangedSubview(startDateLabel)
-        horizontalStack.addArrangedSubview(endDateLabel)
-        
-        verticalStack.addArrangedSubview(statusButton)
-        verticalStack.addArrangedSubview(progressView)
         
         progressView.progress = randomNumberGenerator()
         
-        setStackViewConstraints()
-        setStatusButtonConstraints()
-        setProgressViewContraints()
-        
+     
+         setProgressViewContraints()
+         setStackViewConstraints()
+    
     }
+    
+   
     
     func setStackViewConstraints() {
         
         NSLayoutConstraint.activate([
-            verticalStack.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 10),
-            verticalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 10),
-            verticalStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            verticalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10)
+            
+            verticalStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            verticalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            verticalStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -10),
+          verticalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10),
+            
+         
+            
         ])
 
     }
     
-    func setStatusButtonConstraints() {
-     
-        NSLayoutConstraint.activate([
-            
-            statusButton.heightAnchor.constraint(equalToConstant: 30),
-            statusButton.widthAnchor.constraint(equalToConstant: 100)
-            
-            ])
-    }
+
     
     func setProgressViewContraints() {
-        
         NSLayoutConstraint.activate([
-            
-            progressView.widthAnchor.constraint(equalToConstant: 200),
+            progressView.widthAnchor.constraint(equalToConstant: 80),
             progressView.heightAnchor.constraint(equalToConstant: 15)
-            
         ])
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     override func awakeFromNib() {
         super.awakeFromNib()
     }
 
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
+    
     
     
     func randomNumberGenerator() -> Float {
