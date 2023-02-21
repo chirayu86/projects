@@ -46,8 +46,8 @@
             filePath = "projects/ViewControllers/CalanderViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
             landmarkName = "tasksTableView"
             landmarkType = "24">
          </BreakpointContent>
@@ -98,6 +98,22 @@
             endingLineNumber = "8"
             landmarkName = "unknown"
             landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DCBFDB10-7043-4AB0-AE3C-9A8DB8218345"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/MyWindow.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
+            landmarkName = "applyTheme()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

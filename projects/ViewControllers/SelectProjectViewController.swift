@@ -51,15 +51,17 @@ class SelectProjectViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        view.backgroundColor = .clear
-      
-        view.addSubview(projectsListTableView)
-        view.addSubview(searchBar)
+        setupVc()
         
         setTableViewConstraints()
         setSearchBarConstraints()
     }
     
+    func setupVc() {
+        view.backgroundColor = .clear
+        view.addSubview(projectsListTableView)
+        view.addSubview(searchBar)
+    }
     
     func setSearchBarConstraints() {
         

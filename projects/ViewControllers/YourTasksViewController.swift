@@ -9,19 +9,19 @@ import UIKit
 
 class YourTasksViewController: UIViewController {
     
-   private var sectionTitles = ["High","Medium","Low"]
+    private var sectionTitles = ["High","Medium","Low"]
     
     lazy var projectButton = {
-
-        let button = AppThemedButton(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
+        
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
+        button.layer.cornerRadius = 5
+        button.layer.borderWidth = 2
         button.setTitle("All Project", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20)
-        button.backgroundColor = .systemPurple
-       
-
+        
         return button
     }()
-
+    
     
     lazy var taskTableView = {
         
@@ -30,8 +30,7 @@ class YourTasksViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(TasksTableViewCell.self, forCellReuseIdentifier: "cell")
-       
-    
+        
         return tableView
         
     }()
@@ -58,28 +57,44 @@ class YourTasksViewController: UIViewController {
         return barButton
         
     }()
-
+    
     
     override func viewDidLoad() {
-      
+        
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        self.title = "Your Tasks"
-     
-        navigationController?.navigationBar.prefersLargeTitles = true
-              
-        navigationItem.setLeftBarButtonItems([filterBarButtonItem,addTaskBarButtonItem], animated: true)
-
-        
-        view.addSubview(taskTableView)
-        taskTableView.tableHeaderView = projectButton
-        addTaskBarButtonItem.action = #selector(addTask)
+      
+        setupVc()
         
         projectButton.addTarget(self, action: #selector(selectProject), for: .touchUpInside)
         
-        setConstraints()
+        taskTableViewConstraints()
         barButtonMenu()
+        
+    }
     
+    func setupVc() {
+        self.title = "Your Tasks"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.setLeftBarButtonItems([filterBarButtonItem,addTaskBarButtonItem], animated: true)
+        view.addSubview(taskTableView)
+        taskTableView.tableHeaderView = projectButton
+        addTaskBarButtonItem.action = #selector(addTask)
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+      
+        taskTableView.reloadData()
+        setApperance()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        taskTableView.reloadData()
+        setApperance()
     }
     
     
@@ -104,7 +119,7 @@ class YourTasksViewController: UIViewController {
     }
     
     
-    func setConstraints() {
+    func taskTableViewConstraints() {
         
         NSLayoutConstraint.activate([
             
@@ -112,9 +127,10 @@ class YourTasksViewController: UIViewController {
             taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             taskTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        
+            
         ])
     }
+    
     
     
     
@@ -125,17 +141,27 @@ class YourTasksViewController: UIViewController {
     
     @objc func selectProject() {
         
-       let allProjectsVc = SelectProjectViewController()
-       allProjectsVc.selectionDelegate = self
-       allProjectsVc.modalPresentationStyle = .formSheet
-       present(allProjectsVc,animated: true)
-       
+        let allProjectsVc = SelectProjectViewController()
+        allProjectsVc.selectionDelegate = self
+        allProjectsVc.modalPresentationStyle = .custom
+        present(allProjectsVc,animated: true)
+        
     }
     
-
-
+    
+    
+    
+    func setApperance() {
+        
+        projectButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
+        projectButton.layer.borderColor = ThemeManager.shared.currentTheme.backgroundColor.cgColor
+        projectButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
+        projectButton.setImage(UIImage(systemName: "arrow.up.doc"), for: .normal)
+        filterBarButtonItem.tintColor = ThemeManager.shared.currentTheme.tintColor
+        addTaskBarButtonItem.tintColor = ThemeManager.shared.currentTheme.tintColor
+    }
+    
 }
-
 
 extension YourTasksViewController:UITableViewDataSource,UITableViewDelegate {
     
@@ -154,8 +180,10 @@ extension YourTasksViewController:UITableViewDataSource,UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TasksTableViewCell
         cell.layoutIfNeeded()
+        cell.setCellAppearance()
+        print(#function)
         
         return cell
     }
@@ -174,3 +202,4 @@ extension YourTasksViewController:ProjectSelectionDelegate {
     
     
 }
+

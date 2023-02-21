@@ -12,40 +12,30 @@ class TabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
  
-        setTabBarApperance()
         setTabBarItems()
     }
     
-    func setTabBarApperance() {
-        
-        self.tabBar.layer.borderWidth = 0.25
-        self.tabBar.layer.borderColor = UIColor.label.cgColor
-        tabBar.tintColor = .systemPurple
-        
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setApperance()
     }
-    
+        
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-      
-        self.tabBar.layer.borderColor = UIColor.label.cgColor
-        
-        if self.traitCollection.userInterfaceStyle == .dark {
-            
-            tabBar.tintColor = .systemPurple
-            
-        } else {
-            
-            tabBar.tintColor = .black
-        }
+        setApperance()
+     
     }
     
+    func setApperance() {
+            tabBar.tintColor = ThemeManager.shared.currentTheme.tintColor
+    }
     
     func setTabBarItems() {
         
         let tasksVc = UINavigationController(rootViewController: YourTasksViewController())
         let calendarVc = UINavigationController(rootViewController: CalendarViewController())
         let projectsVc = UINavigationController(rootViewController: YourProjectsViewController())
-        let feedsVc = UINavigationController(rootViewController: FeedsViewController())
+        let feedsVc = UINavigationController(rootViewController: AddEditProjectsViewController())
         
         tasksVc.tabBarItem.image = UIImage(systemName: "list.bullet")
         tasksVc.tabBarItem.title = "Tasks"

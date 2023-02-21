@@ -27,14 +27,27 @@ class YourProjectsViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        self.title = "Projects"
-        view.addSubview(projectsTableView)
-        navigationController?.navigationBar.prefersLargeTitles = true
+        setupVc()
    
         setTableViewConstraints()
     }
     
+    func setupVc() {
+        view.backgroundColor = .systemBackground
+        self.title = "Projects"
+        view.addSubview(projectsTableView)
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        projectsTableView.reloadData()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+       projectsTableView.reloadData()
+    }
 
     func setTableViewConstraints() {
         NSLayoutConstraint.activate([
@@ -65,9 +78,12 @@ extension YourProjectsViewController:UITableViewDelegate,UITableViewDataSource {
  
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "projectCell")
-        cell?.layoutIfNeeded()
-        return cell!
+    
+        let cell = tableView.dequeueReusableCell(withIdentifier: "projectCell") as! ProjectTableViewCell
+        cell.layoutIfNeeded()
+        cell.setAppearance()
+    
+        return cell
     }
     
     

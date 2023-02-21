@@ -14,7 +14,6 @@ class CalendarViewController: UIViewController {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .inline
-        datePicker.tintColor = .systemPurple
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
         return datePicker
@@ -35,37 +34,45 @@ class CalendarViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        self.title = "Calendar"
-        view.addSubview(datePicker)
-        view.addSubview(tasksTableView)
+        setupVc()
         
         setTableViewConstraints()
         setDatePickerContraints()
     }
-//    
-//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//
-//        super.traitCollectionDidChange(previousTraitCollection)
-//        if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight {
-//            datePicker.preferredDatePickerStyle = .compact
-//        } else {
-//            datePicker.preferredDatePickerStyle = .inline
-//        }
-//    }
-//    
+    
+    func setupVc() {
+        view.backgroundColor = .systemBackground
+        self.title = "Calendar"
+        view.addSubview(datePicker)
+        view.addSubview(tasksTableView)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tasksTableView.reloadData()
+        setAppearance()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        tasksTableView.reloadData()
+        setAppearance()
+    }
+    
+    func setAppearance() {
+        datePicker.tintColor = ThemeManager.shared.currentTheme.tintColor
+        
+    }
+    
     func setDatePickerContraints() {
         
         NSLayoutConstraint.activate([
-            
             datePicker.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             datePicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-           
-        
         ])
     }
     
+
     
     func setTableViewConstraints() {
         
@@ -85,15 +92,19 @@ class CalendarViewController: UIViewController {
 
 extension CalendarViewController:UITableViewDataSource,UITableViewDelegate {
     
+  
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 10
     }
     
+  
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
      
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.layoutIfNeeded()
-        return cell!
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! TasksTableViewCell
+        cell.layoutIfNeeded()
+        cell.setCellAppearance()
+        
+        return cell
         
     }
     

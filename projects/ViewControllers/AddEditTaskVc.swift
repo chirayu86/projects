@@ -22,12 +22,13 @@ class AddEditTaskVc: UIViewController {
    
     lazy var taskNameTextField = {
         
-        let textField = AppThemedTextField(frame: .zero)
+        let textField = UITextField()
+        textField.layer.borderWidth = 2
+        textField.layer.cornerRadius = 5
+        textField.textAlignment = .center
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Task name"
-    
-        textField.textAlignment = .center
-        
+       
         return textField
     }()
     
@@ -37,7 +38,6 @@ class AddEditTaskVc: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Description:"
-        label.textColor = .label
         label.font = .systemFont(ofSize: 20, weight: .regular)
         
         return label
@@ -47,9 +47,10 @@ class AddEditTaskVc: UIViewController {
     lazy var taskDescriptionTextView = {
         
         let textView = UITextView()
+        textView.layer.borderWidth = 2
+        textView.layer.cornerRadius = 5
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.textColor = .label
-        textView.font = .systemFont(ofSize: 20)
+        textView.font = .systemFont(ofSize: 15)
         
         return textView
     }()
@@ -60,6 +61,7 @@ class AddEditTaskVc: UIViewController {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
+        stack.spacing = 5
         
         return stack
         
@@ -68,7 +70,8 @@ class AddEditTaskVc: UIViewController {
   
     lazy var projectSelectionButton = {
         
-        let btn = AppThemedButton()
+        let btn = UIButton()
+        btn.layer.cornerRadius = 5
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.setTitle("Select Project", for: .normal)
         
@@ -82,7 +85,6 @@ class AddEditTaskVc: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "DeadLine:"
-        label.textColor = .label
         label.font = .systemFont(ofSize: 20, weight: .regular)
         
         return label
@@ -97,11 +99,8 @@ class AddEditTaskVc: UIViewController {
         datePicker.minimumDate = Date()
 
         datePicker.preferredDatePickerStyle = .compact
-        datePicker.tintColor = .systemPurple
-
-        
-        return datePicker
-        
+  
+         return datePicker
     }()
     
     lazy var datePickerStack = {
@@ -109,18 +108,21 @@ class AddEditTaskVc: UIViewController {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
+       
         return stack
+        
     }()
     
  
     lazy var priorityTextField = {
         
-        let textField = AppThemedTextField()
+        let textField = UITextField()
+        textField.layer.borderWidth = 2
+        textField.layer.cornerRadius = 5
+        textField.textAlignment = .center
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Select Priority"
-        textField.textAlignment = .center
-        
-        
+
         return textField
         
     }()
@@ -131,8 +133,9 @@ class AddEditTaskVc: UIViewController {
         let picker = UIPickerView()
         picker.dataSource = self
         picker.delegate = self
-        picker.backgroundColor = .systemPurple.withAlphaComponent(0.5)
+        
         return picker
+        
     }()
     
  
@@ -166,9 +169,10 @@ class AddEditTaskVc: UIViewController {
  
     lazy var attachmentsButton = {
         
-        let btn = AppThemedButton(frame: .zero)
+        let btn = UIButton()
+        btn.layer.cornerRadius = 5
         btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.setTitle("Attachments", for: .normal)
+        btn.setTitle(" Attachments", for: .normal)
         btn.setImage(UIImage(systemName: "paperclip"), for: .normal)
   
         
@@ -178,16 +182,14 @@ class AddEditTaskVc: UIViewController {
    
     lazy var checklistButton = {
         
-        let btn = AppThemedButton(frame: .zero)
+        let btn = UIButton()
+        btn.layer.cornerRadius = 5
         btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.setTitle("CheckList", for: .normal)
+        btn.setTitle(" CheckList", for: .normal)
         btn.setImage(UIImage(named: "checkedCheckbox"), for: .normal)
-        btn.backgroundColor = .systemFill
-        btn.setTitleColor(UIColor.label, for: .normal)
-    
+        btn.contentHorizontalAlignment = .center
+  
         return btn
-        
-        
     }()
     
    
@@ -195,7 +197,7 @@ class AddEditTaskVc: UIViewController {
         
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        self.title = "Add Task"
+        self.title = "Add a new Task"
         additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         view.addSubview(scrollView)
    
@@ -215,21 +217,51 @@ class AddEditTaskVc: UIViewController {
         checkListButtonConstraints()
         
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+         setApperance()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setApperance()
+        
+    }
 
+    
+    func setApperance() {
+        
+            taskNameTextField.layer.borderColor =  ThemeManager.shared.currentTheme.tintColor.cgColor
+            taskNameTextField.textColor  = ThemeManager.shared.currentTheme.tintColor
+            descriptionLabel.textColor = ThemeManager.shared.currentTheme.primaryLabel
+            taskDescriptionTextView.layer.borderColor = ThemeManager.shared.currentTheme.tintColor.cgColor
+        taskDescriptionTextView.textColor = ThemeManager.shared.currentTheme.primaryLabel
+            projectSelectionButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
+            projectSelectionButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
+            priorityTextField.layer.borderColor = ThemeManager.shared.currentTheme.primaryLabel.cgColor
+        deadlineDatePicker.tintColor = ThemeManager.shared.currentTheme.tintColor
+            attachmentsButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
+            attachmentsButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
+            checklistButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
+        checklistButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
+            priorityPickerView.backgroundColor = ThemeManager.shared.currentTheme.tintColor.withAlphaComponent(0.9)
+            
+    }
     
     func setupViews() {
         
         scrollView.addSubview(verticalStack)
         
         verticalStack.addArrangedSubview(taskNameTextField)
-        verticalStack.addArrangedSubview(descriptionStack)
-        descriptionStack.addArrangedSubview(descriptionLabel)
-        descriptionStack.addArrangedSubview(taskDescriptionTextView)
         verticalStack.addArrangedSubview(projectSelectionButton)
         verticalStack.addArrangedSubview(priorityTextField)
         verticalStack.addArrangedSubview(datePickerStack)
         datePickerStack.addArrangedSubview(deadLineLabel)
         datePickerStack.addArrangedSubview(deadlineDatePicker)
+        verticalStack.addArrangedSubview(descriptionStack)
+        descriptionStack.addArrangedSubview(descriptionLabel)
+        descriptionStack.addArrangedSubview(taskDescriptionTextView)
         verticalStack.addArrangedSubview(attachmentsChecklistStack)
         attachmentsChecklistStack.addArrangedSubview(attachmentsButton)
         attachmentsChecklistStack.addArrangedSubview(checklistButton)

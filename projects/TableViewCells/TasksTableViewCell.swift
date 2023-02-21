@@ -15,7 +15,7 @@ class TasksTableViewCell: UITableViewCell {
        let checkBox = CheckBox()
        checkBox.translatesAutoresizingMaskIntoConstraints = false
        
-        return checkBox
+       return checkBox
     }()
     
     
@@ -23,20 +23,19 @@ class TasksTableViewCell: UITableViewCell {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .label
         label.font = .systemFont(ofSize: 15, weight: .bold)
         label.numberOfLines = 0
-        label.text = "New Task"
+        label.text = "New Task gwsx swsx ws swx xswxsw wxsjx swjxhswsxwsx wjws jswx hswx  wsxxswh kxwshkswxksxw k xwh wxs hsw"
         
         return label
     }()
     
+
     
     lazy var projectNameLabel = {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .label
         label.font = .systemFont(ofSize: 15)
         label.numberOfLines = 0
         label.text = "Project Name"
@@ -47,7 +46,8 @@ class TasksTableViewCell: UITableViewCell {
     
     lazy var dateLabel = {
         
-        let label = AppThemedLabel(frame: .zero)
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "2/02/2022"
       
@@ -91,13 +91,8 @@ class TasksTableViewCell: UITableViewCell {
        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        contentView.addSubview(horizontalStack)
-        horizontalStack.addArrangedSubview(checkBox)
-        verticalStack.addArrangedSubview(taskNameLabel)
-        verticalStack.addArrangedSubview(projectNameLabel)
-        verticalStack.addArrangedSubview(dateLabel)
-        horizontalStack.addArrangedSubview(verticalStack)
-        
+        setupViews()
+       
         checkBox.addTarget(self, action: #selector(checkBoxClicked), for: .touchUpInside)
         
         setConstraints()
@@ -107,6 +102,16 @@ class TasksTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func setupViews() {
+        
+        contentView.addSubview(horizontalStack)
+        horizontalStack.addArrangedSubview(checkBox)
+        verticalStack.addArrangedSubview(taskNameLabel)
+        verticalStack.addArrangedSubview(projectNameLabel)
+        verticalStack.addArrangedSubview(dateLabel)
+        horizontalStack.addArrangedSubview(verticalStack)
+        
+    }
     
     func setConstraints() {
         
@@ -122,6 +127,14 @@ class TasksTableViewCell: UITableViewCell {
     }
     
     
+    func setCellAppearance() {
+    
+        taskNameLabel.textColor = ThemeManager.shared.currentTheme.primaryLabel
+        projectNameLabel.textColor = ThemeManager.shared.currentTheme.secondaryLabel
+        dateLabel.textColor = ThemeManager.shared.currentTheme.tintColor
+        
+    }
+  
     @objc func checkBoxClicked() {
         
         checkBox.isChecked = !checkBox.isChecked
@@ -129,19 +142,14 @@ class TasksTableViewCell: UITableViewCell {
         let attributeString:NSMutableAttributedString =  NSMutableAttributedString(string: "New Task")
         
         if checkBox.isChecked == true {
-            
             attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 1, range: NSMakeRange(0, attributeString.length))
             taskNameLabel.attributedText = attributeString
             print(true)
-            
         } else {
-            
             taskNameLabel.attributedText = attributeString
             print(false)
-            
         }
-        
-        print(#function)
+       print(#function)
     }
 
 }
