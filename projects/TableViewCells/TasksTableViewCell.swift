@@ -14,7 +14,8 @@ class TasksTableViewCell: UITableViewCell {
         
        let checkBox = CheckBox()
        checkBox.translatesAutoresizingMaskIntoConstraints = false
-       
+       checkBox.addTarget(self, action: #selector(checkBoxClicked), for: .touchUpInside)
+        
        return checkBox
     }()
     
@@ -25,7 +26,7 @@ class TasksTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 15, weight: .bold)
         label.numberOfLines = 0
-        label.text = "New Task gwsx swsx ws swx xswxsw wxsjx swjxhswsxwsx wjws jswx hswx  wsxxswh kxwshkswxksxw k xwh wxs hsw"
+        label.text = "New Task"
         
         return label
     }()
@@ -91,18 +92,14 @@ class TasksTableViewCell: UITableViewCell {
        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setupViews()
-       
-        checkBox.addTarget(self, action: #selector(checkBoxClicked), for: .touchUpInside)
-        
-        setConstraints()
+        setupStackView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setupViews() {
+    func setupStackView() {
         
         contentView.addSubview(horizontalStack)
         horizontalStack.addArrangedSubview(checkBox)
@@ -111,9 +108,11 @@ class TasksTableViewCell: UITableViewCell {
         verticalStack.addArrangedSubview(dateLabel)
         horizontalStack.addArrangedSubview(verticalStack)
         
+        setStackViewConstraints()
+        
     }
     
-    func setConstraints() {
+    func setStackViewConstraints() {
         
         NSLayoutConstraint.activate([
             horizontalStack.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 5),
@@ -135,13 +134,14 @@ class TasksTableViewCell: UITableViewCell {
         
     }
   
+    
     @objc func checkBoxClicked() {
         
         checkBox.isChecked = !checkBox.isChecked
         
         let attributeString:NSMutableAttributedString =  NSMutableAttributedString(string: "New Task")
         
-        if checkBox.isChecked == true {
+        if checkBox.isChecked {
             attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 1, range: NSMakeRange(0, attributeString.length))
             taskNameLabel.attributedText = attributeString
             print(true)

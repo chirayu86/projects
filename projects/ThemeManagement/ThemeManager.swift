@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+
 class ThemeManager {
    
     var currentTheme: Theme

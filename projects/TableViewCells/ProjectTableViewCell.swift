@@ -15,7 +15,6 @@ class ProjectTableViewCell: UITableViewCell {
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .systemFont(ofSize: 15, weight: .bold)
-
         nameLabel.numberOfLines = 0
         nameLabel.text = "Project Name"
         
@@ -98,13 +97,14 @@ class ProjectTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupViews()
+       
+        setupStackViews()
         setProgressViewContraints()
-        setStackViewConstraints()
+      
     
     }
     
-    func setupViews() {
+    func setupStackViews() {
         
         contentView.addSubview(verticalStack)
         verticalStack.addArrangedSubview(projectNameLabel)
@@ -113,7 +113,10 @@ class ProjectTableViewCell: UITableViewCell {
         datehorizontalStack.addArrangedSubview(endDateLabel)
         datehorizontalStack.addArrangedSubview(progressView)
         progressView.progress = randomNumberGenerator()
+        
+        setStackViewConstraints()
     }
+    
     
     func setAppearance() {
         

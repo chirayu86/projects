@@ -7,9 +7,15 @@
 
 import UIKit
 
+enum ProjectStatus:String,CaseIterable {
+    case Ongoing
+    case Witheld
+    case OverDue
+}
+
 class YourProjectsViewController: UIViewController {
     
-    let status = ["Ongoing","Witheld","OverDue"]
+    let status = ProjectStatus.allCases
     
     lazy var projectsTableView = {
         
@@ -27,28 +33,38 @@ class YourProjectsViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        setupVc()
-   
+        setupNavigationBar()
+        setupTableView()
+        
+    }
+    
+    func setupTableView() {
+        view.addSubview(projectsTableView)
         setTableViewConstraints()
     }
     
-    func setupVc() {
+    func setupNavigationBar() {
         view.backgroundColor = .systemBackground
         self.title = "Projects"
-        view.addSubview(projectsTableView)
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         projectsTableView.reloadData()
+        setAppearance()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
        projectsTableView.reloadData()
+        setAppearance()
     }
 
+    func setAppearance() {
+        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+    }
+    
     func setTableViewConstraints() {
         NSLayoutConstraint.activate([
             projectsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -69,7 +85,7 @@ extension YourProjectsViewController:UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return status[section]
+        return status[section].rawValue
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

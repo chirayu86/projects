@@ -7,9 +7,15 @@
 
 import UIKit
 
+enum TaskPriority:String,CaseIterable {
+    case High
+    case Medium
+    case Low
+}
+
 class YourTasksViewController: UIViewController {
     
-    private var sectionTitles = ["High","Medium","Low"]
+    private var sectionTitles = TaskPriority.allCases
     
     lazy var projectButton = {
         
@@ -18,8 +24,10 @@ class YourTasksViewController: UIViewController {
         button.layer.borderWidth = 2
         button.setTitle("All Project", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20)
+        button.addTarget(self, action: #selector(selectProject), for: .touchUpInside)
         
         return button
+        
     }()
     
     
@@ -41,7 +49,6 @@ class YourTasksViewController: UIViewController {
         let barButton = UIBarButtonItem()
         barButton.title = "Filter"
         barButton.image = UIImage(systemName: "line.3.horizontal.decrease")
-        barButton.tintColor = .systemPurple
         barButton.primaryAction = nil
         
         return barButton
@@ -52,8 +59,9 @@ class YourTasksViewController: UIViewController {
         
         let barButton = UIBarButtonItem()
         barButton.title = "ADD"
-        barButton.tintColor = .systemPurple
         barButton.target = self
+        barButton.action = #selector(addTask)
+        
         return barButton
         
     }()
@@ -63,23 +71,22 @@ class YourTasksViewController: UIViewController {
         
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-      
-        setupVc()
+        self.title = "Your Tasks"
         
-        projectButton.addTarget(self, action: #selector(selectProject), for: .touchUpInside)
-        
-        taskTableViewConstraints()
-        barButtonMenu()
-        
+        setupNavigationBar()
+        setupTaskTableView()
+        setupBarButtonMenu()
     }
     
-    func setupVc() {
-        self.title = "Your Tasks"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.setLeftBarButtonItems([filterBarButtonItem,addTaskBarButtonItem], animated: true)
+    func setupTaskTableView() {
         view.addSubview(taskTableView)
         taskTableView.tableHeaderView = projectButton
-        addTaskBarButtonItem.action = #selector(addTask)
+        taskTableViewConstraints()
+    }
+    
+    func setupNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.setRightBarButtonItems([filterBarButtonItem,addTaskBarButtonItem], animated: true)
     }
     
     
@@ -98,7 +105,7 @@ class YourTasksViewController: UIViewController {
     }
     
     
-    func barButtonMenu() {
+    func setupBarButtonMenu() {
         
         let todayFilter = UIAction(title: "Today", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .mixed, handler: {
             action in
@@ -167,11 +174,11 @@ extension YourTasksViewController:UITableViewDataSource,UITableViewDelegate {
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-         return 3
+        return sectionTitles.count
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionTitles[section]
+        return sectionTitles[section].rawValue
     }
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
