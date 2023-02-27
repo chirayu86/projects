@@ -34,18 +34,23 @@ class CalendarViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        setupVc()
+        self.title = "Calendar"
         
-        setTableViewConstraints()
+       setupDatepicker()
+       setupTableView()
+       
+    }
+    
+    func setupDatepicker() {
+        view.addSubview(datePicker)
         setDatePickerContraints()
     }
     
-    func setupVc() {
-        view.backgroundColor = .systemBackground
-        self.title = "Calendar"
-        view.addSubview(datePicker)
+    func setupTableView() {
         view.addSubview(tasksTableView)
+        setTableViewConstraints()
     }
+    
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -54,13 +59,14 @@ class CalendarViewController: UIViewController {
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
         tasksTableView.reloadData()
         setAppearance()
     }
     
     func setAppearance() {
+        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
         datePicker.tintColor = ThemeManager.shared.currentTheme.tintColor
-        
     }
     
     func setDatePickerContraints() {

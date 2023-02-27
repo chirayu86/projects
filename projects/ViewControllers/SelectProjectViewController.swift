@@ -19,7 +19,7 @@ class SelectProjectViewController: UIViewController {
 
     
     // dummy data
-    var allProjects = [Project(projectName: "Dsa"),Project(projectName: "Game Dev"),Project(projectName: "New Project"),Project(projectName: "Hello Hello")]
+    var allProjects = [Project]()
     
     var selectedProject:Project?
     
@@ -30,7 +30,7 @@ class SelectProjectViewController: UIViewController {
         let searchBar = UISearchBar()
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         searchBar.searchTextField.placeholder = "Search Projects"
-       
+        
         return searchBar
         
     }()
@@ -49,34 +49,50 @@ class SelectProjectViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        setupVc()
         
+        setupSearchBar()
+        setupTableView()
+      
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        setApperance()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setApperance()
+    }
+    
+    func setupTableView() {
+        view.addSubview(projectsListTableView)
         setTableViewConstraints()
+    }
+    
+    func setupSearchBar() {
+        view.addSubview(searchBar)
         setSearchBarConstraints()
     }
     
-    func setupVc() {
+    func setApperance() {
         view.backgroundColor = .clear
-        view.addSubview(projectsListTableView)
-        view.addSubview(searchBar)
+        searchBar.tintColor = ThemeManager.shared.currentTheme.tintColor
+        projectsListTableView.separatorColor = ThemeManager.shared.currentTheme.tintColor
     }
     
     func setSearchBarConstraints() {
         
         NSLayoutConstraint.activate([
-            
             searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10),
             searchBar.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
             searchBar.heightAnchor.constraint(equalToConstant: 40)
-            
-            ])
+        ])
     }
     
 
     func setTableViewConstraints() {
-        
         NSLayoutConstraint.activate ([
             
            projectsListTableView.topAnchor.constraint(equalTo:searchBar.bottomAnchor,constant: 10),

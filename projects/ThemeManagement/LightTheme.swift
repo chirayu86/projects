@@ -16,7 +16,7 @@ struct LightTheme:Theme {
     
     var secondaryLabel: UIColor = .gray
     
-    var tintColor: UIColor = UIColor(red: 173/255, green: 123/255, blue: 233/255, alpha: 1)
+    var tintColor: UIColor = UIColor(red: 255/255, green: 95/255, blue: 158/255, alpha: 1)
     
 }
 

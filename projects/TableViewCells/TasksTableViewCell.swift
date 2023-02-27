@@ -92,14 +92,14 @@ class TasksTableViewCell: UITableViewCell {
        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setupStackView()
+        setupViews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setupStackView() {
+    func setupViews() {
         
         contentView.addSubview(horizontalStack)
         horizontalStack.addArrangedSubview(checkBox)
@@ -108,11 +108,11 @@ class TasksTableViewCell: UITableViewCell {
         verticalStack.addArrangedSubview(dateLabel)
         horizontalStack.addArrangedSubview(verticalStack)
         
-        setStackViewConstraints()
+        setViewConstraints()
         
     }
     
-    func setStackViewConstraints() {
+    func setViewConstraints() {
         
         NSLayoutConstraint.activate([
             horizontalStack.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 5),

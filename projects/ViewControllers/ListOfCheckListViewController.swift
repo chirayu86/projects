@@ -25,11 +25,28 @@ class ListOfCheckListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(checkListListTableView)
-        view.backgroundColor = .systemBackground
         self.title = "CheckList"
         
+        setupChecklistTableview()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setApperance()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setApperance()
+    }
+    
+    func setupChecklistTableview() {
+        view.addSubview(checkListListTableView)
         tableViewConstraints()
+    }
+    
+    func setApperance() {
+        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
     }
     
     func tableViewConstraints() {

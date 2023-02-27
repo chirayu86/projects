@@ -9,6 +9,7 @@ import UIKit
 
 class ProjectTableViewCell: UITableViewCell {
 
+    let dateformatter = DateFormatter()
     
     lazy var projectNameLabel = {
         
@@ -16,7 +17,6 @@ class ProjectTableViewCell: UITableViewCell {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .systemFont(ofSize: 15, weight: .bold)
         nameLabel.numberOfLines = 0
-        nameLabel.text = "Project Name"
         
         return nameLabel
         
@@ -27,7 +27,6 @@ class ProjectTableViewCell: UITableViewCell {
         let startDate = UILabel()
         startDate.translatesAutoresizingMaskIntoConstraints = false
         startDate.font = .systemFont(ofSize: 15, weight: .semibold)
-        startDate.text = "02/02/2023"
         
         return startDate
     
@@ -38,59 +37,26 @@ class ProjectTableViewCell: UITableViewCell {
         let endDate = UILabel()
         endDate.translatesAutoresizingMaskIntoConstraints = false
         endDate.font = .systemFont(ofSize: 15, weight: .bold)
-        endDate.text = "05/02/2023"
         
         return endDate
         
     }()
     
 
-    lazy var progressView = {
-        
-        let progressView = UIProgressView()
-        progressView.layer.borderWidth = 2
-        progressView.translatesAutoresizingMaskIntoConstraints = false
-        progressView.clipsToBounds = true
-       
-        return progressView
-        
-    }()
+
     
     lazy var datehorizontalStack = {
         
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
-        stack.spacing = 20
-        
-        return stack
-        
-    }()
-    
-    
-    lazy var verticalStack = {
-        
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .vertical
-        stack.alignment = .top
-        stack.distribution = .fillProportionally
         stack.spacing = 5
+        stack.alignment = .center
         
         return stack
         
     }()
-    
-    lazy var horizontalStack = {
-        
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .horizontal
-        stack.distribution = .fillProportionally
-        stack.spacing = 5
-        
-        return stack
-    }()
+
     
 
     
@@ -98,21 +64,19 @@ class ProjectTableViewCell: UITableViewCell {
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
        
+        dateformatter.dateStyle = .short
+        dateformatter.timeStyle = .none
+        
         setupStackViews()
-        setProgressViewContraints()
-      
-    
     }
     
     func setupStackViews() {
         
-        contentView.addSubview(verticalStack)
-        verticalStack.addArrangedSubview(projectNameLabel)
-        verticalStack.addArrangedSubview(datehorizontalStack)
         datehorizontalStack.addArrangedSubview(startDateLabel)
         datehorizontalStack.addArrangedSubview(endDateLabel)
-        datehorizontalStack.addArrangedSubview(progressView)
-        progressView.progress = randomNumberGenerator()
+        contentView.addSubview(projectNameLabel)
+        contentView.addSubview(datehorizontalStack)
+      
         
         setStackViewConstraints()
     }
@@ -123,28 +87,30 @@ class ProjectTableViewCell: UITableViewCell {
         projectNameLabel.textColor = ThemeManager.shared.currentTheme.primaryLabel
         startDateLabel.textColor = ThemeManager.shared.currentTheme.secondaryLabel
         endDateLabel.textColor = ThemeManager.shared.currentTheme.tintColor
-        progressView.tintColor  = ThemeManager.shared.currentTheme.tintColor
-        progressView.layer.backgroundColor = ThemeManager.shared.currentTheme.secondaryLabel.cgColor
     }
+    
     
     func setStackViewConstraints() {
         
         NSLayoutConstraint.activate([
-            verticalStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            verticalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            verticalStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -10),
-          verticalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10),
+            projectNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            projectNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            projectNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -10),
+            datehorizontalStack.topAnchor.constraint(equalTo: projectNameLabel.bottomAnchor,constant: 5),
+            datehorizontalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 10),
+            datehorizontalStack.widthAnchor.constraint(equalToConstant: 140),
+            datehorizontalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10)
         ])
   }
     
-
     
-    func setProgressViewContraints() {
-        NSLayoutConstraint.activate([
-            progressView.widthAnchor.constraint(equalToConstant: 80),
-            progressView.heightAnchor.constraint(equalToConstant: 15)
-        ])
+    func setProjectDetails(project:Project) {
+        self.projectNameLabel.text = project.projectName
+        self.startDateLabel.text = dateformatter.string(from: project.startDate)
+        self.endDateLabel.text = dateformatter.string(from: project.endDate)
     }
+
+   
     
     
     required init?(coder: NSCoder) {
@@ -163,8 +129,5 @@ class ProjectTableViewCell: UITableViewCell {
     
     
     
-    func randomNumberGenerator() -> Float {
-        return Float.random(in: 0...1)
-    }
-
+    
 }

@@ -11,8 +11,11 @@ import UIKit
 protocol Theme {
 
     var backgroundColor : UIColor {get}
+    
     var primaryLabel : UIColor {get}
+    
     var secondaryLabel : UIColor { get }
+    
     var tintColor : UIColor { get set}
 
 }

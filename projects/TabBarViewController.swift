@@ -35,7 +35,7 @@ class TabBarViewController: UITabBarController {
         let tasksVc = UINavigationController(rootViewController: YourTasksViewController())
         let calendarVc = UINavigationController(rootViewController: CalendarViewController())
         let projectsVc = UINavigationController(rootViewController: YourProjectsViewController())
-        let feedsVc = UINavigationController(rootViewController: AddEditProjectsViewController())
+        let feedsVc = UINavigationController(rootViewController: ProjectVc(projectForVc: Project(projectName: "My Project", startDate: Date(), endDate: Date(), description: "no no", status: .OverDue), isPresented: true))
         
         tasksVc.tabBarItem.image = UIImage(systemName: "list.bullet")
         tasksVc.tabBarItem.title = "Tasks"

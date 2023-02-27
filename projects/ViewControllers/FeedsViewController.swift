@@ -14,7 +14,7 @@ class FeedsViewController: UIViewController {
         view.backgroundColor = .white
         navigationController?.navigationBar.prefersLargeTitles = true
         self.title = "Feed"
-        // Do any additional setup after loading the view.
+    
     }
     
 

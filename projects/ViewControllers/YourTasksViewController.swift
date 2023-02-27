@@ -70,22 +70,21 @@ class YourTasksViewController: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
         self.title = "Your Tasks"
-        
+       
         setupNavigationBar()
         setupTaskTableView()
         setupBarButtonMenu()
     }
     
     func setupTaskTableView() {
+        
         view.addSubview(taskTableView)
         taskTableView.tableHeaderView = projectButton
         taskTableViewConstraints()
     }
     
     func setupNavigationBar() {
-        navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.setRightBarButtonItems([filterBarButtonItem,addTaskBarButtonItem], animated: true)
     }
     
@@ -143,9 +142,12 @@ class YourTasksViewController: UIViewController {
     
     @objc func addTask() {
         print(#function)
-        navigationController?.pushViewController(AddEditTaskVc(), animated: true)
+        let addTaskVc = UINavigationController(rootViewController: AddTaskVc())
+        addTaskVc.modalPresentationStyle = .fullScreen
+        present(addTaskVc, animated: true)
     }
     
+ 
     @objc func selectProject() {
         
         let allProjectsVc = SelectProjectViewController()
@@ -156,19 +158,20 @@ class YourTasksViewController: UIViewController {
     }
     
     
-    
-    
     func setApperance() {
         
+        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
         projectButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
         projectButton.layer.borderColor = ThemeManager.shared.currentTheme.backgroundColor.cgColor
         projectButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
         projectButton.setImage(UIImage(systemName: "arrow.up.doc"), for: .normal)
         filterBarButtonItem.tintColor = ThemeManager.shared.currentTheme.tintColor
         addTaskBarButtonItem.tintColor = ThemeManager.shared.currentTheme.tintColor
+        
     }
     
 }
+
 
 extension YourTasksViewController:UITableViewDataSource,UITableViewDelegate {
     
@@ -185,6 +188,7 @@ extension YourTasksViewController:UITableViewDataSource,UITableViewDelegate {
         return 5
     }
     
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TasksTableViewCell

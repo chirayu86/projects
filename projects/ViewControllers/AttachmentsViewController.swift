@@ -8,9 +8,17 @@
 import UIKit
 import UniformTypeIdentifiers
 
+enum AttachmentTypes:String,CaseIterable {
+   
+    case Pdf
+    
+    case Image
+
+}
+
 class AttachmentsViewController: UIViewController {
     
-    var urls = [URL]()
+    var attachments = [URL]()
 
     lazy var attachmentsTableView = {
         
@@ -38,10 +46,31 @@ class AttachmentsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
         self.title = "Attachments"
-        view.addSubview(attachmentsTableView)
+   
+        setupAttachmentsTableview()
+        setupNavigationBar()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setApperance()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setApperance()
+    }
+    
+    func setApperance() {
+        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+    }
+    func setupNavigationBar() {
         navigationItem.setRightBarButton(importBarButton, animated: true)
+    }
+    
+    func setupAttachmentsTableview() {
+        view.addSubview(attachmentsTableView)
         setAttachmentTableContraints()
     }
     
@@ -75,21 +104,21 @@ extension AttachmentsViewController: UITableViewDataSource,UITableViewDelegate {
   
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
       
-        urls.count
+        attachments.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
       
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         cell?.textLabel?.text = "attach"
-        print(urls[indexPath.row])
+        print(attachments[indexPath.row])
         
         return cell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
       
-        let documentViewer = UIDocumentInteractionController(url: urls[indexPath.row])
+        let documentViewer = UIDocumentInteractionController(url: attachments[indexPath.row])
         documentViewer.delegate = self
         documentViewer.presentPreview(animated: false)
         
@@ -100,7 +129,7 @@ extension AttachmentsViewController: UIDocumentPickerDelegate {
   
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
        
-       self.urls.append(contentsOf: urls)
+       self.attachments.append(contentsOf: urls)
        attachmentsTableView.reloadData()
     }
 }

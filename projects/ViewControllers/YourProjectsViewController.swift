@@ -8,14 +8,21 @@
 import UIKit
 
 enum ProjectStatus:String,CaseIterable {
+  
     case Ongoing
+    
     case Witheld
+    
     case OverDue
 }
 
+
 class YourProjectsViewController: UIViewController {
     
+    let dbHelper = DatabaseHelper()
+    
     let status = ProjectStatus.allCases
+    
     
     lazy var projectsTableView = {
         
@@ -24,15 +31,29 @@ class YourProjectsViewController: UIViewController {
         table.delegate = self
         table.dataSource = self
         table.register(ProjectTableViewCell.self, forCellReuseIdentifier: "projectCell")
-        table.rowHeight = UITableView.automaticDimension
+
         
         return table
         
     }()
 
-    override func viewDidLoad() {
+    lazy var addProjectBarButton = {
         
+        let barButton = UIBarButtonItem()
+        barButton.title = "ADD"
+        barButton.target = self
+        barButton.action = #selector(self.addProject)
+        
+        return barButton
+    }()
+    
+    
+    override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "Projects"
+        navigationItem.setRightBarButton(addProjectBarButton, animated: true)
+        
+        
         setupNavigationBar()
         setupTableView()
         
@@ -43,21 +64,22 @@ class YourProjectsViewController: UIViewController {
         setTableViewConstraints()
     }
     
+    
     func setupNavigationBar() {
-        view.backgroundColor = .systemBackground
-        self.title = "Projects"
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         projectsTableView.reloadData()
         setAppearance()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-       projectsTableView.reloadData()
+     
+        projectsTableView.reloadData()
         setAppearance()
     }
 
@@ -66,39 +88,49 @@ class YourProjectsViewController: UIViewController {
     }
     
     func setTableViewConstraints() {
+       
         NSLayoutConstraint.activate([
             projectsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             projectsTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             projectsTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             projectsTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+        
     }
 
+    @objc func addProject() {
+     
+        let addProjectVc = UINavigationController(rootViewController: AddProjectsViewController())
+        addProjectVc.modalPresentationStyle = .fullScreen
+        present(addProjectVc, animated: true)
+    }
 
 }
 
 
 extension YourProjectsViewController:UITableViewDelegate,UITableViewDataSource {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return status.count
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return status[section].rawValue
-    }
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        return status.count
+//    }
+//
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        return status[section].rawValue
+//    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        print(#function)
+        return dbHelper.getAllProjects().count
     }
  
-    
+  
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
         let cell = tableView.dequeueReusableCell(withIdentifier: "projectCell") as! ProjectTableViewCell
-        cell.layoutIfNeeded()
+        
+        cell.setProjectDetails(project: dbHelper.getAllProjects()[indexPath.row])
         cell.setAppearance()
-    
+        
         return cell
     }
     

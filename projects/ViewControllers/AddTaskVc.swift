@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddEditTaskVc: UIViewController {
+class AddTaskVc: UIViewController {
     
     let priority = ["High","Low","Medium"]
     
@@ -19,26 +19,47 @@ class AddEditTaskVc: UIViewController {
         return scroll
     }()
     
+    
+    lazy var taskNameLabel = {
+   
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "To-Do:"
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        
+        return label
+    }()
    
     lazy var taskNameTextField = {
         
         let textField = UITextField()
-        textField.layer.borderWidth = 2
+        textField.layer.borderWidth = 1
         textField.layer.cornerRadius = 5
         textField.textAlignment = .center
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Task name"
-       
+        textField.delegate = self
+        
+        
         return textField
     }()
     
+    lazy var taskLabelFieldStack = {
+        
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.spacing = 5
+        
+        return stack
+    }()
     
     lazy var descriptionLabel = {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Description:"
-        label.font = .systemFont(ofSize: 20, weight: .regular)
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
         
         return label
     }()
@@ -47,10 +68,12 @@ class AddEditTaskVc: UIViewController {
     lazy var taskDescriptionTextView = {
         
         let textView = UITextView()
-        textView.layer.borderWidth = 2
+        textView.layer.borderWidth = 1
         textView.layer.cornerRadius = 5
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.font = .systemFont(ofSize: 15)
+        textView.font = .systemFont(ofSize: 20)
+        textView.isScrollEnabled = false
+        textView.addDoneButtonOnInputView(true)
         
         return textView
     }()
@@ -67,13 +90,34 @@ class AddEditTaskVc: UIViewController {
         
     }()
     
+    lazy var projectSelectionStack = {
+       
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.spacing = 5
+        
+        return stack
+    }()
+    
   
+    lazy var projectSelectionLabel = {
+      
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Select-Project:"
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        
+        return label
+    }()
+    
     lazy var projectSelectionButton = {
         
         let btn = UIButton()
         btn.layer.cornerRadius = 5
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.setTitle("Select Project", for: .normal)
+        btn.addTarget(self, action: #selector(selectProject), for: .touchUpInside)
         
         return btn
         
@@ -85,7 +129,7 @@ class AddEditTaskVc: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "DeadLine:"
-        label.font = .systemFont(ofSize: 20, weight: .regular)
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
         
         return label
     }()
@@ -113,20 +157,40 @@ class AddEditTaskVc: UIViewController {
         
     }()
     
+    lazy var priorityLabel = {
+        
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Set-Priority:"
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        
+        return label
+    }()
  
     lazy var priorityTextField = {
         
         let textField = UITextField()
-        textField.layer.borderWidth = 2
+        textField.layer.borderWidth = 1
         textField.layer.cornerRadius = 5
         textField.textAlignment = .center
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Select Priority"
-
+        textField.inputView = priorityPickerView
+       
+        
         return textField
         
     }()
     
+    lazy var priorityStack = {
+        
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.spacing = 5
+        
+        return stack
+    }()
   
     lazy var priorityPickerView =  {
         
@@ -165,7 +229,26 @@ class AddEditTaskVc: UIViewController {
         
     }()
     
+    lazy var saveBarButton = {
+        
+        let barButton = UIBarButtonItem()
+        barButton.title = "SAVE"
+        barButton.target = self
+        barButton.action = #selector(self.save)
+        
+        return barButton
+    }()
     
+    
+    lazy var cancelBarButton = {
+        
+        let barButton = UIBarButtonItem()
+        barButton.title = "CANCEL"
+        barButton.target = self
+        barButton.action = #selector(self.cancel)
+        
+        return barButton
+    }()
  
     lazy var attachmentsButton = {
         
@@ -174,7 +257,7 @@ class AddEditTaskVc: UIViewController {
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.setTitle(" Attachments", for: .normal)
         btn.setImage(UIImage(systemName: "paperclip"), for: .normal)
-  
+        btn.addTarget(self, action: #selector(attachments), for: .touchUpInside)
         
         return btn
     }()
@@ -188,7 +271,8 @@ class AddEditTaskVc: UIViewController {
         btn.setTitle(" CheckList", for: .normal)
         btn.setImage(UIImage(named: "checkedCheckbox"), for: .normal)
         btn.contentHorizontalAlignment = .center
-  
+        btn.addTarget(self, action: #selector(checkLists), for: .touchUpInside)
+        
         return btn
     }()
     
@@ -199,23 +283,16 @@ class AddEditTaskVc: UIViewController {
         view.backgroundColor = .systemBackground
         self.title = "Add a new Task"
         additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        view.addSubview(scrollView)
-   
-        setupViews()
+        navigationItem.setRightBarButton(saveBarButton, animated: true)
+        navigationItem.setLeftBarButton(cancelBarButton, animated: true)
+    
+        setupStackViews()
 
-        priorityTextField.inputView = priorityPickerView
-        projectSelectionButton.addTarget(self, action: #selector(selectProject), for: .touchUpInside)
-        attachmentsButton.addTarget(self, action: #selector(attachments), for: .touchUpInside)
-        checklistButton.addTarget(self, action: #selector(checkLists), for: .touchUpInside)
-        
-        scrollViewConstraints()
-        stackViewConstraints()
         taskNameTextFieldConstraint()
-        descriptionTextViewConstraint()
         priorityTextFieldConstraint()
-        addAttachmentButtonConstraints()
-        checkListButtonConstraints()
-        
+        selectProjectButtonConstraints()
+//        addAttachmentButtonConstraints()
+//        checkListButtonConstraints()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -239,7 +316,7 @@ class AddEditTaskVc: UIViewController {
         taskDescriptionTextView.textColor = ThemeManager.shared.currentTheme.primaryLabel
             projectSelectionButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
             projectSelectionButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
-            priorityTextField.layer.borderColor = ThemeManager.shared.currentTheme.primaryLabel.cgColor
+            priorityTextField.layer.borderColor = ThemeManager.shared.currentTheme.tintColor.cgColor
         deadlineDatePicker.tintColor = ThemeManager.shared.currentTheme.tintColor
             attachmentsButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
             attachmentsButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
@@ -249,22 +326,31 @@ class AddEditTaskVc: UIViewController {
             
     }
     
-    func setupViews() {
+    func setupStackViews() {
         
+        view.addSubview(scrollView)
         scrollView.addSubview(verticalStack)
-        
-        verticalStack.addArrangedSubview(taskNameTextField)
-        verticalStack.addArrangedSubview(projectSelectionButton)
-        verticalStack.addArrangedSubview(priorityTextField)
+        verticalStack.addArrangedSubview(taskLabelFieldStack)
+        taskLabelFieldStack.addArrangedSubview(taskNameLabel)
+        taskLabelFieldStack.addArrangedSubview(taskNameTextField)
+        verticalStack.addArrangedSubview(priorityStack)
+        priorityStack.addArrangedSubview(priorityLabel)
+        priorityStack.addArrangedSubview(priorityTextField)
         verticalStack.addArrangedSubview(datePickerStack)
         datePickerStack.addArrangedSubview(deadLineLabel)
         datePickerStack.addArrangedSubview(deadlineDatePicker)
+        verticalStack.addArrangedSubview(projectSelectionStack)
+        projectSelectionStack.addArrangedSubview(projectSelectionLabel)
+        projectSelectionStack.addArrangedSubview(projectSelectionButton)
         verticalStack.addArrangedSubview(descriptionStack)
         descriptionStack.addArrangedSubview(descriptionLabel)
         descriptionStack.addArrangedSubview(taskDescriptionTextView)
-        verticalStack.addArrangedSubview(attachmentsChecklistStack)
-        attachmentsChecklistStack.addArrangedSubview(attachmentsButton)
-        attachmentsChecklistStack.addArrangedSubview(checklistButton)
+//        verticalStack.addArrangedSubview(attachmentsChecklistStack)
+//        attachmentsChecklistStack.addArrangedSubview(attachmentsButton)
+//        attachmentsChecklistStack.addArrangedSubview(checklistButton)
+        
+        scrollViewConstraints()
+        stackViewConstraints()
         
     }
     
@@ -281,23 +367,27 @@ class AddEditTaskVc: UIViewController {
     
     
     func scrollViewConstraints() {
+        
+        let keyBoardLayoutGuideConstraint = scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+        keyBoardLayoutGuideConstraint.priority = .defaultLow
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+            keyBoardLayoutGuideConstraint
+        ])
+    }
+    
+    func selectProjectButtonConstraints() {
+        NSLayoutConstraint.activate([
+            projectSelectionButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
     
     func taskNameTextFieldConstraint() {
         NSLayoutConstraint.activate([
             taskNameTextField.heightAnchor.constraint(equalToConstant: 40)
-        ])
-    }
-    
-    func descriptionTextViewConstraint() {
-        NSLayoutConstraint.activate([
-            taskDescriptionTextView.heightAnchor.constraint(equalToConstant: 200)
         ])
     }
     
@@ -339,12 +429,19 @@ class AddEditTaskVc: UIViewController {
        
     }
     
+    @objc func save() {
+        dismiss(animated: true)
+    }
+    
+    @objc func cancel() {
+        dismiss(animated: true)
+    }
 }
 
 
 
 
-extension AddEditTaskVc:ProjectSelectionDelegate {
+extension AddTaskVc:ProjectSelectionDelegate {
     
     func showSelectedProject(_ project: String) {
         projectSelectionButton.setTitle(project, for: .normal)
@@ -356,7 +453,7 @@ extension AddEditTaskVc:ProjectSelectionDelegate {
 
 
 
-extension AddEditTaskVc:UIPickerViewDelegate,UIPickerViewDataSource {
+extension AddTaskVc:UIPickerViewDelegate,UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
     }
@@ -371,9 +468,15 @@ extension AddEditTaskVc:UIPickerViewDelegate,UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.priorityTextField.text = priority[row]
-        self.priorityTextField.resignFirstResponder()
+        priorityTextField.resignFirstResponder()
     }
 }
 
 
 
+extension AddTaskVc:UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
+    }
+}
