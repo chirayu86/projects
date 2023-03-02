@@ -9,14 +9,20 @@ import UIKit
 
 class ProjectVc: UIViewController {
     
-    let projectForVc:Project
+    var projectForVc:Project
     let isPresented:Bool
     
+    let status = ProjectStatus.allCases
+    var activeTextField:UITextField?
+    let dateFormatter = DateFormatter()
+    
+
     init(projectForVc:Project,isPresented:Bool) {
         
         self.isPresented = isPresented
         self.projectForVc = projectForVc
         super.init(nibName: nil, bundle: nil)
+        
     }
     
     
@@ -53,7 +59,7 @@ class ProjectVc: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Project:"
-        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.font = .systemFont(ofSize: 30, weight: .bold)
         
         return label
     }()
@@ -63,9 +69,8 @@ class ProjectVc: UIViewController {
           let textView = UITextView()
           textView.translatesAutoresizingMaskIntoConstraints = false
           textView.isScrollEnabled = false
-          textView.font = .systemFont(ofSize: 20)
-          textView.layer.borderWidth = 1
-          textView.layer.cornerRadius = 5
+          textView.font = .systemFont(ofSize: 25,weight: .semibold)
+
           textView.addDoneButtonOnInputView(true)
           
           
@@ -114,7 +119,10 @@ class ProjectVc: UIViewController {
         textField.textAlignment = .center
         textField.layer.borderWidth = 1
         textField.layer.cornerRadius = 5
+        textField.addDoneButtonOnInputView(true)
         textField.delegate = self
+        textField.inputView = datePicker
+        textField.setIcon(UIImage(systemName: "calendar")!)
         
         return textField
         
@@ -148,10 +156,13 @@ class ProjectVc: UIViewController {
         textField.textAlignment = .center
         textField.layer.borderWidth = 1
         textField.layer.cornerRadius = 5
+        textField.inputView = datePicker
+        textField.addDoneButtonOnInputView(true)
         textField.delegate = self
+        textField.setIcon(UIImage(systemName: "calendar")!)
         
         return textField
-        
+
     }()
     
     lazy var endDateStack = {
@@ -182,7 +193,7 @@ class ProjectVc: UIViewController {
         textField.textAlignment = .center
         textField.layer.borderWidth = 1
         textField.layer.cornerRadius = 5
-        textField.delegate = self
+        textField.inputView = pickerView
         
         return textField
     }()
@@ -239,7 +250,7 @@ class ProjectVc: UIViewController {
         btn.setTitle(" Attachments", for: .normal)
         btn.setImage(UIImage(systemName: "paperclip"), for: .normal)
         btn.setTitleColor(UIColor.black, for: .normal)
-//        btn.addTarget(self, action: #selector(attachments), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(attachments), for: .touchUpInside)
         
         return btn
     }()
@@ -255,7 +266,7 @@ class ProjectVc: UIViewController {
         btn.setImage(UIImage(named: "checkedCheckbox"), for: .normal)
         btn.setTitleColor(UIColor.black, for: .normal)
         btn.contentHorizontalAlignment = .center
-//        btn.addTarget(self, action: #selector(checkLists), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(tasks), for: .touchUpInside)
         
         return btn
     }()
@@ -273,6 +284,27 @@ class ProjectVc: UIViewController {
         
     }()
     
+    lazy var pickerView = {
+        
+        let picker = UIPickerView()
+        picker.dataSource = self
+        picker.delegate = self
+        
+        return picker
+    }()
+    
+    lazy var datePicker = {
+        
+        let picker = UIDatePicker()
+        picker.preferredDatePickerStyle = .wheels
+        picker.datePickerMode  = .date
+        picker.minimumDate = projectForVc.startDate
+        picker.addTarget(self, action: #selector(datePicked), for: .valueChanged)
+        
+        return picker
+    }()
+  
+    
     lazy var deleteBarButtonItem = {
         
         let barButton = UIBarButtonItem()
@@ -286,7 +318,7 @@ class ProjectVc: UIViewController {
     lazy var cancelBarButton = {
       
         let barButton = UIBarButtonItem()
-        barButton.title = "Cancel"
+        barButton.title = "CANCEL"
         barButton.target = self
         barButton.action = #selector(cancel)
         
@@ -296,18 +328,75 @@ class ProjectVc: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = projectForVc.projectName
         view.backgroundColor = .systemBackground
+  
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
         isEditing(false)
+     
+        setupProjectValues()
+        setupNavigationBar()
+        setupViews()
+       
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        setApperance()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setApperance()
+    }
+    
+    
+    func setupNavigationBar() {
         navigationItem.setRightBarButtonItems([editButtonItem,deleteBarButtonItem], animated: true)
         
         if isPresented {
             navigationItem.setLeftBarButton(cancelBarButton, animated: true)
         }
-
-        setupViews()
     }
     
+    func setApperance() {
+        
+        let currentTheme = ThemeManager.shared.currentTheme
+        
+        navigationController?.navigationBar.tintColor = currentTheme.tintColor
+//        projectNameStack.backgroundColor = currentTheme.tintColor.withAlphaComponent(0.3)
+        projectNameTextView.textColor = currentTheme.primaryLabel
+//        projectNameTextView.backgroundColor = .clear
+        progressView.tintColor = currentTheme.tintColor
+        progressView.backgroundColor = currentTheme.secondaryLabel
+        startDateField.layer.borderColor = currentTheme.tintColor.cgColor
+        startDateField.tintColor = currentTheme.tintColor    
+        startDateField.textColor = currentTheme.primaryLabel
+        endDateField.layer.borderColor = currentTheme.tintColor.cgColor
+        endDateField.textColor = currentTheme.tintColor
+        endDateField.tintColor = currentTheme.tintColor
+        statusTextField.layer.borderColor = currentTheme.primaryLabel.cgColor
+        statusTextField.textColor = currentTheme.primaryLabel
+        attachmentsButton.backgroundColor = currentTheme.tintColor
+        attachmentsButton.setTitleColor(currentTheme.primaryLabel, for: .normal)
+        tasksButton.backgroundColor = currentTheme.tintColor
+        tasksButton.setTitleColor(currentTheme.primaryLabel, for: .normal)
+        descriptionTextView.layer.borderColor = currentTheme.tintColor.cgColor
+        descriptionTextView.textColor = currentTheme.primaryLabel
+        pickerView.backgroundColor = currentTheme.tintColor
+        datePicker.backgroundColor = currentTheme.tintColor
+    
+    }
+    
+    func setupProjectValues() {
+        
+        self.projectNameTextView.text = projectForVc.name
+        self.startDateField.text = dateFormatter.string(from: projectForVc.startDate)
+        self.endDateField.text = dateFormatter.string(from: projectForVc.endDate)
+        self.statusTextField.text = projectForVc.status.rawValue
+        self.descriptionTextView.text = projectForVc.description
+    }
     
     func setupViews() {
         
@@ -318,15 +407,8 @@ class ProjectVc: UIViewController {
         setupDescriptionStack()
         setupStatusStack()
         
-        view.addSubview(scrollView)
-        scrollView.addSubview(verticalStack)
-        verticalStack.addArrangedSubview(projectNameStack)
-        verticalStack.addArrangedSubview(startDateStack)
-        verticalStack.addArrangedSubview(endDateStack)
-        verticalStack.addArrangedSubview(statusStack)
-        verticalStack.addArrangedSubview(attachmentsTasksStack)
-        verticalStack.addArrangedSubview(descriptionStack)
-        
+        setupPage()
+       
         setScrollViewContraints()
         setPageStackConstraints()
         progressViewConstraints()
@@ -337,13 +419,27 @@ class ProjectVc: UIViewController {
         tasksButtonConstraint()
     }
     
+    
+    func setupPage() {
+        
+        view.addSubview(scrollView)
+        scrollView.addSubview(verticalStack)
+        verticalStack.addArrangedSubview(projectNameStack)
+        verticalStack.addArrangedSubview(startDateStack)
+        verticalStack.addArrangedSubview(endDateStack)
+        verticalStack.addArrangedSubview(statusStack)
+        verticalStack.addArrangedSubview(attachmentsTasksStack)
+        verticalStack.addArrangedSubview(descriptionStack)
+    }
+    
+    
     func setupAttachmentsTasksStack() {
         attachmentsTasksStack.addArrangedSubview(attachmentsButton)
         attachmentsTasksStack.addArrangedSubview(tasksButton)
     }
     
     func setupProjectNameStack() {
-        projectNameStack.addArrangedSubview(projectNameLabel)
+//        projectNameStack.addArrangedSubview(projectNameLabel)
         projectNameStack.addArrangedSubview(projectNameTextView)
         projectNameStack.addArrangedSubview(progressView)
     }
@@ -370,11 +466,15 @@ class ProjectVc: UIViewController {
     }
     
     func setScrollViewContraints() {
+        
+        let keyBoardConstraint =  scrollView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+        keyBoardConstraint.priority = .defaultLow
+        
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 10),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant: -10),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            keyBoardConstraint
         ])
     }
     
@@ -383,7 +483,7 @@ class ProjectVc: UIViewController {
             verticalStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             verticalStack.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor),
             verticalStack.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor),
-            verticalStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+            verticalStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor,constant: -10)
         ])
     }
     
@@ -426,6 +526,7 @@ class ProjectVc: UIViewController {
     }
     
     func isEditing(_ bool:Bool) {
+        
         projectNameTextView.isEditable = bool
         projectNameTextView.addDoneButtonOnInputView(bool)
         startDateField.isEnabled = bool
@@ -439,13 +540,59 @@ class ProjectVc: UIViewController {
         dismiss(animated: true)
     }
     
+    @objc func attachments() {
+        
+        let attachMentsVc = UINavigationController(rootViewController: AttachmentsVc())
+        attachMentsVc.modalPresentationStyle = .fullScreen
+        present(attachMentsVc, animated: true)
+    }
+    
+    @objc func tasks() {
+        let tasksVc = UINavigationController(rootViewController: CheckListToDoVc())
+        tasksVc.modalPresentationStyle = .formSheet
+        present(tasksVc, animated: true)
+    }
+    
+    @objc func datePicked() {
+        if activeTextField == startDateField {
+            startDateField.text = dateFormatter.string(from: datePicker.date)
+            projectForVc.startDate = datePicker.date
+        } else if activeTextField == endDateField {
+            endDateField.text = dateFormatter.string(from: datePicker.date)
+            projectForVc.endDate = datePicker.date
+        }
+    }
+    
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: true)
             isEditing(editing)
         }
 }
 
+extension ProjectVc:UIPickerViewDelegate,UIPickerViewDataSource {
+   
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        status.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        status[row].rawValue
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.statusTextField.text = status[row].rawValue
+        statusTextField.resignFirstResponder()
+    }
+    
+}
+
 
 extension ProjectVc:UITextFieldDelegate {
-    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.activeTextField = textField
+    }
 }

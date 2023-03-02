@@ -16,7 +16,8 @@ enum AttachmentTypes:String,CaseIterable {
 
 }
 
-class AttachmentsViewController: UIViewController {
+class AttachmentsVc: UIViewController {
+    
     
     var attachments = [URL]()
 
@@ -36,7 +37,6 @@ class AttachmentsViewController: UIViewController {
         let barButton = UIBarButtonItem()
         barButton.title = "Import"
         barButton.image = UIImage(systemName: "square.and.arrow.down")
-        barButton.tintColor = .systemPurple
         barButton.primaryAction = nil
         barButton.target = self
         barButton.action = #selector(importDocuments)
@@ -63,7 +63,11 @@ class AttachmentsViewController: UIViewController {
     }
     
     func setApperance() {
-        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+      let currentTheme = ThemeManager.shared.currentTheme
+        
+        view.backgroundColor = currentTheme.backgroundColor
+        navigationController?.navigationBar.backgroundColor = currentTheme.tintColor
+        importBarButton.tintColor = currentTheme.primaryLabel
     }
     func setupNavigationBar() {
         navigationItem.setRightBarButton(importBarButton, animated: true)
@@ -100,7 +104,7 @@ class AttachmentsViewController: UIViewController {
 }
 
 
-extension AttachmentsViewController: UITableViewDataSource,UITableViewDelegate {
+extension AttachmentsVc: UITableViewDataSource,UITableViewDelegate {
   
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
       
@@ -110,7 +114,7 @@ extension AttachmentsViewController: UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
       
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = "attach"
+        cell?.textLabel?.text = attachments[indexPath.row].lastPathComponent
         print(attachments[indexPath.row])
         
         return cell!
@@ -125,16 +129,18 @@ extension AttachmentsViewController: UITableViewDataSource,UITableViewDelegate {
     }
 }
 
-extension AttachmentsViewController: UIDocumentPickerDelegate {
+extension AttachmentsVc: UIDocumentPickerDelegate {
   
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-       
+
        self.attachments.append(contentsOf: urls)
+        print(#function)
+        print(attachments)
        attachmentsTableView.reloadData()
     }
 }
 
-extension AttachmentsViewController:UIDocumentInteractionControllerDelegate {
+extension AttachmentsVc:UIDocumentInteractionControllerDelegate {
     
     func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
         

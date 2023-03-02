@@ -29,8 +29,8 @@ class CheckBox: UIButton {
         self.setImage(uncheckedImage, for: .normal)
      
        
-        self.contentVerticalAlignment = .fill
-        self.contentHorizontalAlignment = .fill
+//        self.contentVerticalAlignment = .fill
+//        self.contentHorizontalAlignment = .fill
   }
     
     

@@ -35,6 +35,41 @@ extension UITextView {
     
 }
 
+extension UITextField {
+    
+    func addDoneButtonOnInputView(_ bool:Bool){
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .default
+        
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
+        
+        let items = [flexSpace, done]
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+    
+            self.inputAccessoryView = doneToolbar
+    }
+    
+    
+    func setIcon(_ image: UIImage) {
+       let iconView = UIImageView(frame:
+                      CGRect(x: 10, y: 5, width: 20, height: 20))
+       iconView.image = image
+       let iconContainerView: UIView = UIView(frame:
+                      CGRect(x: 20, y: 0, width: 30, height: 30))
+       iconContainerView.addSubview(iconView)
+       leftView = iconContainerView
+       leftViewMode = .always
+    }
+    
+  
+    
+    @objc func doneButtonAction() {
+        self.resignFirstResponder()
+    }
+    
+}
 
   
 

@@ -10,6 +10,7 @@ import SQLite3
 
 
  enum Value {
+     
     case double(Double)
     case integer(Int64)
     case null
@@ -17,6 +18,9 @@ import SQLite3
 }
 
 class Sqlite {
+    
+    typealias sqlite_row = Dictionary<String,Value>
+    
     
     var connection:OpaquePointer?
     let path:String
@@ -60,7 +64,7 @@ class Sqlite {
     }
     
     
-    func read(query:String,arguments:[Value])->Array<Dictionary<String,Value>> {
+    func read(query:String,arguments:[Value])->Array<sqlite_row> {
         
         var statement:OpaquePointer?
         var finalOutput = Array<Dictionary<String,Value>>()
@@ -85,6 +89,7 @@ class Sqlite {
                 finalOutput.append(rowOutput)
             }
         }
+       
         sqlite3_finalize(statement)
         
         return finalOutput

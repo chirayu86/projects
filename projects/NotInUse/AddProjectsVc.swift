@@ -7,9 +7,9 @@
 
 import UIKit
 
-class AddProjectsViewController: UIViewController {
+class AddProjectsVc: UIViewController {
     
-    let dbHelper = DatabaseHelper()
+
     
     let statusArray = ProjectStatus.allCases
     
@@ -235,15 +235,17 @@ class AddProjectsViewController: UIViewController {
         super.viewDidLoad()
         self.title = "ADD PROJECTS"
         additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        navigationItem.setLeftBarButton(cancelBarButton, animated: true)
-        navigationItem.setRightBarButton(saveBarButton, animated: true)
         
-    
-        
+        setupNavbar()
         setupStackView()
         setProjectNameTextFieldConstraints()
         setStatusLabelConstraint()
 
+    }
+    
+    func setupNavbar() {
+        navigationItem.setLeftBarButton(cancelBarButton, animated: true)
+        navigationItem.setRightBarButton(saveBarButton, animated: true)
     }
     
     func setupStackView() {
@@ -281,7 +283,15 @@ class AddProjectsViewController: UIViewController {
     }
 
     func setApperance() {
-        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+        let currentTheme = ThemeManager.shared.currentTheme
+        navigationController?.navigationBar.tintColor = currentTheme.tintColor
+        view.backgroundColor = currentTheme.backgroundColor
+        projectNameTextField.layer.borderColor = currentTheme.tintColor.cgColor
+        startDatePicker.tintColor = currentTheme.tintColor
+        endDatePicker.tintColor = currentTheme.tintColor
+        statusTextField.layer.borderColor = currentTheme.tintColor.cgColor
+        statusTextField.textColor = currentTheme.primaryLabel
+        descriptionTextView.layer.borderColor = currentTheme.tintColor.cgColor
     }
     
     func setVerticalStackConstraints() {
@@ -314,9 +324,9 @@ class AddProjectsViewController: UIViewController {
             return
         }
         
-        let project = Project(projectName: projectName, startDate: startDatePicker.date, endDate: endDatePicker.date, description: descriptionTextView.text, status: ProjectStatus(rawValue: statusLabel.text!) ?? .Ongoing)
+        let project = Project(projectName: projectName, startDate: startDatePicker.date, endDate: endDatePicker.date, description: descriptionTextView.text, status: ProjectStatus(rawValue: statusTextField.text!) ?? .Ongoing)
        
-        dbHelper.addProject(project: project )
+        DatabaseHelper.shared.insertInto(table: "Projects", values: ["Id":.text(project.projectId.uuidString),"name":.text(project.name),"StartDate":.double(project.startDate.timeIntervalSince1970),"EndDate":.double(project.endDate.timeIntervalSince1970),"Descpription":.text(project.description),"status":.text(project.status.rawValue)])
     
         navigationController?.pushViewController(ProjectVc(projectForVc: project, isPresented: true), animated: true)
      
@@ -365,7 +375,7 @@ class AddProjectsViewController: UIViewController {
 }
 
 
-extension AddProjectsViewController:UIPickerViewDelegate,UIPickerViewDataSource {
+extension AddProjectsVc:UIPickerViewDelegate,UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
@@ -387,7 +397,7 @@ extension AddProjectsViewController:UIPickerViewDelegate,UIPickerViewDataSource 
     
 }
 
-extension AddProjectsViewController:UITextFieldDelegate {
+extension AddProjectsVc:UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         projectNameTextField.resignFirstResponder()
         return true

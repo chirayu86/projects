@@ -76,7 +76,7 @@ class TasksTableViewCell: UITableViewCell {
         stack.axis = .horizontal
         stack.distribution = .fillProportionally
         stack.alignment = .center
-        stack.spacing = 10
+
         
         return stack
     }()

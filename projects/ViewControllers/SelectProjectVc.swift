@@ -10,16 +10,17 @@ import UIKit
 // delegate to be implemented by view using the viewController
 protocol ProjectSelectionDelegate {
     
-    func showSelectedProject(_ project: String)
+    func showSelectedProject(_ project: Project?)
 }
 
 
 
-class SelectProjectViewController: UIViewController {
+class SelectProjectVc: UIViewController {
 
     
     // dummy data
-    var allProjects = [Project]()
+    var allProjects = [Project(projectName: "new", startDate: Date(), endDate: Date(), description: "da", status: .Ongoing)]
+    
     
     var selectedProject:Project?
     
@@ -108,7 +109,7 @@ class SelectProjectViewController: UIViewController {
 
 
 
-extension SelectProjectViewController:UITableViewDelegate,UITableViewDataSource {
+extension SelectProjectVc:UITableViewDelegate,UITableViewDataSource {
   
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return allProjects.count
@@ -119,7 +120,7 @@ extension SelectProjectViewController:UITableViewDelegate,UITableViewDataSource 
      
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
         
-        cell?.textLabel?.text = allProjects[indexPath.row].projectName
+        cell?.textLabel?.text = allProjects[indexPath.row].name
         
         return cell!
     }
@@ -128,7 +129,7 @@ extension SelectProjectViewController:UITableViewDelegate,UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         self.selectedProject = allProjects[indexPath.row]
-        selectionDelegate?.showSelectedProject(selectedProject!.projectName)
+        selectionDelegate?.showSelectedProject(selectedProject)
         dismiss(animated: true)
         
     }

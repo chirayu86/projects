@@ -15,20 +15,20 @@
 		6D1E44D4298CD11800C1FFB4 /* projectsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44D3298CD11800C1FFB4 /* projectsUITests.swift */; };
 		6D1E44D6298CD11800C1FFB4 /* projectsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44D5298CD11800C1FFB4 /* projectsUITestsLaunchTests.swift */; };
 		6D1E44E3298CD1EC00C1FFB4 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44E2298CD1EC00C1FFB4 /* CheckBox.swift */; };
-		6D1E44E5298CDE0500C1FFB4 /* YourTasksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44E4298CDE0500C1FFB4 /* YourTasksViewController.swift */; };
-		6D1E44E7298CDE2500C1FFB4 /* YourProjectsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44E6298CDE2500C1FFB4 /* YourProjectsViewController.swift */; };
-		6D1E44E9298CE01100C1FFB4 /* CalanderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44E8298CE01100C1FFB4 /* CalanderViewController.swift */; };
+		6D1E44E5298CDE0500C1FFB4 /* YourTasksVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44E4298CDE0500C1FFB4 /* YourTasksVc.swift */; };
+		6D1E44E7298CDE2500C1FFB4 /* YourProjectsVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44E6298CDE2500C1FFB4 /* YourProjectsVc.swift */; };
+		6D1E44E9298CE01100C1FFB4 /* CalanderVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44E8298CE01100C1FFB4 /* CalanderVc.swift */; };
 		6D1E44EB298CE12A00C1FFB4 /* FeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44EA298CE12A00C1FFB4 /* FeedsViewController.swift */; };
 		6D1E44EE298CE25500C1FFB4 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44ED298CE25500C1FFB4 /* TabBarViewController.swift */; };
 		6D1E44F1298CF79B00C1FFB4 /* TasksTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44F0298CF79B00C1FFB4 /* TasksTableViewCell.swift */; };
 		6D1E44F62990C52600C1FFB4 /* ProjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44F52990C52600C1FFB4 /* ProjectModel.swift */; };
-		6D1E44F82990E49800C1FFB4 /* SelectProjectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44F72990E49800C1FFB4 /* SelectProjectViewController.swift */; };
+		6D1E44F82990E49800C1FFB4 /* SelectProjectVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44F72990E49800C1FFB4 /* SelectProjectVc.swift */; };
 		6D1E44FA2992344C00C1FFB4 /* ProjectProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44F92992344C00C1FFB4 /* ProjectProgressView.swift */; };
 		6D1E44FC299242DB00C1FFB4 /* ProjectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44FB299242DB00C1FFB4 /* ProjectTableViewCell.swift */; };
 		6D1E45002993A4FC00C1FFB4 /* AddTaskVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44FF2993A4FC00C1FFB4 /* AddTaskVc.swift */; };
-		6D1E4502299A2E7800C1FFB4 /* AttachmentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E4501299A2E7800C1FFB4 /* AttachmentsViewController.swift */; };
-		6D816A1E299BA8B7008C6D19 /* ListOfCheckListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A1D299BA8B7008C6D19 /* ListOfCheckListViewController.swift */; };
-		6D816A22299CBA06008C6D19 /* AddProjectsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A21299CBA06008C6D19 /* AddProjectsViewController.swift */; };
+		6D1E4502299A2E7800C1FFB4 /* AttachmentsVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E4501299A2E7800C1FFB4 /* AttachmentsVc.swift */; };
+		6D816A1E299BA8B7008C6D19 /* CheckListToDoVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A1D299BA8B7008C6D19 /* CheckListToDoVc.swift */; };
+		6D816A22299CBA06008C6D19 /* AddProjectsVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A21299CBA06008C6D19 /* AddProjectsVc.swift */; };
 		6D816A49299F55DF008C6D19 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A48299F55DF008C6D19 /* Theme.swift */; };
 		6D816A4B299F5747008C6D19 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A4A299F5747008C6D19 /* ThemeManager.swift */; };
 		6D816A4D299F5AFD008C6D19 /* LightTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A4C299F5AFD008C6D19 /* LightTheme.swift */; };
@@ -38,6 +38,15 @@
 		6DC83DF229A5FE4E0009FA44 /* SqliteWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83DF129A5FE4E0009FA44 /* SqliteWrapper.swift */; };
 		6DC83DF529A741540009FA44 /* DataBaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83DF429A741540009FA44 /* DataBaseHelper.swift */; };
 		6DC83DF929A89D5D0009FA44 /* ProjectVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83DF829A89D5D0009FA44 /* ProjectVc.swift */; };
+		6DC83DFB29ACA0BB0009FA44 /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83DFA29ACA0BB0009FA44 /* TaskModel.swift */; };
+		6DC83DFF29ACDE190009FA44 /* TodoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83DFE29ACDE190009FA44 /* TodoTableViewCell.swift */; };
+		6DC83E0229AE31180009FA44 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = 6DC83E0129AE31180009FA44 /* Collections */; };
+		6DC83E0429AE31180009FA44 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 6DC83E0329AE31180009FA44 /* DequeModule */; };
+		6DC83E0629AE31180009FA44 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 6DC83E0529AE31180009FA44 /* OrderedCollections */; };
+		6DC83E0829AF3A700009FA44 /* TextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0729AF3A700009FA44 /* TextViewTableViewCell.swift */; };
+		6DC83E0C29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0B29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift */; };
+		6DC83E0E29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0D29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift */; };
+		6DC83E1029B09A9D0009FA44 /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0F29B09A9D0009FA44 /* ButtonTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,20 +79,20 @@
 		6D1E44D3298CD11800C1FFB4 /* projectsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = projectsUITests.swift; sourceTree = "<group>"; };
 		6D1E44D5298CD11800C1FFB4 /* projectsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = projectsUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		6D1E44E2298CD1EC00C1FFB4 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
-		6D1E44E4298CDE0500C1FFB4 /* YourTasksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourTasksViewController.swift; sourceTree = "<group>"; };
-		6D1E44E6298CDE2500C1FFB4 /* YourProjectsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourProjectsViewController.swift; sourceTree = "<group>"; };
-		6D1E44E8298CE01100C1FFB4 /* CalanderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalanderViewController.swift; sourceTree = "<group>"; };
+		6D1E44E4298CDE0500C1FFB4 /* YourTasksVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourTasksVc.swift; sourceTree = "<group>"; };
+		6D1E44E6298CDE2500C1FFB4 /* YourProjectsVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourProjectsVc.swift; sourceTree = "<group>"; };
+		6D1E44E8298CE01100C1FFB4 /* CalanderVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalanderVc.swift; sourceTree = "<group>"; };
 		6D1E44EA298CE12A00C1FFB4 /* FeedsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsViewController.swift; sourceTree = "<group>"; };
 		6D1E44ED298CE25500C1FFB4 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		6D1E44F0298CF79B00C1FFB4 /* TasksTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksTableViewCell.swift; sourceTree = "<group>"; };
 		6D1E44F52990C52600C1FFB4 /* ProjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectModel.swift; sourceTree = "<group>"; };
-		6D1E44F72990E49800C1FFB4 /* SelectProjectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectProjectViewController.swift; sourceTree = "<group>"; };
+		6D1E44F72990E49800C1FFB4 /* SelectProjectVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectProjectVc.swift; sourceTree = "<group>"; };
 		6D1E44F92992344C00C1FFB4 /* ProjectProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectProgressView.swift; sourceTree = "<group>"; };
 		6D1E44FB299242DB00C1FFB4 /* ProjectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectTableViewCell.swift; sourceTree = "<group>"; usesTabs = 0; };
 		6D1E44FF2993A4FC00C1FFB4 /* AddTaskVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskVc.swift; sourceTree = "<group>"; };
-		6D1E4501299A2E7800C1FFB4 /* AttachmentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsViewController.swift; sourceTree = "<group>"; };
-		6D816A1D299BA8B7008C6D19 /* ListOfCheckListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOfCheckListViewController.swift; sourceTree = "<group>"; };
-		6D816A21299CBA06008C6D19 /* AddProjectsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProjectsViewController.swift; sourceTree = "<group>"; };
+		6D1E4501299A2E7800C1FFB4 /* AttachmentsVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsVc.swift; sourceTree = "<group>"; };
+		6D816A1D299BA8B7008C6D19 /* CheckListToDoVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListToDoVc.swift; sourceTree = "<group>"; };
+		6D816A21299CBA06008C6D19 /* AddProjectsVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProjectsVc.swift; sourceTree = "<group>"; };
 		6D816A48299F55DF008C6D19 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		6D816A4A299F5747008C6D19 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		6D816A4C299F5AFD008C6D19 /* LightTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightTheme.swift; sourceTree = "<group>"; };
@@ -93,6 +102,12 @@
 		6DC83DF129A5FE4E0009FA44 /* SqliteWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SqliteWrapper.swift; sourceTree = "<group>"; };
 		6DC83DF429A741540009FA44 /* DataBaseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseHelper.swift; sourceTree = "<group>"; };
 		6DC83DF829A89D5D0009FA44 /* ProjectVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectVc.swift; sourceTree = "<group>"; };
+		6DC83DFA29ACA0BB0009FA44 /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
+		6DC83DFE29ACDE190009FA44 /* TodoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoTableViewCell.swift; sourceTree = "<group>"; };
+		6DC83E0729AF3A700009FA44 /* TextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewTableViewCell.swift; sourceTree = "<group>"; };
+		6DC83E0B29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskTableViewVcViewController.swift; sourceTree = "<group>"; };
+		6DC83E0D29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewTableViewCell.swift; sourceTree = "<group>"; };
+		6DC83E0F29B09A9D0009FA44 /* ButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +115,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DC83E0229AE31180009FA44 /* Collections in Frameworks */,
+				6DC83E0429AE31180009FA44 /* DequeModule in Frameworks */,
+				6DC83E0629AE31180009FA44 /* OrderedCollections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +161,8 @@
 		6D1E44B1298CD11400C1FFB4 /* projects */ = {
 			isa = PBXGroup;
 			children = (
+				6DC83DFD29ACCEF70009FA44 /* Views */,
+				6DC83DFC29ACA1080009FA44 /* Models */,
 				6DC83DF329A63B5D0009FA44 /* DataBase */,
 				6DC83DEE29A5F50C0009FA44 /* Extensions */,
 				6D816A47299F55A6008C6D19 /* ThemeManagement */,
@@ -153,10 +173,7 @@
 				6D1E44B4298CD11400C1FFB4 /* SceneDelegate.swift */,
 				6D1E44BB298CD11700C1FFB4 /* Assets.xcassets */,
 				6D1E44C0298CD11700C1FFB4 /* Info.plist */,
-				6D1E44E2298CD1EC00C1FFB4 /* CheckBox.swift */,
 				6D1E44ED298CE25500C1FFB4 /* TabBarViewController.swift */,
-				6D1E44F52990C52600C1FFB4 /* ProjectModel.swift */,
-				6D816A5029A4A62B008C6D19 /* MyWindow.swift */,
 			);
 			path = projects;
 			sourceTree = "<group>";
@@ -181,16 +198,14 @@
 		6D1E44EC298CE18000C1FFB4 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				6D1E44E4298CDE0500C1FFB4 /* YourTasksViewController.swift */,
-				6D1E44E6298CDE2500C1FFB4 /* YourProjectsViewController.swift */,
-				6D1E44E8298CE01100C1FFB4 /* CalanderViewController.swift */,
-				6D1E44EA298CE12A00C1FFB4 /* FeedsViewController.swift */,
-				6D1E44F72990E49800C1FFB4 /* SelectProjectViewController.swift */,
-				6D816A1D299BA8B7008C6D19 /* ListOfCheckListViewController.swift */,
-				6D816A21299CBA06008C6D19 /* AddProjectsViewController.swift */,
-				6D1E4501299A2E7800C1FFB4 /* AttachmentsViewController.swift */,
-				6D1E44FF2993A4FC00C1FFB4 /* AddTaskVc.swift */,
+				6D1E44E4298CDE0500C1FFB4 /* YourTasksVc.swift */,
+				6D1E44E6298CDE2500C1FFB4 /* YourProjectsVc.swift */,
+				6D1E44E8298CE01100C1FFB4 /* CalanderVc.swift */,
+				6D1E44F72990E49800C1FFB4 /* SelectProjectVc.swift */,
+				6D816A1D299BA8B7008C6D19 /* CheckListToDoVc.swift */,
+				6D1E4501299A2E7800C1FFB4 /* AttachmentsVc.swift */,
 				6DC83DF829A89D5D0009FA44 /* ProjectVc.swift */,
+				6DC83E0B29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -200,6 +215,10 @@
 			children = (
 				6D1E44F0298CF79B00C1FFB4 /* TasksTableViewCell.swift */,
 				6D1E44FB299242DB00C1FFB4 /* ProjectTableViewCell.swift */,
+				6DC83DFE29ACDE190009FA44 /* TodoTableViewCell.swift */,
+				6DC83E0729AF3A700009FA44 /* TextViewTableViewCell.swift */,
+				6DC83E0D29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift */,
+				6DC83E0F29B09A9D0009FA44 /* ButtonTableViewCell.swift */,
 			);
 			path = TableViewCells;
 			sourceTree = "<group>";
@@ -207,6 +226,9 @@
 		6D1E44F42990C49000C1FFB4 /* NotInUse */ = {
 			isa = PBXGroup;
 			children = (
+				6D1E44FF2993A4FC00C1FFB4 /* AddTaskVc.swift */,
+				6D816A21299CBA06008C6D19 /* AddProjectsVc.swift */,
+				6D1E44EA298CE12A00C1FFB4 /* FeedsViewController.swift */,
 				6D1E44F92992344C00C1FFB4 /* ProjectProgressView.swift */,
 				6D1E44B6298CD11400C1FFB4 /* ViewController.swift */,
 			);
@@ -241,6 +263,24 @@
 			path = DataBase;
 			sourceTree = "<group>";
 		};
+		6DC83DFC29ACA1080009FA44 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6D1E44F52990C52600C1FFB4 /* ProjectModel.swift */,
+				6DC83DFA29ACA0BB0009FA44 /* TaskModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6DC83DFD29ACCEF70009FA44 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6D1E44E2298CD1EC00C1FFB4 /* CheckBox.swift */,
+				6D816A5029A4A62B008C6D19 /* MyWindow.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -257,6 +297,11 @@
 			dependencies = (
 			);
 			name = projects;
+			packageProductDependencies = (
+				6DC83E0129AE31180009FA44 /* Collections */,
+				6DC83E0329AE31180009FA44 /* DequeModule */,
+				6DC83E0529AE31180009FA44 /* OrderedCollections */,
+			);
 			productName = projects;
 			productReference = 6D1E44AF298CD11400C1FFB4 /* projects.app */;
 			productType = "com.apple.product-type.application";
@@ -329,6 +374,9 @@
 				Base,
 			);
 			mainGroup = 6D1E44A6298CD11400C1FFB4;
+			packageReferences = (
+				6DC83E0029AE31180009FA44 /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			productRefGroup = 6D1E44B0298CD11400C1FFB4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -370,22 +418,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D1E44F82990E49800C1FFB4 /* SelectProjectViewController.swift in Sources */,
+				6D1E44F82990E49800C1FFB4 /* SelectProjectVc.swift in Sources */,
 				6D816A5129A4A62B008C6D19 /* MyWindow.swift in Sources */,
 				6D1E44FC299242DB00C1FFB4 /* ProjectTableViewCell.swift in Sources */,
-				6D1E44E7298CDE2500C1FFB4 /* YourProjectsViewController.swift in Sources */,
+				6DC83E0C29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift in Sources */,
+				6D1E44E7298CDE2500C1FFB4 /* YourProjectsVc.swift in Sources */,
 				6D1E44E3298CD1EC00C1FFB4 /* CheckBox.swift in Sources */,
 				6D1E44EB298CE12A00C1FFB4 /* FeedsViewController.swift in Sources */,
-				6D1E4502299A2E7800C1FFB4 /* AttachmentsViewController.swift in Sources */,
+				6DC83DFB29ACA0BB0009FA44 /* TaskModel.swift in Sources */,
+				6D1E4502299A2E7800C1FFB4 /* AttachmentsVc.swift in Sources */,
 				6D1E44B7298CD11400C1FFB4 /* ViewController.swift in Sources */,
-				6D816A1E299BA8B7008C6D19 /* ListOfCheckListViewController.swift in Sources */,
+				6D816A1E299BA8B7008C6D19 /* CheckListToDoVc.swift in Sources */,
 				6D1E44EE298CE25500C1FFB4 /* TabBarViewController.swift in Sources */,
+				6DC83E1029B09A9D0009FA44 /* ButtonTableViewCell.swift in Sources */,
 				6D816A4F29A49C8E008C6D19 /* DarkTheme.swift in Sources */,
 				6D1E44FA2992344C00C1FFB4 /* ProjectProgressView.swift in Sources */,
 				6D1E44F62990C52600C1FFB4 /* ProjectModel.swift in Sources */,
+				6DC83E0E29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift in Sources */,
 				6D816A4B299F5747008C6D19 /* ThemeManager.swift in Sources */,
-				6D816A22299CBA06008C6D19 /* AddProjectsViewController.swift in Sources */,
-				6D1E44E9298CE01100C1FFB4 /* CalanderViewController.swift in Sources */,
+				6D816A22299CBA06008C6D19 /* AddProjectsVc.swift in Sources */,
+				6D1E44E9298CE01100C1FFB4 /* CalanderVc.swift in Sources */,
+				6DC83DFF29ACDE190009FA44 /* TodoTableViewCell.swift in Sources */,
 				6DC83DF529A741540009FA44 /* DataBaseHelper.swift in Sources */,
 				6D1E44F1298CF79B00C1FFB4 /* TasksTableViewCell.swift in Sources */,
 				6DC83DF229A5FE4E0009FA44 /* SqliteWrapper.swift in Sources */,
@@ -393,10 +446,11 @@
 				6D816A4D299F5AFD008C6D19 /* LightTheme.swift in Sources */,
 				6DC83DF929A89D5D0009FA44 /* ProjectVc.swift in Sources */,
 				6D1E44B3298CD11400C1FFB4 /* AppDelegate.swift in Sources */,
-				6D1E44E5298CDE0500C1FFB4 /* YourTasksViewController.swift in Sources */,
+				6D1E44E5298CDE0500C1FFB4 /* YourTasksVc.swift in Sources */,
 				6DC83DF029A5F52B0009FA44 /* DoneButtonOnKeyboard.swift in Sources */,
 				6D1E45002993A4FC00C1FFB4 /* AddTaskVc.swift in Sources */,
 				6D1E44B5298CD11400C1FFB4 /* SceneDelegate.swift in Sources */,
+				6DC83E0829AF3A700009FA44 /* TextViewTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,6 +781,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6DC83E0029AE31180009FA44 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6DC83E0129AE31180009FA44 /* Collections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6DC83E0029AE31180009FA44 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = Collections;
+		};
+		6DC83E0329AE31180009FA44 /* DequeModule */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6DC83E0029AE31180009FA44 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = DequeModule;
+		};
+		6DC83E0529AE31180009FA44 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6DC83E0029AE31180009FA44 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6D1E44A7298CD11400C1FFB4 /* Project object */;
 }

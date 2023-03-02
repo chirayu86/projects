@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CalendarViewController: UIViewController {
+class CalendarVc: UIViewController {
 
     lazy var datePicker = {
         
@@ -96,7 +96,7 @@ class CalendarViewController: UIViewController {
 }
 
 
-extension CalendarViewController:UITableViewDataSource,UITableViewDelegate {
+extension CalendarVc:UITableViewDataSource,UITableViewDelegate {
     
   
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

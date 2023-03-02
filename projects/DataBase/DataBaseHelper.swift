@@ -4,6 +4,7 @@
 //
 //  Created by chirayu-pt6280 on 23/02/23.
 //
+//.text(project.projectId.uuidString),.text(project.name),.double(project.startDate.timeIntervalSince1970),.double(project.endDate.timeIntervalSince1970),.text(project.description),.text(project.status.rawValue)
 
 import Foundation
 
@@ -11,47 +12,84 @@ class DatabaseHelper {
     
     let sqliteDb = Sqlite(path: "projects.sqlite")
     
+    typealias row = Dictionary<String,Value>
+    
   private func openConnection() {
+      
         sqliteDb.openConnection()
     }
     
-    init() {
+   private init() {
+       
         openConnection()
     }
     
+   static let shared = DatabaseHelper()
+    
     private func createTables() {
+        
         sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS Projects(Id TEXT PRIMARY KEY,name TEXT,StartDate DOUBLE,EndDate DOUBLE,Descpription TEXT,status TEXT);" )
-        sqliteDb.execute(query:  "CREATE TABLE IF NOT EXISTS Tasks(Id TEXT PRIMARY KEY,name TEXT,DeadLine DOUBLE,status TEXT,priority TEXT,projectId TEXT, CONSTRAINT fk_projects FOREIGN KEY (projectId) REFERENCES Projects(Id) ON DELETE CASCADE);" )
-        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS ProjectFiles(Id TEXT PRIMARY KEY,ProjectId TEXT,FileUrl TEXT, CONSTRAINT fk_projects FOREIGN KEY (ProjectId) REFERENCES Projects(Id) ON DELETE CASCADE);")
-        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS TaskFiles(Id TEXT PRIMARY KEY,ProjectId TEXT,FileUrl TEXT, CONSTRAINT fk_projects FOREIGN KEY (ProjectId) REFERENCES Projects(Id) ON DELETE CASCADE);" )
-        // CheckList and tasks
-//        sqliteDb.execute(query: )
-//        sqliteDb.execute(query: )
+        sqliteDb.execute(query:  "CREATE TABLE IF NOT EXISTS Tasks(Id TEXT PRIMARY KEY,name TEXT,DeadLine DOUBLE,priority TEXT,Description Text,isCompleted INTEGER,projectId TEXT, CONSTRAINT fk_projects FOREIGN KEY (projectId) REFERENCES Projects(Id) ON DELETE CASCADE);" )
     }
     
+  
     func setupDataBase() {
+        
         openConnection()
         sqliteDb.execute(query: "PRAGMA foreign_keys=ON")
         createTables()
+        
     }
     
-    func addProject(project:Project) {
-        
-        sqliteDb.write(query: "INSERT INTO Projects VALUES(?,?,?,?,?,?)", arguments: [.text(project.projectId.uuidString),.text(project.projectName),.double(project.startDate.timeIntervalSince1970),.double(project.endDate.timeIntervalSince1970),.text(project.description),.text(project.status.rawValue)])
-    }
     
-    func getAllProjects()->[Project] {
-       
-        var projects = [Project]()
-        let output = sqliteDb.read(query: "SELECT * FROM PROJECTS", arguments: [])
+    func insertInto(table:String,values:Dictionary<String,Value>) {
         
-        output.forEach { row in
-            projects.append(Project(projectId: UUID(uuidString: row["Id"]!.stringValue!)!, projectName: row["name"]!.stringValue!, startDate: Date(timeIntervalSince1970: row["StartDate"]!.doubleValue!), endDate: Date(timeIntervalSince1970:row["EndDate"]!.doubleValue!), description:row["Descpription"]!.stringValue!, status: ProjectStatus(rawValue: row["status"]!.stringValue!)!))
+        var query = "INSERT INTO \(table)("
+        
+        values.forEach { (key: String, value: Value) in
+            query.append("\(key),")
         }
         
+        query.removeLast()
+        query.append(")")
+        query.append("VALUES(")
         
-        return projects
+        values.forEach { value in
+            query.append("?,")
+        }
+        
+        query.removeLast()
+        query.append(")")
+        
+        let valueArray:[Value] = values.map { (key: String, value: Value) in
+            return value
+        }
+        
+        sqliteDb.write(query: query, arguments: valueArray)
+        print(query)
     }
     
+    
+    func readFromTable(table:String,whereStmt:String?,argument:[Value])->Array<row> {
+        
+        var query = "Select * FROM \(table)"
+        
+        if let whereClause = whereStmt {
+            query.append(whereClause)
+        }
+        
+        return sqliteDb.read(query: query, arguments: argument)
+    }
+    
+    
+    func deleteFromTable(table:String,whereStmt:String,argument:Value) {
+       
+        var query = "DELETE FROM \(table)"
+        query.append(whereStmt)
+    
+        sqliteDb.write(query: query, arguments: [argument])
+        
+    }
+
 }
 

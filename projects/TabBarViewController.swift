@@ -32,10 +32,10 @@ class TabBarViewController: UITabBarController {
     
     func setTabBarItems() {
         
-        let tasksVc = UINavigationController(rootViewController: YourTasksViewController())
-        let calendarVc = UINavigationController(rootViewController: CalendarViewController())
-        let projectsVc = UINavigationController(rootViewController: YourProjectsViewController())
-        let feedsVc = UINavigationController(rootViewController: ProjectVc(projectForVc: Project(projectName: "My Project", startDate: Date(), endDate: Date(), description: "no no", status: .OverDue), isPresented: true))
+        let tasksVc = UINavigationController(rootViewController: YourTasksVc())
+        let calendarVc = UINavigationController(rootViewController: CalendarVc())
+        let projectsVc = UINavigationController(rootViewController: YourProjectsVc())
+      
         
         tasksVc.tabBarItem.image = UIImage(systemName: "list.bullet")
         tasksVc.tabBarItem.title = "Tasks"
@@ -46,10 +46,9 @@ class TabBarViewController: UITabBarController {
         projectsVc.tabBarItem.image = UIImage(systemName: "lightbulb.fill")
         projectsVc.tabBarItem.title = "projects"
         
-        feedsVc.tabBarItem.image = UIImage(systemName: "newspaper.fill")
-        feedsVc.tabBarItem.title = "Feed"
+       
         
-        setViewControllers([tasksVc,calendarVc,projectsVc,feedsVc], animated: true)
+        setViewControllers([tasksVc,projectsVc,calendarVc], animated: true)
     }
 
 }

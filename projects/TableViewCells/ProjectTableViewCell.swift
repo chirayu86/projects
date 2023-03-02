@@ -27,7 +27,7 @@ class ProjectTableViewCell: UITableViewCell {
         let startDate = UILabel()
         startDate.translatesAutoresizingMaskIntoConstraints = false
         startDate.font = .systemFont(ofSize: 15, weight: .semibold)
-        
+  
         return startDate
     
     }()
@@ -37,12 +37,19 @@ class ProjectTableViewCell: UITableViewCell {
         let endDate = UILabel()
         endDate.translatesAutoresizingMaskIntoConstraints = false
         endDate.font = .systemFont(ofSize: 15, weight: .bold)
+  
         
         return endDate
         
     }()
     
-
+    lazy var seperatorLabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "~"
+        
+        return label
+    }()
 
     
     lazy var datehorizontalStack = {
@@ -64,19 +71,21 @@ class ProjectTableViewCell: UITableViewCell {
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
        
-        dateformatter.dateStyle = .short
+        dateformatter.dateStyle = .medium
         dateformatter.timeStyle = .none
         
         setupStackViews()
     }
     
+    
     func setupStackViews() {
         
         datehorizontalStack.addArrangedSubview(startDateLabel)
+        datehorizontalStack.addArrangedSubview(seperatorLabel)
         datehorizontalStack.addArrangedSubview(endDateLabel)
         contentView.addSubview(projectNameLabel)
         contentView.addSubview(datehorizontalStack)
-      
+   
         
         setStackViewConstraints()
     }
@@ -90,6 +99,7 @@ class ProjectTableViewCell: UITableViewCell {
     }
     
     
+    
     func setStackViewConstraints() {
         
         NSLayoutConstraint.activate([
@@ -98,16 +108,17 @@ class ProjectTableViewCell: UITableViewCell {
             projectNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -10),
             datehorizontalStack.topAnchor.constraint(equalTo: projectNameLabel.bottomAnchor,constant: 5),
             datehorizontalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 10),
-            datehorizontalStack.widthAnchor.constraint(equalToConstant: 140),
             datehorizontalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10)
         ])
   }
     
     
     func setProjectDetails(project:Project) {
-        self.projectNameLabel.text = project.projectName
+        
+        self.projectNameLabel.text = project.name
         self.startDateLabel.text = dateformatter.string(from: project.startDate)
         self.endDateLabel.text = dateformatter.string(from: project.endDate)
+        
     }
 
    

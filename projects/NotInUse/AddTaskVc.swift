@@ -9,7 +9,7 @@ import UIKit
 
 class AddTaskVc: UIViewController {
     
-    let priority = ["High","Low","Medium"]
+    let priority = TaskPriority.allCases
     
     lazy var scrollView = {
         
@@ -141,7 +141,7 @@ class AddTaskVc: UIViewController {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.datePickerMode = .date
         datePicker.minimumDate = Date()
-
+    
         datePicker.preferredDatePickerStyle = .compact
   
          return datePicker
@@ -291,8 +291,6 @@ class AddTaskVc: UIViewController {
         taskNameTextFieldConstraint()
         priorityTextFieldConstraint()
         selectProjectButtonConstraints()
-//        addAttachmentButtonConstraints()
-//        checkListButtonConstraints()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -308,21 +306,23 @@ class AddTaskVc: UIViewController {
 
     
     func setApperance() {
-        
-            taskNameTextField.layer.borderColor =  ThemeManager.shared.currentTheme.tintColor.cgColor
-            taskNameTextField.textColor  = ThemeManager.shared.currentTheme.tintColor
-            descriptionLabel.textColor = ThemeManager.shared.currentTheme.primaryLabel
-            taskDescriptionTextView.layer.borderColor = ThemeManager.shared.currentTheme.tintColor.cgColor
-        taskDescriptionTextView.textColor = ThemeManager.shared.currentTheme.primaryLabel
-            projectSelectionButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
-            projectSelectionButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
-            priorityTextField.layer.borderColor = ThemeManager.shared.currentTheme.tintColor.cgColor
-        deadlineDatePicker.tintColor = ThemeManager.shared.currentTheme.tintColor
-            attachmentsButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
-            attachmentsButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
-            checklistButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
-        checklistButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
-            priorityPickerView.backgroundColor = ThemeManager.shared.currentTheme.tintColor.withAlphaComponent(0.9)
+           
+          let currentTheme = ThemeManager.shared.currentTheme
+           
+            taskNameTextField.layer.borderColor =  currentTheme.tintColor.cgColor
+            taskNameTextField.textColor  = currentTheme.tintColor
+            descriptionLabel.textColor = currentTheme.primaryLabel
+            taskDescriptionTextView.layer.borderColor = currentTheme.tintColor.cgColor
+        taskDescriptionTextView.textColor = currentTheme.primaryLabel
+            projectSelectionButton.backgroundColor = currentTheme.tintColor
+            projectSelectionButton.setTitleColor(currentTheme.primaryLabel, for: .normal)
+            priorityTextField.layer.borderColor = currentTheme.tintColor.cgColor
+        deadlineDatePicker.tintColor = currentTheme.tintColor
+            attachmentsButton.setTitleColor(currentTheme.primaryLabel, for: .normal)
+            attachmentsButton.backgroundColor = currentTheme.tintColor
+            checklistButton.setTitleColor(currentTheme.primaryLabel, for: .normal)
+        checklistButton.backgroundColor = currentTheme.tintColor
+            priorityPickerView.backgroundColor = currentTheme.tintColor.withAlphaComponent(0.9)
             
     }
     
@@ -411,18 +411,18 @@ class AddTaskVc: UIViewController {
 
     
     @objc func attachments() {
-        let attachmentsVc = AttachmentsViewController()
+        let attachmentsVc = AttachmentsVc()
         navigationController?.pushViewController(attachmentsVc, animated: true)
     }
     
     @objc func checkLists() {
-        let checkListVc = ListOfCheckListViewController()
+        let checkListVc = CheckListToDoVc()
         navigationController?.pushViewController(checkListVc, animated: true)
     }
     
     @objc func selectProject() {
         
-       let allProjectsVc = SelectProjectViewController()
+       let allProjectsVc = SelectProjectVc()
        allProjectsVc.selectionDelegate = self
        allProjectsVc.modalPresentationStyle = .formSheet
        present(allProjectsVc,animated: true)
@@ -443,8 +443,8 @@ class AddTaskVc: UIViewController {
 
 extension AddTaskVc:ProjectSelectionDelegate {
     
-    func showSelectedProject(_ project: String) {
-        projectSelectionButton.setTitle(project, for: .normal)
+    func showSelectedProject(_ project: Project?) {
+        projectSelectionButton.setTitle(project?.name ?? "select", for: .normal)
     }
     
     
@@ -463,11 +463,11 @@ extension AddTaskVc:UIPickerViewDelegate,UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        priority[row]
+        priority[row].rawValue
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        self.priorityTextField.text = priority[row]
+        self.priorityTextField.text = priority[row].rawValue
         priorityTextField.resignFirstResponder()
     }
 }

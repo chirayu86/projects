@@ -13,16 +13,18 @@ enum TaskPriority:String,CaseIterable {
     case Low
 }
 
-class YourTasksViewController: UIViewController {
+class YourTasksVc: UIViewController {
     
     private var sectionTitles = TaskPriority.allCases
     
     lazy var projectButton = {
         
-        let button = UIButton(frame: CGRect(x: 0, y: 0, width: 0, height: 40))
+        
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 5
         button.layer.borderWidth = 2
-        button.setTitle("All Project", for: .normal)
+        button.setTitle("  All Project", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20)
         button.addTarget(self, action: #selector(selectProject), for: .touchUpInside)
         
@@ -38,7 +40,7 @@ class YourTasksViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(TasksTableViewCell.self, forCellReuseIdentifier: "cell")
-        
+
         return tableView
         
     }()
@@ -132,9 +134,11 @@ class YourTasksViewController: UIViewController {
             taskTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             taskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             taskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            taskTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-            
-        ])
+            taskTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+])
+        taskTableView.tableHeaderView?
+            .heightAnchor.constraint(equalToConstant: 40).isActive = true
+        taskTableView.tableHeaderView?.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor).isActive = true
     }
     
     
@@ -142,17 +146,17 @@ class YourTasksViewController: UIViewController {
     
     @objc func addTask() {
         print(#function)
-        let addTaskVc = UINavigationController(rootViewController: AddTaskVc())
-        addTaskVc.modalPresentationStyle = .fullScreen
+        let addTaskVc = UINavigationController(rootViewController: AddTaskTableViewVcViewController())
+        addTaskVc.modalPresentationStyle = .formSheet
         present(addTaskVc, animated: true)
     }
     
  
     @objc func selectProject() {
         
-        let allProjectsVc = SelectProjectViewController()
+        let allProjectsVc = SelectProjectVc()
         allProjectsVc.selectionDelegate = self
-        allProjectsVc.modalPresentationStyle = .custom
+        allProjectsVc.modalPresentationStyle = .formSheet
         present(allProjectsVc,animated: true)
         
     }
@@ -173,7 +177,7 @@ class YourTasksViewController: UIViewController {
 }
 
 
-extension YourTasksViewController:UITableViewDataSource,UITableViewDelegate {
+extension YourTasksVc:UITableViewDataSource,UITableViewDelegate {
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -205,10 +209,10 @@ extension YourTasksViewController:UITableViewDataSource,UITableViewDelegate {
 }
 
 
-extension YourTasksViewController:ProjectSelectionDelegate {
+extension YourTasksVc:ProjectSelectionDelegate {
     
-    func showSelectedProject(_ project:String) {
-        self.projectButton.setTitle(project, for: .normal)
+    func showSelectedProject(_ project:Project?) {
+        self.projectButton.setTitle(project?.name ?? "All Projects", for: .normal)
     }
     
     
