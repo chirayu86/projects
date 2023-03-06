@@ -25,10 +25,10 @@
 		6D1E44F82990E49800C1FFB4 /* SelectProjectVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44F72990E49800C1FFB4 /* SelectProjectVc.swift */; };
 		6D1E44FA2992344C00C1FFB4 /* ProjectProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44F92992344C00C1FFB4 /* ProjectProgressView.swift */; };
 		6D1E44FC299242DB00C1FFB4 /* ProjectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44FB299242DB00C1FFB4 /* ProjectTableViewCell.swift */; };
-		6D1E45002993A4FC00C1FFB4 /* AddTaskVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44FF2993A4FC00C1FFB4 /* AddTaskVc.swift */; };
+		6D1E45002993A4FC00C1FFB4 /* AddTaskVcOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E44FF2993A4FC00C1FFB4 /* AddTaskVcOld.swift */; };
 		6D1E4502299A2E7800C1FFB4 /* AttachmentsVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D1E4501299A2E7800C1FFB4 /* AttachmentsVc.swift */; };
 		6D816A1E299BA8B7008C6D19 /* CheckListToDoVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A1D299BA8B7008C6D19 /* CheckListToDoVc.swift */; };
-		6D816A22299CBA06008C6D19 /* AddProjectsVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A21299CBA06008C6D19 /* AddProjectsVc.swift */; };
+		6D816A22299CBA06008C6D19 /* AddProjectsVcOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A21299CBA06008C6D19 /* AddProjectsVcOld.swift */; };
 		6D816A49299F55DF008C6D19 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A48299F55DF008C6D19 /* Theme.swift */; };
 		6D816A4B299F5747008C6D19 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A4A299F5747008C6D19 /* ThemeManager.swift */; };
 		6D816A4D299F5AFD008C6D19 /* LightTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D816A4C299F5AFD008C6D19 /* LightTheme.swift */; };
@@ -44,9 +44,13 @@
 		6DC83E0429AE31180009FA44 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = 6DC83E0329AE31180009FA44 /* DequeModule */; };
 		6DC83E0629AE31180009FA44 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 6DC83E0529AE31180009FA44 /* OrderedCollections */; };
 		6DC83E0829AF3A700009FA44 /* TextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0729AF3A700009FA44 /* TextViewTableViewCell.swift */; };
-		6DC83E0C29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0B29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift */; };
+		6DC83E0C29AF3C6D0009FA44 /* AddTaskVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0B29AF3C6D0009FA44 /* AddTaskVc.swift */; };
 		6DC83E0E29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0D29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift */; };
 		6DC83E1029B09A9D0009FA44 /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E0F29B09A9D0009FA44 /* ButtonTableViewCell.swift */; };
+		6DC83E1329B1AE8A0009FA44 /* Forms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E1229B1AE8A0009FA44 /* Forms.swift */; };
+		6DC83E1529B1B4BD0009FA44 /* AddProjectVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E1429B1B4BD0009FA44 /* AddProjectVc.swift */; };
+		6DC83E1729B1DA160009FA44 /* Toast message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E1629B1DA160009FA44 /* Toast message.swift */; };
+		6DC83E1929B1F4560009FA44 /* ProjectVc1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC83E1829B1F4560009FA44 /* ProjectVc1.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,10 +93,10 @@
 		6D1E44F72990E49800C1FFB4 /* SelectProjectVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectProjectVc.swift; sourceTree = "<group>"; };
 		6D1E44F92992344C00C1FFB4 /* ProjectProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectProgressView.swift; sourceTree = "<group>"; };
 		6D1E44FB299242DB00C1FFB4 /* ProjectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectTableViewCell.swift; sourceTree = "<group>"; usesTabs = 0; };
-		6D1E44FF2993A4FC00C1FFB4 /* AddTaskVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskVc.swift; sourceTree = "<group>"; };
+		6D1E44FF2993A4FC00C1FFB4 /* AddTaskVcOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskVcOld.swift; sourceTree = "<group>"; };
 		6D1E4501299A2E7800C1FFB4 /* AttachmentsVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsVc.swift; sourceTree = "<group>"; };
 		6D816A1D299BA8B7008C6D19 /* CheckListToDoVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListToDoVc.swift; sourceTree = "<group>"; };
-		6D816A21299CBA06008C6D19 /* AddProjectsVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProjectsVc.swift; sourceTree = "<group>"; };
+		6D816A21299CBA06008C6D19 /* AddProjectsVcOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProjectsVcOld.swift; sourceTree = "<group>"; };
 		6D816A48299F55DF008C6D19 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		6D816A4A299F5747008C6D19 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		6D816A4C299F5AFD008C6D19 /* LightTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightTheme.swift; sourceTree = "<group>"; };
@@ -105,9 +109,13 @@
 		6DC83DFA29ACA0BB0009FA44 /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
 		6DC83DFE29ACDE190009FA44 /* TodoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoTableViewCell.swift; sourceTree = "<group>"; };
 		6DC83E0729AF3A700009FA44 /* TextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewTableViewCell.swift; sourceTree = "<group>"; };
-		6DC83E0B29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskTableViewVcViewController.swift; sourceTree = "<group>"; };
+		6DC83E0B29AF3C6D0009FA44 /* AddTaskVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskVc.swift; sourceTree = "<group>"; };
 		6DC83E0D29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewTableViewCell.swift; sourceTree = "<group>"; };
 		6DC83E0F29B09A9D0009FA44 /* ButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTableViewCell.swift; sourceTree = "<group>"; };
+		6DC83E1229B1AE8A0009FA44 /* Forms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forms.swift; sourceTree = "<group>"; };
+		6DC83E1429B1B4BD0009FA44 /* AddProjectVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProjectVc.swift; sourceTree = "<group>"; };
+		6DC83E1629B1DA160009FA44 /* Toast message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Toast message.swift"; sourceTree = "<group>"; };
+		6DC83E1829B1F4560009FA44 /* ProjectVc1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectVc1.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +169,7 @@
 		6D1E44B1298CD11400C1FFB4 /* projects */ = {
 			isa = PBXGroup;
 			children = (
+				6DC83E1129B1AE710009FA44 /* Forms */,
 				6DC83DFD29ACCEF70009FA44 /* Views */,
 				6DC83DFC29ACA1080009FA44 /* Models */,
 				6DC83DF329A63B5D0009FA44 /* DataBase */,
@@ -205,7 +214,9 @@
 				6D816A1D299BA8B7008C6D19 /* CheckListToDoVc.swift */,
 				6D1E4501299A2E7800C1FFB4 /* AttachmentsVc.swift */,
 				6DC83DF829A89D5D0009FA44 /* ProjectVc.swift */,
-				6DC83E0B29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift */,
+				6DC83E0B29AF3C6D0009FA44 /* AddTaskVc.swift */,
+				6DC83E1429B1B4BD0009FA44 /* AddProjectVc.swift */,
+				6DC83E1829B1F4560009FA44 /* ProjectVc1.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -226,8 +237,8 @@
 		6D1E44F42990C49000C1FFB4 /* NotInUse */ = {
 			isa = PBXGroup;
 			children = (
-				6D1E44FF2993A4FC00C1FFB4 /* AddTaskVc.swift */,
-				6D816A21299CBA06008C6D19 /* AddProjectsVc.swift */,
+				6D1E44FF2993A4FC00C1FFB4 /* AddTaskVcOld.swift */,
+				6D816A21299CBA06008C6D19 /* AddProjectsVcOld.swift */,
 				6D1E44EA298CE12A00C1FFB4 /* FeedsViewController.swift */,
 				6D1E44F92992344C00C1FFB4 /* ProjectProgressView.swift */,
 				6D1E44B6298CD11400C1FFB4 /* ViewController.swift */,
@@ -250,6 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				6DC83DEF29A5F52B0009FA44 /* DoneButtonOnKeyboard.swift */,
+				6DC83E1629B1DA160009FA44 /* Toast message.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -279,6 +291,14 @@
 				6D816A5029A4A62B008C6D19 /* MyWindow.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		6DC83E1129B1AE710009FA44 /* Forms */ = {
+			isa = PBXGroup;
+			children = (
+				6DC83E1229B1AE8A0009FA44 /* Forms.swift */,
+			);
+			path = Forms;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -420,9 +440,11 @@
 			files = (
 				6D1E44F82990E49800C1FFB4 /* SelectProjectVc.swift in Sources */,
 				6D816A5129A4A62B008C6D19 /* MyWindow.swift in Sources */,
+				6DC83E1729B1DA160009FA44 /* Toast message.swift in Sources */,
 				6D1E44FC299242DB00C1FFB4 /* ProjectTableViewCell.swift in Sources */,
-				6DC83E0C29AF3C6D0009FA44 /* AddTaskTableViewVcViewController.swift in Sources */,
+				6DC83E0C29AF3C6D0009FA44 /* AddTaskVc.swift in Sources */,
 				6D1E44E7298CDE2500C1FFB4 /* YourProjectsVc.swift in Sources */,
+				6DC83E1329B1AE8A0009FA44 /* Forms.swift in Sources */,
 				6D1E44E3298CD1EC00C1FFB4 /* CheckBox.swift in Sources */,
 				6D1E44EB298CE12A00C1FFB4 /* FeedsViewController.swift in Sources */,
 				6DC83DFB29ACA0BB0009FA44 /* TaskModel.swift in Sources */,
@@ -432,11 +454,12 @@
 				6D1E44EE298CE25500C1FFB4 /* TabBarViewController.swift in Sources */,
 				6DC83E1029B09A9D0009FA44 /* ButtonTableViewCell.swift in Sources */,
 				6D816A4F29A49C8E008C6D19 /* DarkTheme.swift in Sources */,
+				6DC83E1529B1B4BD0009FA44 /* AddProjectVc.swift in Sources */,
 				6D1E44FA2992344C00C1FFB4 /* ProjectProgressView.swift in Sources */,
 				6D1E44F62990C52600C1FFB4 /* ProjectModel.swift in Sources */,
 				6DC83E0E29AF4F630009FA44 /* TextFieldTableViewTableViewCell.swift in Sources */,
 				6D816A4B299F5747008C6D19 /* ThemeManager.swift in Sources */,
-				6D816A22299CBA06008C6D19 /* AddProjectsVc.swift in Sources */,
+				6D816A22299CBA06008C6D19 /* AddProjectsVcOld.swift in Sources */,
 				6D1E44E9298CE01100C1FFB4 /* CalanderVc.swift in Sources */,
 				6DC83DFF29ACDE190009FA44 /* TodoTableViewCell.swift in Sources */,
 				6DC83DF529A741540009FA44 /* DataBaseHelper.swift in Sources */,
@@ -448,7 +471,8 @@
 				6D1E44B3298CD11400C1FFB4 /* AppDelegate.swift in Sources */,
 				6D1E44E5298CDE0500C1FFB4 /* YourTasksVc.swift in Sources */,
 				6DC83DF029A5F52B0009FA44 /* DoneButtonOnKeyboard.swift in Sources */,
-				6D1E45002993A4FC00C1FFB4 /* AddTaskVc.swift in Sources */,
+				6D1E45002993A4FC00C1FFB4 /* AddTaskVcOld.swift in Sources */,
+				6DC83E1929B1F4560009FA44 /* ProjectVc1.swift in Sources */,
 				6D1E44B5298CD11400C1FFB4 /* SceneDelegate.swift in Sources */,
 				6DC83E0829AF3A700009FA44 /* TextViewTableViewCell.swift in Sources */,
 			);

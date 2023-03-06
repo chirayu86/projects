@@ -29,6 +29,7 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
         textField.placeholder = "Project Name"
         textField.textAlignment = .center
         textField.addDoneButtonOnInputView(true)
+        textField.clearButtonMode = .whileEditing
         
         return textField
     }()
@@ -65,9 +66,25 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
         textField.delegate = self
     }
     
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setApperance()
+    }
+    
+    func setApperance() {
+        self.textField.tintColor = ThemeManager.shared.currentTheme.tintColor
+        priorityPickerView.setValue(ThemeManager.shared.currentTheme.tintColor, forKeyPath: "textColor")
+        priorityPickerView.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+        datePicker.setValue(ThemeManager.shared.currentTheme.tintColor, forKeyPath: "textColor")
+        datePicker.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+    }
+    
+
     
     func setTextFieldConstraints() {
         NSLayoutConstraint.activate([
@@ -79,15 +96,20 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
     }
     
     
+    
     func configure(forItem:FormField) {
         textField.placeholder = forItem.title
         textField.setIcon(forItem.image ?? UIImage(systemName: "circle")!)
+        
         if forItem.type == .DatePicker {
             self.textField.inputView = datePicker
         }
+        
         if forItem.type == .Picker {
             self.textField.inputView = priorityPickerView
         }
+        
+        setApperance()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -99,16 +121,32 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
       self.textField.text = dateFormatter.string(from: selectedDate!)
     }
 
+    
    
 }
 
 
 extension TextFieldTableViewTableViewCell:UITextFieldDelegate {
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        print(#function)
+        textChanged?(textField.text)
+        return true
+    }
+
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        print(#function)
+        textChanged?("")
+        self.selectedDate = nil
+        return true
+    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
+        print(#function)
         textChanged?(textField.text)
     }
     
+  
 }
 
 

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddTaskVc: UIViewController {
+class AddTaskVcOld: UIViewController {
     
     let priority = TaskPriority.allCases
     
@@ -441,7 +441,7 @@ class AddTaskVc: UIViewController {
 
 
 
-extension AddTaskVc:ProjectSelectionDelegate {
+extension AddTaskVcOld:ProjectSelectionDelegate {
     
     func showSelectedProject(_ project: Project?) {
         projectSelectionButton.setTitle(project?.name ?? "select", for: .normal)
@@ -453,7 +453,7 @@ extension AddTaskVc:ProjectSelectionDelegate {
 
 
 
-extension AddTaskVc:UIPickerViewDelegate,UIPickerViewDataSource {
+extension AddTaskVcOld:UIPickerViewDelegate,UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
     }
@@ -474,7 +474,7 @@ extension AddTaskVc:UIPickerViewDelegate,UIPickerViewDataSource {
 
 
 
-extension AddTaskVc:UITextFieldDelegate {
+extension AddTaskVcOld:UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return false

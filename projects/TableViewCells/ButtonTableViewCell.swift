@@ -27,8 +27,7 @@ override func awakeFromNib() {
         config.imagePadding = 200
         let button = UIButton(configuration: config)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(UIColor.systemRed, for: .normal)
-        
+
         return button
     }()
     
@@ -41,6 +40,7 @@ override func awakeFromNib() {
         }
         
         setButtonConstraints()
+        setApperance()
     }
     
     required init?(coder: NSCoder) {
@@ -52,7 +52,16 @@ override func awakeFromNib() {
 
         // Configure the view for the selected state
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setApperance()
+    }
 
+    func setApperance() {
+        button.setTitleColor(ThemeManager.shared.currentTheme.tintColor, for: .normal)
+    }
+    
     func setButtonConstraints() {
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -65,6 +74,8 @@ override func awakeFromNib() {
     func configure(forItem:FormField) {
         self.button.setTitle(forItem.title, for: .normal)
         self.button.setImage(forItem.image, for: .normal)
+        
+        setApperance()
     }
     
 }

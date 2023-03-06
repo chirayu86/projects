@@ -8,8 +8,11 @@
 import UIKit
 
 enum TaskPriority:String,CaseIterable {
+  
     case High
+    
     case Medium
+    
     case Low
 }
 
@@ -24,7 +27,7 @@ class YourTasksVc: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 5
         button.layer.borderWidth = 2
-        button.setTitle("  All Project", for: .normal)
+        button.setTitle("  Select Project", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20)
         button.addTarget(self, action: #selector(selectProject), for: .touchUpInside)
         
@@ -146,7 +149,7 @@ class YourTasksVc: UIViewController {
     
     @objc func addTask() {
         print(#function)
-        let addTaskVc = UINavigationController(rootViewController: AddTaskTableViewVcViewController())
+        let addTaskVc = UINavigationController(rootViewController: AddTaskVc())
         addTaskVc.modalPresentationStyle = .formSheet
         present(addTaskVc, animated: true)
     }
@@ -168,7 +171,6 @@ class YourTasksVc: UIViewController {
         projectButton.backgroundColor = ThemeManager.shared.currentTheme.tintColor
         projectButton.layer.borderColor = ThemeManager.shared.currentTheme.backgroundColor.cgColor
         projectButton.setTitleColor(ThemeManager.shared.currentTheme.primaryLabel, for: .normal)
-        projectButton.setImage(UIImage(systemName: "arrow.up.doc"), for: .normal)
         filterBarButtonItem.tintColor = ThemeManager.shared.currentTheme.tintColor
         addTaskBarButtonItem.tintColor = ThemeManager.shared.currentTheme.tintColor
         

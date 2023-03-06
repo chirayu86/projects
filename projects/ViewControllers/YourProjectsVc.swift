@@ -21,11 +21,11 @@ enum ProjectStatus:String,CaseIterable {
 class YourProjectsVc: UIViewController {
     
     
-    var status = [ProjectStatus]()
+    var statusArray = [ProjectStatus]()
     
     lazy var projectsTableView = {
         
-        let table = UITableView(frame: .zero, style: .grouped)
+        let table = UITableView(frame: .zero, style: .plain)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.delegate = self
         table.dataSource = self
@@ -48,11 +48,11 @@ class YourProjectsVc: UIViewController {
     
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         self.title = "Projects"
-        navigationItem.setRightBarButton(addProjectBarButton, animated: true)
         
-        status =  Array(getAllProjects().keys).sorted(by: {$0.rawValue<$1.rawValue})
+        statusArray =  Array(getAllProjects().keys).sorted(by: {$0.rawValue<$1.rawValue})
         
         setupNavigationBar()
         setupTableView()
@@ -67,14 +67,17 @@ class YourProjectsVc: UIViewController {
     
     func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.setRightBarButton(addProjectBarButton, animated: true)
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        status = Array(getAllProjects().keys).sorted(by: {$0.rawValue<$1.rawValue})
+        print(#function)
+        statusArray = Array(getAllProjects().keys).sorted(by: {$0.rawValue<$1.rawValue})
         projectsTableView.reloadData()
         setAppearance()
+        setupNavigationBar()
     }
 
     
@@ -130,7 +133,7 @@ class YourProjectsVc: UIViewController {
 
     @objc func addProject() {
      
-        let addProjectVc = UINavigationController(rootViewController: AddProjectsVc())
+        let addProjectVc = UINavigationController(rootViewController: AddProjectVc())
         addProjectVc.modalPresentationStyle = .fullScreen
         present(addProjectVc, animated: true)
     }
@@ -141,17 +144,17 @@ class YourProjectsVc: UIViewController {
 extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return status.count
+        return statusArray.count
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return status[section].rawValue
+        return statusArray[section].rawValue
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(#function)
         
-        guard let section = getAllProjects()[status[section]]?.count else {
+        guard let section = getAllProjects()[statusArray[section]]?.count else {
             return 0
         }
         
@@ -163,14 +166,17 @@ extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
     
         let cell = tableView.dequeueReusableCell(withIdentifier: "projectCell") as! ProjectTableViewCell
         
-        cell.setProjectDetails(project:  getAllProjects()[status[indexPath.section]]![indexPath.row])
+        cell.setProjectDetails(project:  getAllProjects()[statusArray[indexPath.section]]![indexPath.row])
         cell.setAppearance()
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.pushViewController(ProjectVc(projectForVc: getAllProjects()[status[indexPath.section]]![indexPath.row], isPresented: false), animated: true)
+        
+        let projectVc = ProjectVc1(projectForVc: getAllProjects()[statusArray[indexPath.section]]![indexPath.row], isPresented: false)
+        
+        navigationController?.pushViewController(projectVc, animated: true)
     }
     
     

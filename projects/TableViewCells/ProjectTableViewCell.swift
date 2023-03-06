@@ -44,6 +44,7 @@ class ProjectTableViewCell: UITableViewCell {
     }()
     
     lazy var seperatorLabel = {
+        
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "~"

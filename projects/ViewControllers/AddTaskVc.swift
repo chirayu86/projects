@@ -20,45 +20,16 @@ enum AddTaskFormSections:String {
 }
 
 
-enum FieldTypes {
-   
-    case TextField
-    
-    case TextView
-    
-    case DatePicker
-    
-    case Picker
-    
-    case Button
-    
-    
-}
-
-
-struct FormSection {
-    let title:String
-    let fields:[FormField]
-}
-
-struct FormField {
-    let title:String
-    let image:UIImage?
-    let type:FieldTypes
-}
-
-
-class AddTaskTableViewVcViewController: UIViewController {
+class AddTaskVc: UIViewController {
     
     var callBack:((String)->Void)?
     
-    let priorityArray = TaskPriority.allCases.map { $0.rawValue
-    }
+    let priorityArray = TaskPriority.allCases.map { $0.rawValue }
     
     let form:[FormSection] = [
-        FormSection(title: "Projects", fields: [FormField(title: "Project", image: UIImage(systemName: "arrowtriangle.down.fill"), type: .Button)]),
-        FormSection(title: "Details", fields: [FormField(title: "Task Name", image: UIImage(systemName: "circle.circle"), type: .TextField),FormField(title: "DeadLine", image: UIImage(systemName: "calendar"), type: .DatePicker),FormField(title: "priority", image: UIImage(systemName: "circle"), type: .Picker)]),
-        FormSection(title: "Description", fields: [FormField(title: "desc", image: nil, type: .TextView)])
+        FormSection(title: AddTaskFormSections.Projects.rawValue , fields: [FormField(title: "Select Project", image: nil, type: .Button)]),
+        FormSection(title: AddTaskFormSections.Details.rawValue, fields: [FormField(title: "Task Name", image: UIImage(systemName: "circle.circle"), type: .TextField),FormField(title: "DeadLine", image: UIImage(systemName: "calendar"), type: .DatePicker),FormField(title: "priority", image: UIImage(systemName: "circle"), type: .Picker)]),
+        FormSection(title: AddTaskFormSections.Description.rawValue, fields: [FormField(title: "desc", image: nil, type: .TextView)])
         ]
     
     
@@ -89,7 +60,7 @@ class AddTaskTableViewVcViewController: UIViewController {
         view.addSubview(addTaskTableView)
         view.backgroundColor = .systemBackground
         self.title = "Add New Task"
-        print(priorityArray)
+      
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
         
@@ -97,13 +68,18 @@ class AddTaskTableViewVcViewController: UIViewController {
     }
     
     func setTableViewConstraints() {
+        
+        let keyBoardConstraint = addTaskTableView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+        keyBoardConstraint.priority = .defaultLow
+        
         NSLayoutConstraint.activate([
             addTaskTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             addTaskTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             addTaskTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            addTaskTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            keyBoardConstraint,
         ])
     }
+    
     
     @objc func projectSelected() {
         let projectSelectionVc = SelectProjectVc()
@@ -115,7 +91,7 @@ class AddTaskTableViewVcViewController: UIViewController {
 }
 
 
-extension AddTaskTableViewVcViewController:UITableViewDelegate,UITableViewDataSource {
+extension AddTaskVc:UITableViewDelegate,UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         form.count
@@ -151,9 +127,9 @@ extension AddTaskTableViewVcViewController:UITableViewDelegate,UITableViewDataSo
             cell.pickerViewData = priorityArray
             cell.configure(forItem: formItem)
             cell.textChanged {  text in
-                guard let unWrappedText = text,unWrappedText.isEmpty == false else {
-                    return
-                }
+            guard let unWrappedText = text,unWrappedText.isEmpty == false else {
+                 return
+            }
             self.priority = TaskPriority(rawValue: text ?? TaskPriority.High.rawValue)
             }
         
@@ -203,7 +179,7 @@ extension AddTaskTableViewVcViewController:UITableViewDelegate,UITableViewDataSo
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
       
-        if indexPath.section == 0 || indexPath.section == 1 {
+        if form[indexPath.section].title == AddTaskFormSections.Projects.rawValue || form[indexPath.section].title == AddTaskFormSections.Details.rawValue  {
             return 40
         }
         
@@ -215,10 +191,13 @@ extension AddTaskTableViewVcViewController:UITableViewDelegate,UITableViewDataSo
 }
 
 
-extension AddTaskTableViewVcViewController:ProjectSelectionDelegate {
+extension AddTaskVc:ProjectSelectionDelegate {
+    
     func showSelectedProject(_ project: Project?) {
+        
         self.project = project
         callBack?(project?.name ?? "Select Project")
+        
         }
     
     

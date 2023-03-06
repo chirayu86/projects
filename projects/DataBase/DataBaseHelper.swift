@@ -16,7 +16,8 @@ class DatabaseHelper {
     
   private func openConnection() {
       
-        sqliteDb.openConnection()
+      sqliteDb.openConnection()
+      
     }
     
    private init() {
@@ -42,7 +43,7 @@ class DatabaseHelper {
     }
     
     
-    func insertInto(table:String,values:Dictionary<String,Value>) {
+    func insertInto(table:String,values:row) {
         
         var query = "INSERT INTO \(table)("
         
@@ -67,6 +68,7 @@ class DatabaseHelper {
         
         sqliteDb.write(query: query, arguments: valueArray)
         print(query)
+        
     }
     
     
@@ -82,6 +84,7 @@ class DatabaseHelper {
     }
     
     
+    
     func deleteFromTable(table:String,whereStmt:String,argument:Value) {
        
         var query = "DELETE FROM \(table)"
@@ -89,6 +92,34 @@ class DatabaseHelper {
     
         sqliteDb.write(query: query, arguments: [argument])
         
+    }
+    
+    
+    
+    func updateTable(table:String,whereClause:String,arguments:row,whereArugment:Value) {
+        
+        var query = "UPDATE \(table) "
+        query.append("SET ")
+        
+        var setQuery:String = ""
+        
+        arguments.forEach { (key: String, value: Value) in
+            setQuery.append("\(key) = ?,")
+        }
+        
+        setQuery.removeLast()
+        setQuery.append(" ")
+        query.append(setQuery)
+        query.append(whereClause)
+        
+        var valueArray:[Value] = arguments.map { (key: String, value: Value) in
+            return value
+        }
+        
+        valueArray.append(whereArugment)
+        print(query)
+        
+        sqliteDb.write(query: query, arguments: valueArray)
     }
 
 }
