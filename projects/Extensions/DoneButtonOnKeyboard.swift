@@ -53,15 +53,24 @@ extension UITextField {
     }
     
     
-    func setIcon(_ image: UIImage) {
+    func setIcon(_ image: UIImage?) {
+        
+        guard let unImage = image else {
+            rightView = nil
+            return
+        }
+        
        let iconView = UIImageView(frame:
                       CGRect(x: 10, y: 5, width: 20, height: 20))
-       iconView.image = image
+       iconView.image = unImage
        let iconContainerView: UIView = UIView(frame:
                       CGRect(x: 20, y: 0, width: 30, height: 30))
        iconContainerView.addSubview(iconView)
-       leftView = iconContainerView
-       leftViewMode = .always
+        
+        
+        
+       rightView = iconContainerView
+       rightViewMode = .always
     }
     
   

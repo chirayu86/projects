@@ -19,7 +19,6 @@ extension UIViewController {
             let toast = UIView()
             toast.translatesAutoresizingMaskIntoConstraints = false
             toast.backgroundColor = ThemeManager.shared.currentTheme.tintColor
-            toast.layer.cornerRadius = 5
             
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -38,11 +37,12 @@ extension UIViewController {
         self.view.addSubview(toastView)
         
         toastView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        toastView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 20).isActive = true
-        toastView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,constant: -20).isActive = true
+        toastView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        toastView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         toastView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10).isActive = true
         toastView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+       
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: {toastView.removeFromSuperview()})
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: {toastView.isHidden = true})
     }
 }

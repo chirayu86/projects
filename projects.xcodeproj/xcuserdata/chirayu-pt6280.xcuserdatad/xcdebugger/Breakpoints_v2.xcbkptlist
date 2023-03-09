@@ -188,10 +188,181 @@
             filePath = "projects/Extensions/Toast message.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
             landmarkName = "showToast(message:seconds:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "59067F17-8451-4357-9EB4-145FFAAB57C3"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/TableViewCells/TextFieldTableViewTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
+            landmarkName = "setTextFieldConstraints()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3F132F4F-4B1F-4455-86C2-E08F12E3BAEA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/ViewControllers/YourProjectsVc.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
+            landmarkName = "getAllProjects()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D3B73C26-74C6-4FAC-A3F8-CC8B84E9E579"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/ViewControllers/YourProjectsVc.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+            landmarkName = "getAllProjects()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/TableViewCells/TasksTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "13"
+            endingLineNumber = "13"
+            landmarkName = "TasksTableViewCell"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - ff8dea30a0af47c5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "projects.TasksTableViewCell.checkBox.getter : projects.CheckBox"
+                  moduleName = "projects"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "193">
+               </Location>
+               <Location
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - e90fa6debfa6f0f9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; projects.CheckBox in projects.TasksTableViewCell.checkBox.getter : projects.CheckBox"
+                  moduleName = "projects"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "15"
+                  endingLineNumber = "15"
+                  offsetFromSymbolStart = "41">
+               </Location>
+               <Location
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - aaf555c69e9e3bd1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "projects.TasksTableViewCell.checkBox.setter : projects.CheckBox"
+                  moduleName = "projects"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "132">
+               </Location>
+               <Location
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - 660441c6b88480c6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "projects.TasksTableViewCell.checkBox.modify : projects.CheckBox"
+                  moduleName = "projects"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - 555982bef33a2a16"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "projects.TasksTableViewCell.checkBox.modify : projects.CheckBox with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "projects"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "17">
+               </Location>
+               <Location
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - dbc37aa3f781abc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "projects.TasksTableViewCell.init(style: __C.UITableViewCellStyle, reuseIdentifier: Swift.Optional&lt;Swift.String&gt;) -&gt; projects.TasksTableViewCell"
+                  moduleName = "projects"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "169">
+               </Location>
+               <Location
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - 13594c4978d7da70"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "projects.TasksTableViewCell.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;projects.TasksTableViewCell&gt;"
+                  moduleName = "projects"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "124">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

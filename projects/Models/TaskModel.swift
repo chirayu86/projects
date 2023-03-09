@@ -13,11 +13,14 @@ struct  Task {
     var name:String
     var deadLine:Date
     let projectId:UUID
+    let projectName:String
     var priority:TaskPriority
     var description:String
     var isCompleted:Bool
     
-    init(id: UUID, name: String, deadLine: Date, projectId: UUID, priority: TaskPriority, description: String, isCompleted: Bool) {
+    
+    init(id: UUID, name: String, deadLine: Date, projectId: UUID,projectName:String, priority: TaskPriority, description: String, isCompleted: Bool) {
+        
         self.id = id
         self.name = name
         self.deadLine = deadLine
@@ -25,9 +28,11 @@ struct  Task {
         self.priority = priority
         self.description = description
         self.isCompleted = isCompleted
+        self.projectName = projectName
     }
     
-    init(name: String, deadLine: Date, projectId: UUID, priority: TaskPriority, description: String, isCompleted: Bool) {
+    init(name: String, deadLine: Date, projectId: UUID,projectName:String, priority: TaskPriority, description: String, isCompleted: Bool) {
+        
         self.id = UUID()
         self.name = name
         self.deadLine = deadLine
@@ -35,6 +40,7 @@ struct  Task {
         self.priority = priority
         self.description = description
         self.isCompleted = isCompleted
+        self.projectName = projectName
     }
 }
 

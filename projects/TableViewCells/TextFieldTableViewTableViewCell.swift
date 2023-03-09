@@ -14,7 +14,7 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
     }
     
     var textChanged: ((String?) -> Void)?
-    var selectedDate:Date?
+    var selectedDate:Date!
     var dateFormatter = DateFormatter()
     var pickerViewData:[String]?
     
@@ -22,17 +22,29 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
         self.textChanged = action
     }
     
+  
+    override func prepareForReuse() {
+        
+        print(#function)
+        textField.text = ""
+        textField.inputView = nil
+        textField.setIcon(nil)
+        
+    }
+ 
+    
     lazy var textField = {
         
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Project Name"
-        textField.textAlignment = .center
+        textField.textAlignment = .natural
         textField.addDoneButtonOnInputView(true)
         textField.clearButtonMode = .whileEditing
+        textField.delegate = self
         
         return textField
     }()
+    
     
     lazy var datePicker = {
         
@@ -40,9 +52,10 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.datePickerMode = .date
         datePicker.minimumDate = Date()
-
+        datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
+//        datePicker.addTarget(self, action: #selector(dateChanged), for: .touchUpInside)
         datePicker.preferredDatePickerStyle = .wheels
-  
+        
          return datePicker
     }()
     
@@ -59,13 +72,16 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(textField)
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-        datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
-        setTextFieldConstraints()
-        textField.delegate = self
+      
+        setupDateFormatter()
+       setTextFieldConstraints()
+        
     }
     
+    func setupDateFormatter() {
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -77,48 +93,67 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
     }
     
     func setApperance() {
-        self.textField.tintColor = ThemeManager.shared.currentTheme.tintColor
-        priorityPickerView.setValue(ThemeManager.shared.currentTheme.tintColor, forKeyPath: "textColor")
-        priorityPickerView.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
-        datePicker.setValue(ThemeManager.shared.currentTheme.tintColor, forKeyPath: "textColor")
-        datePicker.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+        
+        let currentTheme = ThemeManager.shared.currentTheme
+        
+        self.textField.tintColor = currentTheme.tintColor
+        priorityPickerView.setValue(currentTheme.tintColor, forKeyPath: "textColor")
+        priorityPickerView.backgroundColor = currentTheme.backgroundColor
+        datePicker.setValue(currentTheme.tintColor, forKeyPath: "textColor")
+        datePicker.backgroundColor = currentTheme.backgroundColor
+        
+    }
+    
+    
+    func setText(text:String?) {
+        self.textField.text = text
     }
     
 
     
     func setTextFieldConstraints() {
+        
         NSLayoutConstraint.activate([
             textField.topAnchor.constraint(equalTo: contentView.topAnchor),
             textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             textField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
+        
     }
     
     
     
     func configure(forItem:FormField) {
+        
         textField.placeholder = forItem.title
-        textField.setIcon(forItem.image ?? UIImage(systemName: "circle")!)
+        
+        textField.setIcon(forItem.image)
+        
         
         if forItem.type == .DatePicker {
             self.textField.inputView = datePicker
+            self.textField.text = dateFormatter.string(from: selectedDate)
         }
+        
         
         if forItem.type == .Picker {
             self.textField.inputView = priorityPickerView
         }
         
+        
         setApperance()
     }
+    
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
     
+    
   @objc func dateChanged() {
       self.selectedDate = datePicker.date
-      self.textField.text = dateFormatter.string(from: selectedDate!)
+      self.textField.text = dateFormatter.string(from: selectedDate)
     }
 
     
@@ -131,19 +166,22 @@ extension TextFieldTableViewTableViewCell:UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         print(#function)
         textChanged?(textField.text)
+        
         return true
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         print(#function)
         textChanged?("")
-        self.selectedDate = nil
+        self.selectedDate = Date()
+        
         return true
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         print(#function)
         textChanged?(textField.text)
+      
     }
     
   

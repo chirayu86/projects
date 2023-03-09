@@ -15,7 +15,7 @@ class ProjectTableViewCell: UITableViewCell {
         
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.font = .systemFont(ofSize: 15, weight: .bold)
+        nameLabel.font = .systemFont(ofSize: 16, weight: .bold)
         nameLabel.numberOfLines = 0
         
         return nameLabel
@@ -38,7 +38,6 @@ class ProjectTableViewCell: UITableViewCell {
         endDate.translatesAutoresizingMaskIntoConstraints = false
         endDate.font = .systemFont(ofSize: 15, weight: .bold)
   
-        
         return endDate
         
     }()
@@ -87,7 +86,6 @@ class ProjectTableViewCell: UITableViewCell {
         contentView.addSubview(projectNameLabel)
         contentView.addSubview(datehorizontalStack)
    
-        
         setStackViewConstraints()
     }
     
@@ -114,12 +112,13 @@ class ProjectTableViewCell: UITableViewCell {
   }
     
     
-    func setProjectDetails(project:Project) {
+    func setDetails(project:Project) {
         
         self.projectNameLabel.text = project.name
         self.startDateLabel.text = dateformatter.string(from: project.startDate)
         self.endDateLabel.text = dateformatter.string(from: project.endDate)
         
+        setAppearance()
     }
 
    

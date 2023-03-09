@@ -43,7 +43,7 @@ class ProjectVc1: UIViewController {
           let textView = UITextView()
           textView.translatesAutoresizingMaskIntoConstraints = false
           textView.isScrollEnabled = false
-        textView.font = .systemFont(ofSize: 25 ,weight: .bold)
+          textView.font = .systemFont(ofSize: 25 ,weight: .bold)
           textView.addDoneButtonOnInputView(true)
           
           return textView
@@ -110,6 +110,15 @@ class ProjectVc1: UIViewController {
         
     }()
     
+    lazy var cancelBarButton = {
+        
+        let barButton = UIBarButtonItem()
+        barButton.title = "CANCEL"
+        barButton.target = self
+        barButton.action = #selector(self.cancel)
+        
+        return barButton
+    }()
     
     lazy var datePicker = {
         
@@ -160,10 +169,9 @@ class ProjectVc1: UIViewController {
     override func viewDidLoad() {
       
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
-        navigationController?.navigationBar.prefersLargeTitles = false
-        navigationItem.setRightBarButton(editButtonItem, animated: true)
+     
         isEditing(false)
+        setupNavigationBar()
         setupDateFormatter()
         setupStackViews()
         setupTableView()
@@ -172,6 +180,14 @@ class ProjectVc1: UIViewController {
     
         
 }
+    
+    func setupNavigationBar() {
+        navigationItem.setRightBarButton(editButtonItem, animated: true)
+        navigationItem.largeTitleDisplayMode = .never
+        if isPresented {
+            navigationItem.setLeftBarButton(cancelBarButton, animated: true)
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -223,6 +239,7 @@ class ProjectVc1: UIViewController {
     }
     
     func setApperance() {
+        view.backgroundColor  = ThemeManager.shared.currentTheme.backgroundColor
         projectNameTextView.textColor = ThemeManager.shared.currentTheme.tintColor
         statusTextField.backgroundColor = ThemeManager.shared.currentTheme.secondaryLabel.withAlphaComponent(0.2)
         endDateField.backgroundColor = ThemeManager.shared.currentTheme.tintColor.withAlphaComponent(0.5)
@@ -282,13 +299,25 @@ class ProjectVc1: UIViewController {
     }
     
     @objc func tasks() {
-        let tasksVc = UINavigationController(rootViewController: CheckListToDoVc())
-        tasksVc.modalPresentationStyle = .formSheet
-        present(tasksVc, animated: true)
+        
+        let tasksVc = YourTasksVc()
+        tasksVc.project = projectForVc
+        navigationController?.pushViewController(tasksVc, animated: true)
+    
+    }
+    
+    @objc func description() {
+        let descriptionVc = DescriptionVc(text: projectForVc.description)
+        descriptionVc.delegate = self
+        navigationController?.pushViewController(descriptionVc, animated: true)
+    }
+    
+    @objc func cancel() {
+        dismiss(animated: true)
     }
  
     func setupDateFormatter() {
-        dateFormatter.dateStyle = .medium
+        dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .none
     }
 
@@ -336,6 +365,10 @@ extension ProjectVc1:UITableViewDataSource,UITableViewDelegate {
         button.title
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let formItem = button.fields[indexPath.row]
@@ -348,7 +381,7 @@ extension ProjectVc1:UITableViewDataSource,UITableViewDelegate {
         }
         
         if formItem.title == "Description" {
-            
+            cell.button.addTarget(self, action: #selector(getter: description), for: .touchUpInside)
         }
         
         if formItem.title == "Tasks" {
@@ -359,4 +392,11 @@ extension ProjectVc1:UITableViewDataSource,UITableViewDelegate {
     }
     
     
+}
+
+
+extension ProjectVc1:DescriptionViewDelegate {
+    func setText(text: String) {
+        projectForVc.description = text
+    }
 }

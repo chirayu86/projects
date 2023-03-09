@@ -8,88 +8,87 @@
 import UIKit
 
 class CalendarVc: UIViewController {
+    
+    var dates = [Date]()
+    var dateComponents = Set<DateComponents>()
+    
+ lazy var calendar = {
+        
+        let calendar = UICalendarView()
+        calendar.calendar = .current
+        calendar.translatesAutoresizingMaskIntoConstraints = false
+        calendar.locale = .current
+        calendar.fontDesign = .rounded
+        let selection = UICalendarSelectionSingleDate(delegate: self)
+        calendar.selectionBehavior = selection
+        calendar.delegate = self
+        
+        return calendar
+    }()
+    
 
-    lazy var datePicker = {
-        
-        let datePicker = UIDatePicker()
-        datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .inline
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        
-        return datePicker
-    }()
-    
-    
-    lazy var tasksTableView = {
-       
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(TasksTableViewCell.self, forCellReuseIdentifier: "cell")
-        
-        return tableView
-    }()
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         self.title = "Calendar"
-        
-       setupDatepicker()
-       setupTableView()
-       
-    }
+        dates = getDates()
+        setupDatepicker()
+   }
     
     func setupDatepicker() {
-        view.addSubview(datePicker)
+        view.addSubview(calendar)
         setDatePickerContraints()
     }
-    
-    func setupTableView() {
-        view.addSubview(tasksTableView)
-        setTableViewConstraints()
-    }
+
     
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tasksTableView.reloadData()
+        dates = getDates()
         setAppearance()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        tasksTableView.reloadData()
+       
         setAppearance()
     }
     
     func setAppearance() {
         view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
-        datePicker.tintColor = ThemeManager.shared.currentTheme.tintColor
+        calendar.tintColor = ThemeManager.shared.currentTheme.tintColor
+   
     }
     
     func setDatePickerContraints() {
         
         NSLayoutConstraint.activate([
-            datePicker.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            datePicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            calendar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            calendar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            calendar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            calendar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
 
     
-    func setTableViewConstraints() {
+    func getDates()->[Date] {
+
+        let output = DatabaseHelper.shared.sqliteDb.read(query: "Select deadline from Tasks", arguments: [])
+        var dates = [Date]()
         
-        NSLayoutConstraint.activate([
+        output.forEach { row in
             
-            tasksTableView.topAnchor.constraint(equalTo: datePicker.bottomAnchor),
-            tasksTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tasksTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tasksTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            guard let deadline =  row["DeadLine"]?.doubleValue else {
+                return
+            }
             
-            ])
+            dates.append(Date(timeIntervalSince1970: deadline))
+        }
+        
+        return dates
+
     }
 
   
@@ -112,6 +111,34 @@ extension CalendarVc:UITableViewDataSource,UITableViewDelegate {
         
         return cell
         
+    }
+    
+    
+}
+
+
+extension CalendarVc:UICalendarViewDelegate,UICalendarSelectionSingleDateDelegate {
+  
+    func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
+        print(selection.selectedDate?.date)
+        
+        present(YourTasksVc(), animated: true)
+    }
+    
+    
+    func calendarView(_ calendarView: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
+      
+        guard let dateFromComponent = dateComponents.date else {
+            return nil
+        }
+        
+        for date in dates {
+            if calendarView.calendar.isDate(date, inSameDayAs: dateFromComponent) {
+                return .default(color: .tintColor, size: .large)
+            }
+        }
+           
+        return nil
     }
     
     

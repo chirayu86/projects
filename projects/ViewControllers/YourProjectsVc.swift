@@ -17,24 +17,32 @@ enum ProjectStatus:String,CaseIterable {
     case OverDue
 }
 
+struct ProjectViewSections {
+    var title:String
+    var projects:[Project]
+}
+
 
 class YourProjectsVc: UIViewController {
     
     
-    var statusArray = [ProjectStatus]()
+//    var statusArray = [ProjectStatus]()
+    var projectSections = [ProjectViewSections]()
+    
     
     lazy var projectsTableView = {
         
-        let table = UITableView(frame: .zero, style: .plain)
+        let table = UITableView(frame: .zero, style: .insetGrouped)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.delegate = self
         table.dataSource = self
         table.register(ProjectTableViewCell.self, forCellReuseIdentifier: "projectCell")
-
+        table.register(TableHeaderView.self, forHeaderFooterViewReuseIdentifier: "header")
         
         return table
         
     }()
+    
 
     lazy var addProjectBarButton = {
         
@@ -47,15 +55,28 @@ class YourProjectsVc: UIViewController {
     }()
     
     
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        self.title = "Projects"
         
-        statusArray =  Array(getAllProjects().keys).sorted(by: {$0.rawValue<$1.rawValue})
+        updateData()
         
         setupNavigationBar()
         setupTableView()
+        
+    }
+    
+    
+    func updateData() {
+        
+        projectSections.removeAll()
+        
+        getAllProjects().forEach({ (key: ProjectStatus, value: [Project]) in
+            projectSections.append(ProjectViewSections(title: key.rawValue, projects: value))
+        })
+        
+       projectSections =  projectSections.sorted {$0.title < $1.title}
         
     }
     
@@ -66,15 +87,17 @@ class YourProjectsVc: UIViewController {
     
     
     func setupNavigationBar() {
+        self.title = "Projects"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.setRightBarButton(addProjectBarButton, animated: true)
+        navigationItem.largeTitleDisplayMode = .always
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print(#function)
-        statusArray = Array(getAllProjects().keys).sorted(by: {$0.rawValue<$1.rawValue})
+        updateData()
         projectsTableView.reloadData()
         setAppearance()
         setupNavigationBar()
@@ -88,9 +111,14 @@ class YourProjectsVc: UIViewController {
         setAppearance()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    
+    }
     
     func setAppearance() {
         view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
+        navigationController?.navigationBar.tintColor = ThemeManager.shared.currentTheme.tintColor
     }
     
     func setTableViewConstraints() {
@@ -132,10 +160,12 @@ class YourProjectsVc: UIViewController {
     
 
     @objc func addProject() {
-     
-        let addProjectVc = UINavigationController(rootViewController: AddProjectVc())
-        addProjectVc.modalPresentationStyle = .fullScreen
-        present(addProjectVc, animated: true)
+        
+        let addProjectVc =  AddProjectVc()
+        addProjectVc.delegate = self
+        addProjectVc.modalPresentationStyle = .formSheet
+        present(UINavigationController(rootViewController: addProjectVc), animated: true)
+        
     }
 
 }
@@ -144,40 +174,78 @@ class YourProjectsVc: UIViewController {
 extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return statusArray.count
+        return projectSections.count
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return statusArray[section].rawValue
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+   
+        let text = projectSections[section].title
+        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! TableHeaderView
+        view.setupCell(text: text)
+        
+        return view
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print(#function)
-        
-        guard let section = getAllProjects()[statusArray[section]]?.count else {
-            return 0
-        }
-        
-        return section
+    
+        return projectSections[section].projects.count
     }
  
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(style: .normal, title: "Delete", handler: { [self]
+             (action,source,completion) in
+            
+            let project = projectSections[indexPath.section].projects[indexPath.row]
+            DatabaseHelper.shared.deleteFromTable(table: "Projects", whereStmt: "where Id = ?", argument: .text(project.projectId.uuidString))
+            updateData()
+
+            self.projectsTableView.reloadData()
+            
+            completion(true)
+            
+        })
+        
+        deleteAction.backgroundColor  = ThemeManager.shared.currentTheme.tintColor
+        
+        let config = UISwipeActionsConfiguration(actions: [deleteAction])
+        config.performsFirstActionWithFullSwipe = true
+        
+        return config
+        
+    }
   
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
         let cell = tableView.dequeueReusableCell(withIdentifier: "projectCell") as! ProjectTableViewCell
         
-        cell.setProjectDetails(project:  getAllProjects()[statusArray[indexPath.section]]![indexPath.row])
-        cell.setAppearance()
+        let project = projectSections[indexPath.section].projects[indexPath.row]
+        cell.setDetails(project:project)
+
         
         return cell
     }
     
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let projectVc = ProjectVc1(projectForVc: getAllProjects()[statusArray[indexPath.section]]![indexPath.row], isPresented: false)
+       let project = projectSections[indexPath.section].projects[indexPath.row]
+        
+        let projectVc = ProjectVc1(projectForVc: project, isPresented: false)
         
         navigationController?.pushViewController(projectVc, animated: true)
     }
     
     
+}
+
+
+extension YourProjectsVc:AddProjectDelegate {
+    
+    func update() {
+         updateData()
+         projectsTableView.reloadData()
+    }
 }

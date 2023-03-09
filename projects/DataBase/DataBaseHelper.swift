@@ -30,7 +30,7 @@ class DatabaseHelper {
     private func createTables() {
         
         sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS Projects(Id TEXT PRIMARY KEY,name TEXT,StartDate DOUBLE,EndDate DOUBLE,Descpription TEXT,status TEXT);" )
-        sqliteDb.execute(query:  "CREATE TABLE IF NOT EXISTS Tasks(Id TEXT PRIMARY KEY,name TEXT,DeadLine DOUBLE,priority TEXT,Description Text,isCompleted INTEGER,projectId TEXT, CONSTRAINT fk_projects FOREIGN KEY (projectId) REFERENCES Projects(Id) ON DELETE CASCADE);" )
+        sqliteDb.execute(query:  "CREATE TABLE IF NOT EXISTS Tasks(Id TEXT PRIMARY KEY,name TEXT,DeadLine DOUBLE,priority TEXT,Description Text,isCompleted INTEGER,projectId TEXT,projectName TEXT,CONSTRAINT fk_projects FOREIGN KEY (projectId) REFERENCES Projects(Id) ON DELETE CASCADE);" )
     }
     
   
@@ -74,7 +74,7 @@ class DatabaseHelper {
     
     func readFromTable(table:String,whereStmt:String?,argument:[Value])->Array<row> {
         
-        var query = "Select * FROM \(table)"
+        var query = "Select * FROM \(table) "
         
         if let whereClause = whereStmt {
             query.append(whereClause)
@@ -87,7 +87,7 @@ class DatabaseHelper {
     
     func deleteFromTable(table:String,whereStmt:String,argument:Value) {
        
-        var query = "DELETE FROM \(table)"
+        var query = "DELETE FROM \(table) "
         query.append(whereStmt)
     
         sqliteDb.write(query: query, arguments: [argument])

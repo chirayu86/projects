@@ -21,14 +21,17 @@ override func awakeFromNib() {
     }
 
     lazy var button = {
+        
         var config = UIButton.Configuration.plain()
         config.imagePlacement = .trailing
         config.titleAlignment = .leading
         config.imagePadding = 200
+        
         let button = UIButton(configuration: config)
         button.translatesAutoresizingMaskIntoConstraints = false
 
         return button
+        
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -72,6 +75,7 @@ override func awakeFromNib() {
     }
     
     func configure(forItem:FormField) {
+        
         self.button.setTitle(forItem.title, for: .normal)
         self.button.setImage(forItem.image, for: .normal)
         

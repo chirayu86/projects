@@ -43,7 +43,7 @@ class TabBarViewController: UITabBarController {
         calendarVc.tabBarItem.image = UIImage(systemName: "calendar")
         calendarVc.tabBarItem.title = "Calendar"
         
-        projectsVc.tabBarItem.image = UIImage(systemName: "lightbulb.fill")
+        projectsVc.tabBarItem.image = UIImage(systemName: "folder")
         projectsVc.tabBarItem.title = "projects"
         
        

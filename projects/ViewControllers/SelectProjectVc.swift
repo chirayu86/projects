@@ -19,8 +19,8 @@ class SelectProjectVc: UIViewController {
 
     
     // dummy data
-    var allProjects = [Project(projectName: "new", startDate: Date(), endDate: Date(), description: "da", status: .Ongoing)]
     
+    var allProjects = [Project]()
     
     var selectedProject:Project?
     
@@ -58,6 +58,7 @@ class SelectProjectVc: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        allProjects = getAllProjects()
         super.viewWillAppear(true)
         setApperance()
     }
@@ -93,6 +94,7 @@ class SelectProjectVc: UIViewController {
     }
     
 
+
     func setTableViewConstraints() {
         NSLayoutConstraint.activate ([
             
@@ -102,6 +104,28 @@ class SelectProjectVc: UIViewController {
            
         ])
         
+    }
+    
+    func getAllProjects()->[Project] {
+        var projects = [Project]()
+        
+        let output = DatabaseHelper.shared.readFromTable(table: "Projects", whereStmt: nil, argument:[])
+
+       output.forEach { row in
+
+           guard let id = row["Id"]?.stringValue,let name = row["name"]?.stringValue,let startDate =  row["StartDate"]?.doubleValue,let endDate = row["EndDate"]?.doubleValue,let desc = row["Descpription"]?.stringValue,let status = ProjectStatus(rawValue: row["status"]!.stringValue!) else {
+
+               print("cannot create a project at row \(row)")
+               return
+           }
+
+           let project = Project(projectId: UUID(uuidString: id)!, projectName: name, startDate: Date(timeIntervalSince1970: startDate), endDate: Date(timeIntervalSince1970:endDate), description: desc, status: status)
+           
+        
+           projects.append(project)
+        }
+
+        return projects
     }
 }
 
