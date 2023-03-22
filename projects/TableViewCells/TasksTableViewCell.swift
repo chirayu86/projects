@@ -9,14 +9,22 @@ import UIKit
 
 class TasksTableViewCell: UITableViewCell {
     
-    var checkBoxHandler: (() -> Void)?
-    var taskString:String?
-    let dateFormatter = DateFormatter()
+    static let identifier = "taskTableCell"
     
-    func checkBoxHandler(action:@escaping () -> Void) {
-       
-        self.checkBoxHandler = action
+    var checkBoxHandler: ((Bool) -> Void)?
+//    var taskString:String?
+    
+    lazy var dateFormatter = {
         
+        let dateformatter  = DateFormatter()
+        dateformatter.dateStyle  = .medium
+        dateformatter.timeStyle = .none
+        
+        return dateformatter
+    }()
+    
+    func checkBoxHandler(action: @escaping (Bool) -> Void) {
+       self.checkBoxHandler = action
     }
     
     override func prepareForReuse() {
@@ -109,18 +117,14 @@ class TasksTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupDateFormatter()
         setupViews()
     }
     
-    func setupDateFormatter() {
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
 
     func setupViews() {
         
@@ -136,6 +140,7 @@ class TasksTableViewCell: UITableViewCell {
         setViewConstraints()
         
     }
+    
     
     func setViewConstraints() {
         
@@ -154,11 +159,10 @@ class TasksTableViewCell: UITableViewCell {
     
     
     func setDetails(task:Task) {
-       
-        self.taskString = task.name
         
         projectNameLabel.text = task.projectName
         dateLabel.text = dateFormatter.string(from: task.deadLine)
+        
         setCheckBox(ticked: task.isCompleted)
         setTaskAttributedString(text: task.name)
         
@@ -167,20 +171,16 @@ class TasksTableViewCell: UITableViewCell {
     
     
     func setCheckBox(ticked:Bool) {
-    
-    if ticked {
-        checkBox.isChecked = true
-        } else {
-        checkBox.isChecked = false
-        }
+        
+        checkBox.isChecked = ticked
+        
     }
     
     func setCellAppearance() {
-    
-        taskNameLabel.textColor = ThemeManager.shared.currentTheme.primaryLabel
-        projectNameLabel.textColor = ThemeManager.shared.currentTheme.secondaryLabel
-        dateLabel.textColor = ThemeManager.shared.currentTheme.tintColor
         
+        taskNameLabel.textColor = currentTheme.primaryLabel
+        projectNameLabel.textColor = currentTheme.secondaryLabel
+        dateLabel.textColor = currentTheme.tintColor
     }
   
     
@@ -188,13 +188,13 @@ class TasksTableViewCell: UITableViewCell {
         
         checkBox.isChecked = !checkBox.isChecked
         
-        checkBoxHandler?()
+        checkBoxHandler?(checkBox.isChecked)
         
-        guard let untaskString = taskString else {
+        guard let projectLabel =  projectNameLabel.text else {
             return
         }
         
-        setTaskAttributedString(text: untaskString)
+        setTaskAttributedString(text: projectLabel)
     }
     
    
@@ -204,11 +204,11 @@ class TasksTableViewCell: UITableViewCell {
         
         if checkBox.isChecked {
             attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 1, range: NSMakeRange(0, attributeString.length))
-            taskNameLabel.attributedText = attributeString
           } else {
             attributeString.removeAttribute(NSAttributedString.Key.strikethroughStyle, range:  NSMakeRange(0, attributeString.length))
-            taskNameLabel.attributedText = attributeString
         }
+        
+        taskNameLabel.attributedText = attributeString
     }
 
 }

@@ -18,11 +18,11 @@ extension UIViewController {
             
             let toast = UIView()
             toast.translatesAutoresizingMaskIntoConstraints = false
-            toast.backgroundColor = ThemeManager.shared.currentTheme.tintColor
+            toast.backgroundColor = currentTheme.tintColor
             
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.textColor = ThemeManager.shared.currentTheme.primaryLabel
+            label.textColor = currentTheme.primaryLabel
             label.textAlignment = .center
             
             toast.addSubview(label)

@@ -11,14 +11,10 @@ class TabBarViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
- 
+        setApperance()
         setTabBarItems()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setApperance()
-    }
+
         
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -27,12 +23,12 @@ class TabBarViewController: UITabBarController {
     }
     
     func setApperance() {
-            tabBar.tintColor = ThemeManager.shared.currentTheme.tintColor
+            tabBar.tintColor = currentTheme.tintColor
     }
     
     func setTabBarItems() {
         
-        let tasksVc = UINavigationController(rootViewController: YourTasksVc())
+        let tasksVc = UINavigationController(rootViewController: YourTasksVc(stateForVc: .YourTasks))
         let calendarVc = UINavigationController(rootViewController: CalendarVc())
         let projectsVc = UINavigationController(rootViewController: YourProjectsVc())
       

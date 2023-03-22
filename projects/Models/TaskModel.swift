@@ -47,7 +47,7 @@ struct  Task {
 
 extension Bool {
    
-    var intValue:Int {
+  var intValue:Int {
         return self ? 1:0
     }
 }

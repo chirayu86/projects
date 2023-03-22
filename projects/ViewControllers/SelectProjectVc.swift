@@ -39,9 +39,10 @@ class SelectProjectVc: UIViewController {
 
     lazy var  projectsListTableView = {
         
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
+        tableView.separatorInset = .zero
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         
@@ -51,7 +52,6 @@ class SelectProjectVc: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupSearchBar()
         setupTableView()
       
@@ -69,33 +69,9 @@ class SelectProjectVc: UIViewController {
     }
     
     func setupTableView() {
-        view.addSubview(projectsListTableView)
-        setTableViewConstraints()
-    }
-    
-    func setupSearchBar() {
-        view.addSubview(searchBar)
-        setSearchBarConstraints()
-    }
-    
-    func setApperance() {
-        view.backgroundColor = .clear
-        searchBar.tintColor = ThemeManager.shared.currentTheme.tintColor
-        projectsListTableView.separatorColor = ThemeManager.shared.currentTheme.tintColor
-    }
-    
-    func setSearchBarConstraints() {
         
-        NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10),
-            searchBar.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
-            searchBar.heightAnchor.constraint(equalToConstant: 40)
-        ])
-    }
-    
-
-
-    func setTableViewConstraints() {
+        view.addSubview(projectsListTableView)
+        
         NSLayoutConstraint.activate ([
             
            projectsListTableView.topAnchor.constraint(equalTo:searchBar.bottomAnchor,constant: 10),
@@ -103,23 +79,55 @@ class SelectProjectVc: UIViewController {
            projectsListTableView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor,multiplier: 0.75)
            
         ])
-        
     }
     
+    
+    func setupSearchBar() {
+       
+        view.addSubview(searchBar)
+       
+        NSLayoutConstraint.activate([
+            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10),
+            searchBar.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor),
+            searchBar.heightAnchor.constraint(equalToConstant: 40)
+        ])
+    }
+    
+    
+    func setApperance() {
+        view.backgroundColor = .clear
+        searchBar.tintColor = currentTheme.tintColor
+        projectsListTableView.separatorColor = currentTheme.tintColor
+    }
+    
+    
+    
     func getAllProjects()->[Project] {
+        
         var projects = [Project]()
         
-        let output = DatabaseHelper.shared.readFromTable(table: "Projects", whereStmt: nil, argument:[])
+        let output = DatabaseHelper.shared.selectFrom(table: ProjectTable.title,
+                                                      columns: nil, wherec: nil)
 
        output.forEach { row in
 
-           guard let id = row["Id"]?.stringValue,let name = row["name"]?.stringValue,let startDate =  row["StartDate"]?.doubleValue,let endDate = row["EndDate"]?.doubleValue,let desc = row["Descpription"]?.stringValue,let status = ProjectStatus(rawValue: row["status"]!.stringValue!) else {
+           guard let id = row[ProjectTable.id]?.stringValue,
+                 let name = row[ProjectTable.name]?.stringValue,
+                 let startDate =  row[ProjectTable.startDate]?.doubleValue,
+                 let endDate = row[ProjectTable.endDate]?.doubleValue,
+                 let desc = row[ProjectTable.description]?.stringValue,
+                 let status = ProjectStatus(rawValue: row[ProjectTable.status]!.stringValue!) else {
 
                print("cannot create a project at row \(row)")
                return
            }
 
-           let project = Project(projectId: UUID(uuidString: id)!, projectName: name, startDate: Date(timeIntervalSince1970: startDate), endDate: Date(timeIntervalSince1970:endDate), description: desc, status: status)
+           let project = Project(projectId: UUID(uuidString: id)!,
+                                 projectName: name,
+                                 startDate: Date(timeIntervalSince1970: startDate),
+                                 endDate: Date(timeIntervalSince1970:endDate),
+                                 description: desc,
+                                 status: status)
            
         
            projects.append(project)

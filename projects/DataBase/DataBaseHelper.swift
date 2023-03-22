@@ -7,41 +7,53 @@
 //.text(project.projectId.uuidString),.text(project.name),.double(project.startDate.timeIntervalSince1970),.double(project.endDate.timeIntervalSince1970),.text(project.description),.text(project.status.rawValue)
 
 import Foundation
+import UIKit
 
 class DatabaseHelper {
     
     let sqliteDb = Sqlite(path: "projects.sqlite")
     
+    
     typealias row = Dictionary<String,Value>
     
-  private func openConnection() {
+ 
+    private func openConnection() {
       
       sqliteDb.openConnection()
       
     }
+    
     
    private init() {
        
         openConnection()
     }
     
+    
    static let shared = DatabaseHelper()
     
     private func createTables() {
         
+        print(#function)
+        
         sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS Projects(Id TEXT PRIMARY KEY,name TEXT,StartDate DOUBLE,EndDate DOUBLE,Descpription TEXT,status TEXT);" )
         sqliteDb.execute(query:  "CREATE TABLE IF NOT EXISTS Tasks(Id TEXT PRIMARY KEY,name TEXT,DeadLine DOUBLE,priority TEXT,Description Text,isCompleted INTEGER,projectId TEXT,projectName TEXT,CONSTRAINT fk_projects FOREIGN KEY (projectId) REFERENCES Projects(Id) ON DELETE CASCADE);" )
+        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS ToDoList(Id TEXT PRIMARY KEY ON CONFLICT REPLACE ,Task TEXT,taskId TEXT,isComplete INTEGER,CONSTRAINT fk_tasks FOREIGN KEY (taskId) REFERENCES Tasks(Id) ON DELETE CASCADE );")
+        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS ProjectAttachments(Id TEXT PRIMARY KEY ,name TEXT,path TEXT,associatedId TEXT,type TEXT,CONSTRAINT fk_projects FOREIGN KEY (associatedId) REFERENCES Projects(Id) ON DELETE CASCADE);")
+        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS TaskAttachments(Id TEXT PRIMARY KEY ,name TEXT,path TEXT,associatedId TEXT, type TEXT,CONSTRAINT fk_tasks FOREIGN KEY (associatedId) REFERENCES Tasks(Id) ON DELETE CASCADE);")
+        
+        
     }
     
   
     func setupDataBase() {
         
-        openConnection()
         sqliteDb.execute(query: "PRAGMA foreign_keys=ON")
         createTables()
         
     }
     
+        
     
     func insertInto(table:String,values:row) {
         
@@ -72,51 +84,96 @@ class DatabaseHelper {
     }
     
     
-    func readFromTable(table:String,whereStmt:String?,argument:[Value])->Array<row> {
+    func selectFrom(table:String,columns:[String]?,wherec:row?)->Array<row> {
         
-        var query = "Select * FROM \(table) "
+        var values = [Value]()
         
-        if let whereClause = whereStmt {
-            query.append(whereClause)
+        var query = "SELECT "
+        let and = "AND "
+        
+        if let column = columns {
+            column.forEach { column in
+                query.append("\(column),")
+            }
+            query.removeLast()
+        } else {
+            query.append("*")
         }
         
-        return sqliteDb.read(query: query, arguments: argument)
+        query.append(" FROM \(table)")
+        
+        if let whereStmt = wherec {
+            
+            whereStmt.forEach { (key: String, value: Value) in
+                query.append(" WHERE \(key) = ? ")
+                query.append(and)
+                values.append(value)
+            }
+            
+            for _ in 0..<and.count {
+                query.removeLast()
+            }
+        }
+        
+        print(query)
+        return sqliteDb.read(query: query, arguments: values)
+        
     }
     
     
     
-    func deleteFromTable(table:String,whereStmt:String,argument:Value) {
+    func deleteFrom(tableName:String,whereC:row) {
+        
+        var values = [Value]()
        
-        var query = "DELETE FROM \(table) "
-        query.append(whereStmt)
-    
-        sqliteDb.write(query: query, arguments: [argument])
+        var query = "DELETE FROM \(tableName) "
+        let and = "AND "
+        
+        whereC.forEach { (key: String, value: Value) in
+            query.append(" WHERE \(key) = ? ")
+            values.append(value)
+            query.append(and)
+        }
+          
+        for _ in 0..<and.count {
+            query.removeLast()
+        }
+        
+        
+        print(query)
+        sqliteDb.write(query: query, arguments: values)
         
     }
     
     
     
-    func updateTable(table:String,whereClause:String,arguments:row,whereArugment:Value) {
+    func update(tableName:String,columns:row,whereArugment:row) {
         
-        var query = "UPDATE \(table) "
+        var query = "UPDATE \(tableName) "
+        let and = "And "
+        var valueArray = [Value]()
+        
+    
         query.append("SET ")
         
-        var setQuery:String = ""
-        
-        arguments.forEach { (key: String, value: Value) in
-            setQuery.append("\(key) = ?,")
+        columns.forEach { (key: String, value: Value) in
+            query.append("\(key) = ?,")
+            valueArray.append(value)
         }
         
-        setQuery.removeLast()
-        setQuery.append(" ")
-        query.append(setQuery)
-        query.append(whereClause)
+        query.removeLast()
+        query.append(" ")
         
-        var valueArray:[Value] = arguments.map { (key: String, value: Value) in
-            return value
+        whereArugment.forEach { (key: String, value: Value) in
+            query.append("WHERE \(key) = ? ")
+            valueArray.append(value)
+            query.append(and)
         }
         
-        valueArray.append(whereArugment)
+        for _ in 0..<and.count {
+            query.removeLast()
+        }
+        
         print(query)
         
         sqliteDb.write(query: query, arguments: valueArray)

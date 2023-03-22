@@ -10,9 +10,11 @@ import UIKit
 
 enum AddProjectFormSection:String {
     
-    case Project
+    case Name
     
-    case Details
+    case Duration
+    
+    case Status
     
     case Description
 }
@@ -22,33 +24,38 @@ protocol AddProjectDelegate {
     func update()
 }
 
+struct AddProjectForm {
+    
+    var name:String?
+    var startDate:Date = Date()
+    var endDate:Date = Date()
+    var status:ProjectStatus?
+    var description:String?
+    
+}
+
 class AddProjectVc: UIViewController {
     
     
     var delegate:AddProjectDelegate?
+    let statusArray = ProjectStatus.allCases.map({$0.rawValue})
+    var addProjectForm = AddProjectForm()
     
-    
-    let form:[FormSection] = [
+    let form:[TableViewSection] = [
         
-        FormSection(title: AddProjectFormSection.Project.rawValue, fields:
-                           [FormField(title: "Project Name", image: nil, type: .TextField)]),
-        FormSection(title: AddProjectFormSection.Details.rawValue, fields:
-                        [FormField(title: "Start Date", image:UIImage(systemName: "calendar") , type:.DatePicker),
-                         FormField(title: "End Date", image: UIImage(systemName: "calendar"), type: .DatePicker),
-                         FormField(title: "Status", image: nil, type: .Picker)]),
-        FormSection(title: AddProjectFormSection.Description.rawValue, fields:
-                        [FormField(title: "Description", image: nil, type: .TextView)])
+        TableViewSection(title: AddProjectFormSection.Name.rawValue, fields:
+              [TableViewField(title: "Project Name",type: .TextField)]),
+        TableViewSection(title: AddProjectFormSection.Duration.rawValue, fields:
+              [TableViewField(title: "Start Date", image:UIImage(systemName: "calendar") , type:.DatePicker),
+              TableViewField(title: "End Date", image: UIImage(systemName: "calendar"), type: .DatePicker)]),
+        TableViewSection(title: AddProjectFormSection.Status.rawValue, fields:
+              [TableViewField(title: "Status",type: .Picker)]),
+        TableViewSection(title: AddProjectFormSection.Description.rawValue, fields:
+              [TableViewField(title: "Description",type: .TextView)])
     ]
     
     
-    
-    let statusArray = ProjectStatus.allCases.map({$0.rawValue})
-    
-    var projectName:String?
-    var startDate:Date = Date()
-    var endDate:Date = Date()
-    var status:ProjectStatus?
-    var projectDescription:String?
+
     
     lazy var addProjectTableView = {
         
@@ -56,10 +63,10 @@ class AddProjectVc: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(TextViewTableViewCell.self, forCellReuseIdentifier: "textView")
-        tableView.register(TextFieldTableViewTableViewCell.self,forCellReuseIdentifier: "textField")
-        tableView.register(ButtonTableViewCell.self, forCellReuseIdentifier: "button")
-        tableView.register(TableHeaderView.self, forHeaderFooterViewReuseIdentifier: "header")
+        tableView.register(TextViewButtonTableViewCell.self, forCellReuseIdentifier: TextViewButtonTableViewCell.identifier)
+        tableView.register(TextFieldTableViewCell.self,forCellReuseIdentifier: TextFieldTableViewCell.identifier)
+        tableView.register(ButtonTableViewCell.self, forCellReuseIdentifier: ButtonTableViewCell.identifier)
+        tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeaderView.identifier)
         tableView.separatorInset = .zero
         
         return tableView
@@ -69,7 +76,7 @@ class AddProjectVc: UIViewController {
     lazy var saveBarButton = {
         
         let barButton = UIBarButtonItem()
-        barButton.title = "SAVE"
+        barButton.image = UIImage(systemName: "folder.badge.plus")
         barButton.target = self
         barButton.action = #selector(self.save)
         
@@ -79,16 +86,16 @@ class AddProjectVc: UIViewController {
     lazy var cancelBarButton = {
         
         let barButton = UIBarButtonItem()
-        barButton.title = "CANCEL"
+        barButton.image  = UIImage(systemName: "multiply")
         barButton.target = self
         barButton.action = #selector(self.cancel)
         
         return barButton
     }()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         
         setupNavigationBar()
         view.addSubview(addProjectTableView)
@@ -112,8 +119,8 @@ class AddProjectVc: UIViewController {
     }
     
     func setApperance() {
-        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
-        self.navigationController?.navigationBar.tintColor = ThemeManager.shared.currentTheme.tintColor
+        view.backgroundColor = currentTheme.backgroundColor
+        self.navigationController?.navigationBar.tintColor = currentTheme.tintColor
     }
     
     
@@ -133,26 +140,32 @@ class AddProjectVc: UIViewController {
     
     @objc func save() {
         
-       guard let unProjectname = projectName,unProjectname.isEmpty == false else {
+        guard let unProjectname = addProjectForm.name,unProjectname.isEmpty == false else {
             showToast(message: "Project name cannot be empty", seconds: 2)
             return
         }
 
 
-        guard let unStatus = status else {
+        guard let unStatus = addProjectForm.status else {
             showToast(message: "Pls select Project Status", seconds: 2)
             return
         }
 
-        guard endDate >= startDate else {
+        guard addProjectForm.endDate >= addProjectForm.startDate else {
             showToast(message: "End Date should be after Start Date", seconds: 2)
             return
         }
         
         
-        let project = Project(projectName: unProjectname, startDate: startDate, endDate: endDate, description: projectDescription ?? "", status: unStatus)
+        let project = Project(projectName: unProjectname, startDate: addProjectForm.startDate, endDate: addProjectForm.endDate, description: addProjectForm.description ?? "", status: unStatus)
        
-        DatabaseHelper.shared.insertInto(table: "Projects", values: ["Id":.text(project.projectId.uuidString),"name":.text(project.name),"StartDate":.double(project.startDate.timeIntervalSince1970),"EndDate":.double(project.endDate.timeIntervalSince1970),"Descpription":.text(project.description),"status":.text(project.status.rawValue)])
+        DatabaseHelper.shared.insertInto(table: ProjectTable.title,
+                                         values:   [ProjectTable.id: .text(project.projectId.uuidString),
+                                                   ProjectTable.name: .text(project.name),
+                                                   ProjectTable.startDate: .double(project.startDate.timeIntervalSince1970),
+                                                   ProjectTable.endDate: .double(project.endDate.timeIntervalSince1970),
+                                                   ProjectTable.description: .text(project.description),
+                                                   ProjectTable.status: .text(project.status.rawValue)])
     
         delegate?.update()
         navigationController?.pushViewController(ProjectVc1(projectForVc: project, isPresented: true), animated: true)
@@ -160,6 +173,13 @@ class AddProjectVc: UIViewController {
     
     @objc func cancel() {
         dismiss(animated: true)
+    }
+    
+    @objc func description() {
+       let descriptionVc = DescriptionVc(text: addProjectForm.description ?? "")
+        descriptionVc.delegate = self
+        
+        navigationController?.pushViewController(descriptionVc, animated: true)
     }
 }
 
@@ -169,7 +189,7 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let title = form[section].title
-        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! TableHeaderView
+        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! SectionHeaderView
         view.setupCell(text: title)
         
         return view
@@ -185,11 +205,14 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if form[indexPath.section].title == AddProjectFormSection.Project.rawValue || form[indexPath.section].title == AddProjectFormSection.Details.rawValue {
+        if form[indexPath.section].title == AddProjectFormSection.Name.rawValue ||
+           form[indexPath.section].title == AddProjectFormSection.Duration.rawValue ||
+            form[indexPath.section].title == AddProjectFormSection.Status.rawValue
+        {
             return 60
         }
         
-        return UITableView.automaticDimension
+        return 120
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -209,17 +232,17 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
             
         case .Picker:
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
             cell.pickerViewData = statusArray
             cell.configure(forItem: formItem)
-            cell.textField.text = status?.rawValue
-            cell.textChanged {  text in
+            cell.setText(text: addProjectForm.status?.rawValue)
+            cell.textChanged = {  text in
                 
                 guard let unWrappedText = text,unWrappedText.isEmpty == false else {
                     return
                 }
                 
-                self.status = ProjectStatus(rawValue: unWrappedText) ?? ProjectStatus.Ongoing
+                self.addProjectForm.status = ProjectStatus(rawValue: unWrappedText) ?? ProjectStatus.Active
                 
             }
         
@@ -228,27 +251,27 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
             
         case .DatePicker:
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
           
           
             if formItem.title == "Start Date" {
                 
-                cell.selectedDate = self.startDate
+                cell.selectedDate = self.addProjectForm.startDate
                 cell.configure(forItem: formItem)
-                cell.textChanged (action: { _ in
-                    self.startDate = cell.selectedDate
-                })
+                cell.textChanged = { _ in
+                    self.addProjectForm.startDate = cell.selectedDate
+                }
                 
                 
             }
             
             if formItem.title == "End Date" {
                 
-                cell.selectedDate = self.endDate
+                cell.selectedDate = self.addProjectForm.endDate
                 cell.configure(forItem: formItem)
-                cell.textChanged (action: { _ in
-                    self.endDate = cell.selectedDate
-                })
+                cell.textChanged = { _ in
+                    self.addProjectForm.endDate = cell.selectedDate
+                }
                 
             }
             
@@ -257,29 +280,24 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
             return cell
             
         case .TextField:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
             cell.configure(forItem: formItem)
-            cell.textField.text = projectName
-            cell.textChanged(action: { text in
+            cell.setText(text: addProjectForm.name)
+            cell.textChanged =  { text in
+    
                 if formItem.title == "Project Name" {
-                    self.projectName = text
+                    self.addProjectForm.name = text
                 }
-            })
+                
+            }
             
             return cell
    
         case .TextView:
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "textView") as! TextViewTableViewCell
-            cell.textChanged(action: { text in
-
-                if formItem.title == "Description" {
-                    self.projectDescription = text
-                }
-                
-                tableView.beginUpdates()
-                tableView.endUpdates()
-            })
+            let cell = tableView.dequeueReusableCell(withIdentifier: TextViewButtonTableViewCell.identifier) as! TextViewButtonTableViewCell
+            cell.textView.text = addProjectForm.description
+            cell.button.addTarget(self, action: #selector(getter: description), for: .touchUpInside)
             
             return cell
 
@@ -287,6 +305,17 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
         
     }
     
+    
+    
+}
+
+
+extension AddProjectVc:DescriptionViewDelegate {
+    
+    func setText(text: String) {
+        addProjectForm.description = text
+        addProjectTableView.reloadData()
+    }
     
     
 }

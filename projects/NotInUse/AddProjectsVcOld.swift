@@ -283,7 +283,7 @@ class AddProjectsVcOld: UIViewController {
     }
 
     func setApperance() {
-        let currentTheme = ThemeManager.shared.currentTheme
+        
         navigationController?.navigationBar.tintColor = currentTheme.tintColor
         view.backgroundColor = currentTheme.backgroundColor
         projectNameTextField.layer.borderColor = currentTheme.tintColor.cgColor
@@ -324,7 +324,7 @@ class AddProjectsVcOld: UIViewController {
             return
         }
         
-        let project = Project(projectName: projectName, startDate: startDatePicker.date, endDate: endDatePicker.date, description: descriptionTextView.text, status: ProjectStatus(rawValue: statusTextField.text!) ?? .Ongoing)
+        let project = Project(projectName: projectName, startDate: startDatePicker.date, endDate: endDatePicker.date, description: descriptionTextView.text, status: ProjectStatus(rawValue: statusTextField.text!) ?? .Active)
        
         DatabaseHelper.shared.insertInto(table: "Projects", values: ["Id":.text(project.projectId.uuidString),"name":.text(project.name),"StartDate":.double(project.startDate.timeIntervalSince1970),"EndDate":.double(project.endDate.timeIntervalSince1970),"Descpription":.text(project.description),"status":.text(project.status.rawValue)])
     

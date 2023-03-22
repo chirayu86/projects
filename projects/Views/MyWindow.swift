@@ -21,7 +21,6 @@ class MyWindow:UIWindow {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        print(#function)
         applyTheme()
     }
     

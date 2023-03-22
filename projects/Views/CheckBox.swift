@@ -8,12 +8,13 @@
 import UIKit
 
 class CheckBox: UIButton {
-
+    
     let uncheckedImage = UIImage(named: "uncheckedCheckbox")?.withTintColor(.label)
     let checkedImage = UIImage(named: "checkedCheckbox")?.withTintColor(.label)
     
-
+    
     var isChecked = false {
+        
         didSet {
             if isChecked == true {
                 self.setImage(checkedImage, for: .normal)
@@ -27,18 +28,21 @@ class CheckBox: UIButton {
         
         super.init(frame: frame)
         self.setImage(uncheckedImage, for: .normal)
-     
-       
-//        self.contentVerticalAlignment = .fill
-//        self.contentHorizontalAlignment = .fill
-  }
+        
+    }
+    
+    func setImageSize() {
+        
+        self.contentVerticalAlignment = .fill
+        self.contentHorizontalAlignment = .fill
+    }
     
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
- 
-        
-   
-
+    
+    
+    
+    
 }

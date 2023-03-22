@@ -17,7 +17,9 @@ struct Project {
     var description:String
     var status:ProjectStatus
     
+    
     init(projectId: UUID, projectName: String, startDate: Date, endDate: Date, description: String, status: ProjectStatus) {
+        
         self.projectId = projectId
         self.name = projectName
         self.startDate = startDate
@@ -27,11 +29,13 @@ struct Project {
     }
     
     init(projectName:String,startDate:Date,endDate:Date,description:String,status:ProjectStatus) {
+        
         self.projectId = UUID()
         self.name = projectName
         self.startDate = startDate
         self.endDate = endDate
         self.description = description
         self.status = status
+        
     }
 }

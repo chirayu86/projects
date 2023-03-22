@@ -28,6 +28,7 @@ class TextViewTableViewCell: UITableViewCell {
         textView.font = .systemFont(ofSize: 20)
         textView.isScrollEnabled = false
         textView.addDoneButtonOnInputView(true)
+        textView.delegate = self
         
         return textView
         

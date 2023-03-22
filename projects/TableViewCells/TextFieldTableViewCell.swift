@@ -7,7 +7,9 @@
 
 import UIKit
 
-class TextFieldTableViewTableViewCell: UITableViewCell {
+class TextFieldTableViewCell: UITableViewCell {
+    
+    static let identifier = "textField"
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -15,29 +17,34 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
     
     var textChanged: ((String?) -> Void)?
     var selectedDate:Date!
-    var dateFormatter = DateFormatter()
     var pickerViewData:[String]?
     
-    func textChanged(action:@escaping (String?) -> Void) {
-        self.textChanged = action
-    }
     
-  
+
     override func prepareForReuse() {
         
         print(#function)
         textField.text = ""
         textField.inputView = nil
         textField.setIcon(nil)
+        textField.isUserInteractionEnabled = true
         
     }
  
+    lazy var dateFormatter = {
+        
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        
+        return formatter
+    }()
     
     lazy var textField = {
         
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.textAlignment = .natural
+        textField.textAlignment = .left
         textField.addDoneButtonOnInputView(true)
         textField.clearButtonMode = .whileEditing
         textField.delegate = self
@@ -53,7 +60,6 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
         datePicker.datePickerMode = .date
         datePicker.minimumDate = Date()
         datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
-//        datePicker.addTarget(self, action: #selector(dateChanged), for: .touchUpInside)
         datePicker.preferredDatePickerStyle = .wheels
         
          return datePicker
@@ -72,9 +78,10 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(textField)
-      
+//        contentView.layer.borderWidth = 1
+//        contentView.layer.cornerRadius = 10
         setupDateFormatter()
-       setTextFieldConstraints()
+        setTextFieldConstraints()
         
     }
     
@@ -93,9 +100,7 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
     }
     
     func setApperance() {
-        
-        let currentTheme = ThemeManager.shared.currentTheme
-        
+    
         self.textField.tintColor = currentTheme.tintColor
         priorityPickerView.setValue(currentTheme.tintColor, forKeyPath: "textColor")
         priorityPickerView.backgroundColor = currentTheme.backgroundColor
@@ -115,7 +120,7 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             textField.topAnchor.constraint(equalTo: contentView.topAnchor),
-            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 7),
             textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             textField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
@@ -124,7 +129,7 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
     
     
     
-    func configure(forItem:FormField) {
+    func configure(forItem:TableViewField) {
         
         textField.placeholder = forItem.title
         
@@ -134,6 +139,7 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
         if forItem.type == .DatePicker {
             self.textField.inputView = datePicker
             self.textField.text = dateFormatter.string(from: selectedDate)
+//            self.textField.textAlignment = .center
         }
         
         
@@ -161,9 +167,10 @@ class TextFieldTableViewTableViewCell: UITableViewCell {
 }
 
 
-extension TextFieldTableViewTableViewCell:UITextFieldDelegate {
+extension TextFieldTableViewCell:UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+      
         print(#function)
         textChanged?(textField.text)
         
@@ -171,12 +178,14 @@ extension TextFieldTableViewTableViewCell:UITextFieldDelegate {
     }
 
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
+     
         print(#function)
         textChanged?("")
         self.selectedDate = Date()
         
         return true
     }
+    
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         print(#function)
@@ -189,13 +198,14 @@ extension TextFieldTableViewTableViewCell:UITextFieldDelegate {
 
 
 
-extension TextFieldTableViewTableViewCell:UIPickerViewDelegate,UIPickerViewDataSource {
+extension TextFieldTableViewCell:UIPickerViewDelegate,UIPickerViewDataSource {
   
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+       
         guard let dataSource = pickerViewData else {
             return 0
         }
@@ -206,9 +216,11 @@ extension TextFieldTableViewTableViewCell:UIPickerViewDelegate,UIPickerViewDataS
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         pickerViewData?[row]
     }
+
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.textField.text = pickerViewData?[row]
+        textChanged?(pickerViewData?[row])
     }
     
     

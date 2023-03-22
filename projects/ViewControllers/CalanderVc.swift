@@ -9,8 +9,8 @@ import UIKit
 
 class CalendarVc: UIViewController {
     
-    var dates = [Date]()
-    var dateComponents = Set<DateComponents>()
+    var dates = Set<Date>()
+    var dateComponents = [DateComponents]()
     
  lazy var calendar = {
         
@@ -42,10 +42,26 @@ class CalendarVc: UIViewController {
     }
 
     
+    func reloadDecoration() {
+        
+        dates = getDates()
+ 
+      dateComponents.removeAll()
+        
+        dates.forEach { Date in
+            
+            if Calendar.current.isDate(Date, equalTo: calendar.visibleDateComponents.date!, toGranularity: .month) {
+                dateComponents.append(Calendar.current.dateComponents(in: TimeZone.current, from: Date))
+            }
+        }
+        
+       calendar.reloadDecorations(forDateComponents: dateComponents , animated: true)
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        dates = getDates()
+        print(#function)
+        reloadDecoration()
         setAppearance()
     }
     
@@ -56,8 +72,8 @@ class CalendarVc: UIViewController {
     }
     
     func setAppearance() {
-        view.backgroundColor = ThemeManager.shared.currentTheme.backgroundColor
-        calendar.tintColor = ThemeManager.shared.currentTheme.tintColor
+        view.backgroundColor = currentTheme.backgroundColor
+        calendar.tintColor = currentTheme.tintColor
    
     }
     
@@ -73,22 +89,35 @@ class CalendarVc: UIViewController {
     
 
     
-    func getDates()->[Date] {
+    func getDates()->Set<Date> {
 
-        let output = DatabaseHelper.shared.sqliteDb.read(query: "Select deadline from Tasks", arguments: [])
+        let output = DatabaseHelper.shared.selectFrom(table: TaskTable.title, columns:
+                                                        [TaskTable.deadLine], wherec: nil)
         var dates = [Date]()
         
         output.forEach { row in
+            
+            var contains = false
             
             guard let deadline =  row["DeadLine"]?.doubleValue else {
                 return
             }
             
-            dates.append(Date(timeIntervalSince1970: deadline))
+            let date = Date(timeIntervalSince1970: deadline)
+            
+            dates.forEach { Date in
+                if Calendar.current.isDate(Date, equalTo: date, toGranularity: .day) {
+                    contains = true
+                }
+            }
+            
+            if contains == false {
+                dates.append(date)
+            }
+          
         }
-        
-        return dates
-
+       
+        return Set(dates)
     }
 
   
@@ -120,9 +149,22 @@ extension CalendarVc:UITableViewDataSource,UITableViewDelegate {
 extension CalendarVc:UICalendarViewDelegate,UICalendarSelectionSingleDateDelegate {
   
     func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-        print(selection.selectedDate?.date)
         
-        present(YourTasksVc(), animated: true)
+        guard let dateComp = dateComponents else {
+            return
+        }
+        
+        let date = Calendar.current.date(from: dateComp)
+        
+        let taskVc = YourTasksVc(stateForVc: .TaskForDate)
+        taskVc.date = date
+        
+        navigationController?.pushViewController(taskVc, animated: true)
+    }
+    
+    
+    func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
+        return true
     }
     
     
@@ -143,3 +185,4 @@ extension CalendarVc:UICalendarViewDelegate,UICalendarSelectionSingleDateDelegat
     
     
 }
+

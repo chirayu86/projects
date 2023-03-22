@@ -250,7 +250,7 @@ class ProjectVc: UIViewController {
         btn.setTitle(" Attachments", for: .normal)
         btn.setImage(UIImage(systemName: "paperclip"), for: .normal)
         btn.setTitleColor(UIColor.black, for: .normal)
-        btn.addTarget(self, action: #selector(attachments), for: .touchUpInside)
+//        btn.addTarget(self, action: #selector(attachments), for: .touchUpInside)
         
         return btn
     }()
@@ -266,7 +266,7 @@ class ProjectVc: UIViewController {
         btn.setImage(UIImage(named: "checkedCheckbox"), for: .normal)
         btn.setTitleColor(UIColor.black, for: .normal)
         btn.contentHorizontalAlignment = .center
-        btn.addTarget(self, action: #selector(tasks), for: .touchUpInside)
+//        btn.addTarget(self, action: #selector(tasks), for: .touchUpInside)
         
         return btn
     }()
@@ -361,8 +361,6 @@ class ProjectVc: UIViewController {
     }
     
     func setApperance() {
-        
-        let currentTheme = ThemeManager.shared.currentTheme
         
         navigationController?.navigationBar.tintColor = currentTheme.tintColor
 //        projectNameStack.backgroundColor = currentTheme.tintColor.withAlphaComponent(0.3)
@@ -540,19 +538,19 @@ class ProjectVc: UIViewController {
         dismiss(animated: true)
     }
     
-    @objc func attachments() {
-        
-        let attachMentsVc = UINavigationController(rootViewController: AttachmentsVc())
-        attachMentsVc.modalPresentationStyle = .fullScreen
-        present(attachMentsVc, animated: true)
-    }
+//    @objc func attachments() {
+//
+//        let attachMentsVc = UINavigationController(rootViewController: AttachmentsVc(id: <#T##UUID#>, attachmentsFor: <#T##AttachmentsFor#>))
+//        attachMentsVc.modalPresentationStyle = .fullScreen
+//        present(attachMentsVc, animated: true)
+//    }
     
-    @objc func tasks() {
-        let tasksVc = UINavigationController(rootViewController: CheckListToDoVc())
-        tasksVc.modalPresentationStyle = .formSheet
-        present(tasksVc, animated: true)
-    }
-    
+//    @objc func tasks() {
+//        let tasksVc = UINavigationController(rootViewController: CheckListToDoVc())
+//        tasksVc.modalPresentationStyle = .formSheet
+//        present(tasksVc, animated: true)
+//    }
+//
     @objc func datePicked() {
         if activeTextField == startDateField {
             startDateField.text = dateFormatter.string(from: datePicker.date)

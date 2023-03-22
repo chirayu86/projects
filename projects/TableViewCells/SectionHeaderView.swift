@@ -7,7 +7,9 @@
 
 import UIKit
 
-class TableHeaderView: UITableViewHeaderFooterView {
+class SectionHeaderView: UITableViewHeaderFooterView {
+    
+    static let identifier = "header"
 
     lazy var headerLabel = {
        
@@ -42,7 +44,8 @@ class TableHeaderView: UITableViewHeaderFooterView {
     
     
     func setApperance() {
-        headerLabel.textColor = ThemeManager.shared.currentTheme.tintColor
+        headerLabel.textColor = currentTheme.tintColor
+        
     }
     
     func setLabelConstraint() {

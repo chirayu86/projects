@@ -9,14 +9,25 @@ import UIKit
 
 class ProjectTableViewCell: UITableViewCell {
 
-    let dateformatter = DateFormatter()
+    static let identifier = "ProjectTableCell"
+    
+    lazy var dateFormatter = {
+        
+        let dateformatter = DateFormatter()
+        dateformatter.dateStyle = .medium
+        dateformatter.timeStyle = .none
+        
+        return dateformatter
+    }()
+    
+   
     
     lazy var projectNameLabel = {
         
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .systemFont(ofSize: 16, weight: .bold)
-        nameLabel.numberOfLines = 0
+        nameLabel.numberOfLines = 3
         
         return nameLabel
         
@@ -42,13 +53,33 @@ class ProjectTableViewCell: UITableViewCell {
         
     }()
     
+    
+    lazy var numberOfTasksLabel = {
+        
+        let tasks = UILabel()
+        tasks.translatesAutoresizingMaskIntoConstraints = false
+        tasks.font = .systemFont(ofSize: 21, weight: .light)
+  
+        return tasks
+        
+    }()
+    
     lazy var seperatorLabel = {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "~"
+        label.text = "-"
         
         return label
+    }()
+    
+    lazy var clockImage = {
+        
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.image = UIImage(systemName: "clock")
+        
+        return image
     }()
 
     
@@ -70,31 +101,32 @@ class ProjectTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-       
-        dateformatter.dateStyle = .medium
-        dateformatter.timeStyle = .none
-        
         setupStackViews()
     }
     
-    
     func setupStackViews() {
         
+        datehorizontalStack.addArrangedSubview(clockImage)
         datehorizontalStack.addArrangedSubview(startDateLabel)
         datehorizontalStack.addArrangedSubview(seperatorLabel)
         datehorizontalStack.addArrangedSubview(endDateLabel)
+//        datehorizontalStack.addArrangedSubview(numberOfTasksLabel)
+        
         contentView.addSubview(projectNameLabel)
         contentView.addSubview(datehorizontalStack)
-   
+        contentView.addSubview(numberOfTasksLabel)
+        
         setStackViewConstraints()
     }
     
     
     func setAppearance() {
         
-        projectNameLabel.textColor = ThemeManager.shared.currentTheme.primaryLabel
-        startDateLabel.textColor = ThemeManager.shared.currentTheme.secondaryLabel
-        endDateLabel.textColor = ThemeManager.shared.currentTheme.tintColor
+        projectNameLabel.textColor = currentTheme.primaryLabel
+        startDateLabel.textColor = currentTheme.secondaryLabel
+        endDateLabel.textColor =  currentTheme.tintColor
+        clockImage.tintColor = currentTheme.primaryLabel
+        numberOfTasksLabel.textColor = currentTheme.secondaryLabel
     }
     
     
@@ -105,19 +137,24 @@ class ProjectTableViewCell: UITableViewCell {
             projectNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             projectNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             projectNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -10),
-            datehorizontalStack.topAnchor.constraint(equalTo: projectNameLabel.bottomAnchor,constant: 5),
+            
+            datehorizontalStack.topAnchor.constraint(equalTo: projectNameLabel.bottomAnchor,constant: 10),
             datehorizontalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 10),
-            datehorizontalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10)
+            datehorizontalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10),
+            
+            numberOfTasksLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -10),
+            numberOfTasksLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10),
+        
         ])
   }
     
     
-    func setDetails(project:Project) {
+    func setDetails(project:Project,numberOfTasks:Int) {
         
         self.projectNameLabel.text = project.name
-        self.startDateLabel.text = dateformatter.string(from: project.startDate)
-        self.endDateLabel.text = dateformatter.string(from: project.endDate)
-        
+        self.startDateLabel.text = dateFormatter.string(from: project.startDate)
+        self.endDateLabel.text = dateFormatter.string(from: project.endDate)
+        self.numberOfTasksLabel.text = String(numberOfTasks)
         setAppearance()
     }
 

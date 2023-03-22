@@ -204,8 +204,8 @@
             filePath = "projects/TableViewCells/TextFieldTableViewTableViewCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "123"
-            endingLineNumber = "123"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "setTextFieldConstraints()"
             landmarkType = "7">
          </BreakpointContent>
@@ -220,8 +220,8 @@
             filePath = "projects/ViewControllers/YourProjectsVc.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "getAllProjects()"
             landmarkType = "7">
          </BreakpointContent>
@@ -236,8 +236,8 @@
             filePath = "projects/ViewControllers/YourProjectsVc.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "151"
-            endingLineNumber = "151"
+            startingLineNumber = "194"
+            endingLineNumber = "194"
             landmarkName = "getAllProjects()"
             landmarkType = "7">
          </BreakpointContent>
@@ -246,23 +246,23 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "projects/TableViewCells/TasksTableViewCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13"
-            endingLineNumber = "13"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
             landmarkName = "TasksTableViewCell"
             landmarkType = "3">
             <Locations>
                <Location
-                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - ff8dea30a0af47c5"
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - a16388cde26532e7"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "projects.TasksTableViewCell.checkBox.getter : projects.CheckBox"
+                  symbolName = "projects.TasksTableViewCell.taskString.getter : Swift.Optional&lt;Swift.String&gt;"
                   moduleName = "projects"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
@@ -270,29 +270,14 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "13"
                   endingLineNumber = "13"
-                  offsetFromSymbolStart = "193">
+                  offsetFromSymbolStart = "103">
                </Location>
                <Location
-                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - e90fa6debfa6f0f9"
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - 6b837d54deea2f3"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; projects.CheckBox in projects.TasksTableViewCell.checkBox.getter : projects.CheckBox"
-                  moduleName = "projects"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "15"
-                  endingLineNumber = "15"
-                  offsetFromSymbolStart = "41">
-               </Location>
-               <Location
-                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - aaf555c69e9e3bd1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "projects.TasksTableViewCell.checkBox.setter : projects.CheckBox"
+                  symbolName = "projects.TasksTableViewCell.taskString.setter : Swift.Optional&lt;Swift.String&gt;"
                   moduleName = "projects"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
@@ -300,14 +285,14 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "13"
                   endingLineNumber = "13"
-                  offsetFromSymbolStart = "132">
+                  offsetFromSymbolStart = "139">
                </Location>
                <Location
-                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - 660441c6b88480c6"
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - 4039d8f424cbee0"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "projects.TasksTableViewCell.checkBox.modify : projects.CheckBox"
+                  symbolName = "projects.TasksTableViewCell.taskString.modify : Swift.Optional&lt;Swift.String&gt;"
                   moduleName = "projects"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
@@ -318,11 +303,11 @@
                   offsetFromSymbolStart = "0">
                </Location>
                <Location
-                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - 555982bef33a2a16"
+                  uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - a749c28f1415fdc5"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "projects.TasksTableViewCell.checkBox.modify : projects.CheckBox with unmangled suffix &quot;.resume.0&quot;"
+                  symbolName = "projects.TasksTableViewCell.taskString.modify : Swift.Optional&lt;Swift.String&gt; with unmangled suffix &quot;.resume.0&quot;"
                   moduleName = "projects"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/chirayu-pt6280/Desktop/projectManagementApp/projects/projects/TableViewCells/TasksTableViewCell.swift"
@@ -330,7 +315,7 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "13"
                   endingLineNumber = "13"
-                  offsetFromSymbolStart = "17">
+                  offsetFromSymbolStart = "15">
                </Location>
                <Location
                   uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - dbc37aa3f781abc"
@@ -345,7 +330,7 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "13"
                   endingLineNumber = "13"
-                  offsetFromSymbolStart = "169">
+                  offsetFromSymbolStart = "233">
                </Location>
                <Location
                   uuid = "729C3D74-5F1F-4338-877E-3D07F8B45274 - 13594c4978d7da70"
@@ -360,9 +345,105 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "13"
                   endingLineNumber = "13"
-                  offsetFromSymbolStart = "124">
+                  offsetFromSymbolStart = "190">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EFAC51C3-6B73-4B19-ACB0-89937954353C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/Models/CheckListModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "11"
+            endingLineNumber = "11"
+            landmarkName = "ToDoItem"
+            landmarkType = "14">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C89D9BA5-7944-45FF-B2FB-DF79A1B740BE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/ViewControllers/AddTaskVc.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
+            landmarkName = "showSelectedProject(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0872EBC4-F877-46D8-BF3E-3324D476FC58"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/ViewControllers/CheckListToDoVc.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
+            landmarkName = "CheckListToDoVc"
+            landmarkType = "21">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0356B78C-8FF9-4B9B-9653-75CB0A1D8E3C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/TableViewCells/ToDoTableViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
+            landmarkName = "setTaskAttributedString(text:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "172436B1-CA94-4C75-8E13-0EA991A51F1D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/ViewControllers/YourTasksVc.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "&lt;(lhs:rhs:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EF3E9DD6-163E-4235-85B4-5585680F07F5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "projects/ViewControllers/TaskVc.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
+            landmarkName = "setupTextView()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

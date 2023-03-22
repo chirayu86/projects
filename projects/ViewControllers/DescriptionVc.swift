@@ -19,8 +19,10 @@ class DescriptionVc: UIViewController {
     var text:String
     
     init(text:String) {
+        
         self.text = text
         super.init(nibName: nil, bundle: nil)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -42,9 +44,17 @@ class DescriptionVc: UIViewController {
     
 
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         self.title = "Description"
+        additionalSafeAreaInsets  = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         setupViews()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        textView.becomeFirstResponder()
     }
     
     func setupViews() {
@@ -57,12 +67,14 @@ class DescriptionVc: UIViewController {
     
     
     func setupTextViewConstraints() {
+        
         NSLayoutConstraint.activate([
             textView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             textView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             textView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             textView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
         ])
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {

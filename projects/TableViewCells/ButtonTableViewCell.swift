@@ -12,10 +12,9 @@ import UIKit
 class ButtonTableViewCell: UITableViewCell {
 
   
-var updateButtonTitle:((String)->Void)?
-    
+    static let identifier = "button"
    
-override func awakeFromNib() {
+   override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
@@ -34,17 +33,19 @@ override func awakeFromNib() {
         
     }()
     
+    
+    override func prepareForReuse() {
+        button.removeTarget(nil, action: nil, for: .allEvents)
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.addSubview(button)
-       
-        self.updateButtonTitle = { title in
-            self.button.setTitle(title, for: .normal)
-        }
         
         setButtonConstraints()
         setApperance()
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -62,7 +63,7 @@ override func awakeFromNib() {
     }
 
     func setApperance() {
-        button.setTitleColor(ThemeManager.shared.currentTheme.tintColor, for: .normal)
+        button.setTitleColor(currentTheme.tintColor, for: .normal)
     }
     
     func setButtonConstraints() {
@@ -74,7 +75,7 @@ override func awakeFromNib() {
         ])
     }
     
-    func configure(forItem:FormField) {
+    func configure(forItem:TableViewField) {
         
         self.button.setTitle(forItem.title, for: .normal)
         self.button.setImage(forItem.image, for: .normal)

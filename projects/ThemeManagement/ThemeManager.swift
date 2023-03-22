@@ -8,20 +8,21 @@
 import Foundation
 import UIKit
 
+var currentTheme:Theme = LightTheme()
 
 class ThemeManager {
    
-    var currentTheme: Theme
+//    var currentTheme:Theme
     
     private init() {
-        self.currentTheme = LightTheme()
+//        self.currentTheme = LightTheme()
     }
     
    static let shared = ThemeManager()
     
     
     func applyTheme(theme:Theme) {
-        self.currentTheme = theme
+          currentTheme = theme
     }
 
 }

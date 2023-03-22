@@ -12,8 +12,11 @@ import SQLite3
  enum Value {
      
     case double(Double)
+     
     case integer(Int64)
+     
     case null
+     
     case text(String)
 }
 
@@ -41,6 +44,8 @@ class Sqlite {
         if  sqlite3_open(fileUrl.path,&connection) == SQLITE_OK {
             print("successfully created dataBase connection to path:\(fileUrl)")
         }
+        
+        print(#function)
     }
     
     
@@ -114,6 +119,24 @@ class Sqlite {
         }
     }
     
+    
+    private func getValue(for statement: OpaquePointer?, at column: Int32) -> Any? {
+        let type = sqlite3_column_type(statement, column)
+        
+        switch type {
+        case SQLITE_FLOAT:
+            return sqlite3_column_double(statement, column) as Double
+        case SQLITE_INTEGER:
+            return  Int(sqlite3_column_int64(statement, column) as Int64)
+        case SQLITE_NULL:
+            return nil
+        case SQLITE_TEXT:
+            guard let cString = sqlite3_column_text(statement, column) else { return .null }
+            return .text(String(cString: cString))
+        default:
+            return nil
+        }
+    }
     
     
     func bind(value: Value, to index: Int32, in statement: OpaquePointer?)  {
