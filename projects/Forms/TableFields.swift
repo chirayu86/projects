@@ -8,17 +8,17 @@
 import Foundation
 import UIKit
 
-enum FieldType {
+enum TableFieldType {
    
-    case TextField
+    case textField
     
-    case TextView
+    case textView
     
-    case DatePicker
+    case datePicker
     
-    case Picker
+    case picker
     
-    case Button
+    case button
     
     
 }
@@ -36,9 +36,9 @@ struct TableViewField {
     
     let title:String
     let image:UIImage?
-    let type:FieldType
+    let type:TableFieldType
     
-    init(title: String, image: UIImage?, type: FieldType) {
+    init(title: String, image: UIImage?, type: TableFieldType) {
         
         self.title = title
         self.image = image
@@ -46,9 +46,17 @@ struct TableViewField {
         
     }
     
-    init(title: String, type: FieldType) {
+    init(title: String, type: TableFieldType) {
         
         self.title = title
+        self.image = nil
+        self.type = type
+        
+    }
+    
+    init(type:TableFieldType) {
+        
+        self.title = ""
         self.image = nil
         self.type = type
         

@@ -15,8 +15,8 @@ class SectionHeaderView: UITableViewHeaderFooterView {
        
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 21, weight: .semibold)
         label.textAlignment = .justified
+        
         
         return label
     }()
@@ -37,21 +37,24 @@ class SectionHeaderView: UITableViewHeaderFooterView {
     }
     
     
-    func setupCell(text:String) {
+    func setupCell(text:String,fontSize:CGFloat) {
+        
         headerLabel.text = text
+        headerLabel.font = .systemFont(ofSize: fontSize, weight: .semibold)
         setApperance()
+        
     }
     
     
     func setApperance() {
-        headerLabel.textColor = currentTheme.tintColor
+        headerLabel.textColor = currentTheme.secondaryLabel
         
     }
     
     func setLabelConstraint() {
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 5),
-            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 10),
+            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             headerLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             headerLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -10)
         ])

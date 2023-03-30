@@ -11,7 +11,6 @@ import UIKit
 
 enum TaskPriority:String,Comparable,CaseIterable {
     
-    
     case High
     
     case Medium
@@ -44,12 +43,13 @@ enum TaskPriority:String,Comparable,CaseIterable {
 }
 
 enum Filter:String {
+    
+    case All = "All Tasks"
 
-    case Today
+    case Today = "Today's Tasks"
     
-    case Week
+    case Week = "This Week's Tasks"
     
-    case Date
 }
 
 
@@ -61,7 +61,7 @@ struct TaskTableSection {
 
 enum VcState {
     
-    case YourTasks
+    case TaskForProject
     
     case TaskForDate
     
@@ -72,17 +72,23 @@ class YourTasksVc: UIViewController {
 
     var taskTableSections = [TaskTableSection]()
     var project:Project?
-    var filterParam:Filter?
+    var filterParam:Filter
     var date:Date?
     let stateForVc:VcState
+    let defaults = UserDefaults.standard
+    
     
     
     init( stateForVc: VcState) {
+        
         self.stateForVc = stateForVc
+        self.filterParam = Filter(rawValue: defaults.object(forKey: "Filter") as? String  ?? "") ?? .All
         super.init(nibName: nil, bundle: nil)
+        
+       
     }
     
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -91,10 +97,11 @@ class YourTasksVc: UIViewController {
     
     lazy var taskTableView = {
         
-        let tableView =  UITableView(frame: .zero, style: .plain)
+        let tableView =  UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.separatorInset = .zero
         tableView.register(TasksTableViewCell.self, forCellReuseIdentifier: TasksTableViewCell.identifier)
         tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeaderView.identifier)
         
@@ -109,6 +116,7 @@ class YourTasksVc: UIViewController {
         image.emptyListImageView.image = UIImage(systemName: "clipboard")
         image.boldMessage.text = "No Tasks"
         image.lightMessage.text = "Press + to Add New Task"
+        image.button.addTarget(self, action: #selector(addTask), for: .touchUpInside)
         image.isHidden = true
         
         return image
@@ -149,20 +157,42 @@ class YourTasksVc: UIViewController {
     
     
     func updateData() {
-
+        
         taskTableSections.removeAll()
         
         
-         getTasks(project: project).forEach { (key: TaskPriority, value: [Task]) in
-             print(key,value)
-             taskTableSections.append(TaskTableSection(priority: key, tasks: value))
-         }
+        getTasks(project: project).forEach { (key: TaskPriority, value: [Task]) in
+            print(key,value)
+            taskTableSections.append(TaskTableSection(priority: key, tasks: value))
+        }
         
         
         taskTableSections = taskTableSections.sorted { $0.priority < $1.priority }
-
-        filter(value: filterParam)
         
+        
+        if let unDate = date {
+            updateForDate(date: unDate)
+            return
+        }
+        
+         filter(value: filterParam)
+     }
+    
+    
+    
+    func updateForDate(date:Date) {
+        
+        for sections in 0..<taskTableSections.count {
+            taskTableSections[sections].tasks = taskTableSections[sections].tasks.filter { task in
+                Calendar.current.isDate(task.startDate, inSameDayAs: date)
+            }
+        }
+        
+        taskTableSections = taskTableSections.filter { taskTableSection in
+              taskTableSection.tasks.count > 0
+          }
+        
+        noTaskView.isHidden = !taskTableSections.isEmpty
     }
     
     
@@ -173,43 +203,39 @@ class YourTasksVc: UIViewController {
     }
     
     
-   private func filter(value:Filter?) {
+   private func filter(value:Filter) {
         
-        switch value {
-        
-        case .none:
-              
-               break
-            
-        case .Today:
-            
-             for sections in 0..<taskTableSections.count {
-            taskTableSections[sections].tasks = taskTableSections[sections].tasks.filter { task in
-                  Calendar.current.isDateInToday(task.deadLine)
-                }
-            }
-            
-        case .Week:
-            
-            for sections in 0..<taskTableSections.count {
-           taskTableSections[sections].tasks = taskTableSections[sections].tasks.filter { task in
-               Calendar.current.isDate(task.deadLine, equalTo: Date.now.addingTimeInterval(86400), toGranularity: .weekOfMonth)
+       switch value {
+           
+       case .All:
+           
+           break
+           
+       case .Today:
+           
+           for sections in 0..<taskTableSections.count {
+               
+               taskTableSections[sections].tasks = taskTableSections[sections].tasks.filter { task in
+                   Calendar.current.isDateInToday(task.startDate)
                }
+               
            }
-            
-        case .Date:
-          
-            guard let unwrappedDate = date else {
-                return
-            }
-            
-            for sections in 0..<taskTableSections.count {
-           taskTableSections[sections].tasks = taskTableSections[sections].tasks.filter { task in
-               Calendar.current.isDate(task.deadLine, inSameDayAs: unwrappedDate)
+           
+       case .Week:
+           
+           for sections in 0..<taskTableSections.count {
+               
+               taskTableSections[sections].tasks = taskTableSections[sections].tasks.filter { task in
+                   Calendar.current.isDate(task.startDate, equalTo: Date.now, toGranularity: .weekOfMonth)
                }
+               
+               taskTableSections[sections].tasks = taskTableSections[sections].tasks.sorted(by: {
+                   $0.startDate < $1.startDate
+               })
+               
            }
-
-        }
+           
+       }
         
         taskTableSections = taskTableSections.filter { taskTableSection in
               taskTableSection.tasks.count > 0
@@ -221,11 +247,9 @@ class YourTasksVc: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
-        if stateForVc == .TaskForDate {
-            filterParam = .Date
-        }
-        
+//        additionalSafeAreaInsets = UIEdgeInsets(top: 0, left:5, bottom: 0, right: 10)
+   
+        view.keyboardLayoutGuide.followsUndockedKeyboard = true
         setupNavigationBar()
         setupTaskTableView()
         setupEmptyImage()
@@ -240,8 +264,8 @@ class YourTasksVc: UIViewController {
         
         NSLayoutConstraint.activate([
             
-            noTaskView.heightAnchor.constraint(equalToConstant:120),
-            noTaskView.widthAnchor.constraint(equalToConstant:120),
+            noTaskView.heightAnchor.constraint(equalToConstant:150),
+            noTaskView.widthAnchor.constraint(equalToConstant:150),
             
             noTaskView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             noTaskView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
@@ -264,12 +288,13 @@ class YourTasksVc: UIViewController {
     }
     
     
+    
     func setupNavigationBar() {
         
       switch stateForVc {
-          case .YourTasks:
+          case .TaskForProject:
           
-          self.title = "All Tasks"
+          self.title = filterParam.rawValue
           
           navigationItem.setRightBarButtonItems([filterBarButtonItem,addTaskBarButtonItem], animated: true)
           setupBarButtonMenu()
@@ -290,11 +315,22 @@ class YourTasksVc: UIViewController {
     
     
     override func viewWillAppear(_ animated: Bool) {
+        
         super.viewWillAppear(animated)
         print(#function)
         updateTasks()
         setApperance()
+        
     }
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        super.viewWillDisappear(animated)
+        defaults.set(filterParam.rawValue, forKey: "Filter")
+        
+    }
+    
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -306,7 +342,7 @@ class YourTasksVc: UIViewController {
     
     func getTasks(project:Project?)->[TaskPriority:[Task]] {
       
-        var output:Array<DatabaseHelper.row>
+        var output:Array<Dictionary<String,Any>>
         var tasks = [TaskPriority:[Task]]()
         
         if let unProject = project {
@@ -314,24 +350,26 @@ class YourTasksVc: UIViewController {
             output = DatabaseHelper.shared.selectFrom(
                 table: TaskTable.title,
                 columns: nil,
-                wherec:[TaskTable.projectId:.text(unProject.projectId.uuidString)])
+                wherec:[TaskTable.projectId:.text(unProject.id.uuidString)])
             
         } else {
             output = DatabaseHelper.shared.selectFrom(table: TaskTable.title, columns: nil, wherec: nil)
         }
         
         
-        output.forEach { row in
+        output.forEach { rows in
             
-            guard let id = row[TaskTable.id]?.stringValue,
-                  let name = row[TaskTable.name]?.stringValue,
-                  let deadline = row[TaskTable.deadLine]?.doubleValue,
-                  let desc = row[TaskTable.description]?.stringValue,
-                  let priority = TaskPriority(rawValue: row[TaskTable.priority]!.stringValue!),
-                  let isCompleted = row[TaskTable.isCompleted]?.boolValue,
-                  let projectId =  row[TaskTable.projectId]?.stringValue,
-                  let projectName = row[TaskTable.projectName]?.stringValue else {
+            guard let id = rows[TaskTable.id] as? String,
+                  let name = rows[TaskTable.name] as? String,
+                  let startDate = rows[TaskTable.startDate] as? Double,
+                  let endDate = rows[TaskTable.endDate] as? Double,
+                  let desc = rows[TaskTable.description] as? String,
+                  let priority = TaskPriority(rawValue: (rows[TaskTable.priority] as? String)!),
+                  let isCompleted = rows[TaskTable.isCompleted] as? Int,
+                  let projectId =  rows[TaskTable.projectId] as? String,
+                  let projectName = rows[TaskTable.projectName] as? String else {
                 
+                print("aksdjhfkadnsmk dkjafba")
                  return
                  }
             
@@ -346,14 +384,15 @@ class YourTasksVc: UIViewController {
               }
 
             
-            let task = Task(id: taskUUID ,
+            let task = Task(id:taskUUID,
                             name: name,
-                            deadLine: Date(timeIntervalSince1970: deadline),
+                            startDate: Date(timeIntervalSince1970: startDate),
+                            endDate: Date(timeIntervalSince1970: endDate),
                             projectId: projectUUID,
                             projectName:projectName,
                             priority: priority,
                             description: desc,
-                            isCompleted: isCompleted )
+                            isCompleted: isCompleted.boolValue )
            
             
             
@@ -369,34 +408,59 @@ class YourTasksVc: UIViewController {
     }
     
     
+    func getAllAttachmentsPaths(task:Task)->[URL] {
+        
+        var output = [Dictionary<String,Any>]()
+        var attachments = [URL]()
+        
+        output = DatabaseHelper.shared.selectFrom(table: AttachmentTable.taskAttachmentsTable, columns: [AttachmentTable.path], wherec: [AttachmentTable.associatedId:.text(task.id.uuidString)])
+        
+        output.forEach { row in
+            
+            guard let path = row[AttachmentTable.path] as? String else {
+                return
+            }
+            
+            guard let url = URL(string: path) else {
+                return
+            }
+            
+            attachments.append(url)
+            
+        }
+        
+        return attachments
+    }
+    
+    
     func setupBarButtonMenu() {
         
-        let allFilter = UIAction(title: "All Tasks", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .mixed , handler: {
+        let allFilter = UIAction(title: "All Tasks", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .on , handler: { [self]
             action in
-            self.filterParam = nil
+            self.filterParam = .All
             self.updateTasks()
-            self.title = "All Tasks"
+            self.title = filterParam.rawValue
         })
         
-        let todayFilter = UIAction(title: Filter.Today.rawValue , image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .mixed, handler: {
+        let todayFilter = UIAction(title: Filter.Today.rawValue , image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off, handler: { [self]
             action in
             self.filterParam = .Today
             self.updateTasks()
-            self.title = Filter.Today.rawValue
+            self.title = filterParam.rawValue
         })
         
-        let sevenDaysFilter = UIAction(title: Filter.Week.rawValue, image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .mixed, handler: {
+        let sevenDaysFilter = UIAction(title: Filter.Week.rawValue, image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off, handler: { [self]
             action in
             self.filterParam = .Week
             self.updateTasks()
-            self.title = Filter.Week.rawValue
+            self.title = filterParam.rawValue
         })
         
         
         let filters = [allFilter,todayFilter,sevenDaysFilter]
         
         let filterMenu = UIMenu(title: "" , image: nil, identifier: nil, options: .singleSelection, children: filters)
-        
+    
         filterBarButtonItem.menu = filterMenu
     }
     
@@ -408,8 +472,9 @@ class YourTasksVc: UIViewController {
         print(#function)
         let addTaskVc =  AddTaskVc(project: project,date: date)
         addTaskVc.delegate = self
-        addTaskVc.modalPresentationStyle = .formSheet
+        addTaskVc.modalPresentationStyle = .pageSheet
         present(UINavigationController(rootViewController: addTaskVc), animated: true)
+        
     }
     
 
@@ -438,7 +503,7 @@ extension YourTasksVc:UITableViewDataSource,UITableViewDelegate {
        
         let title = taskTableSections[section].priority.rawValue
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: SectionHeaderView.identifier) as! SectionHeaderView
-        view.setupCell(text: title)
+        view.setupCell(text: title,fontSize: 21)
         
         return view
         
@@ -446,11 +511,15 @@ extension YourTasksVc:UITableViewDataSource,UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
      
-        let deleteAction = UIContextualAction(style: .normal, title: "Delete", handler: { [self]
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete", handler: { [self]
              (action,source,completion) in
             
             
             let task = taskTableSections[indexPath.section].tasks[indexPath.row]
+            
+            getAllAttachmentsPaths(task: task).forEach { url in
+                try? FileManager.default.removeItem(at: url)
+            }
             
             DatabaseHelper.shared.deleteFrom(tableName: TaskTable.title, whereC: [TaskTable.id:.text(task.id.uuidString)])
           
@@ -462,7 +531,7 @@ extension YourTasksVc:UITableViewDataSource,UITableViewDelegate {
         })
         
         
-        deleteAction.backgroundColor  = currentTheme.tintColor
+        deleteAction.backgroundColor  = .systemRed
         
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         config.performsFirstActionWithFullSwipe = true
@@ -484,7 +553,8 @@ extension YourTasksVc:UITableViewDataSource,UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: TasksTableViewCell.identifier, for: indexPath) as! TasksTableViewCell
         cell.setDetails(task: task)
         cell.layoutIfNeeded()
-        cell.checkBoxHandler { isChecked in
+        
+        cell.checkBoxHandler = { isChecked in
           
             DatabaseHelper.shared.update(tableName: TaskTable.title, columns:
                                                    [TaskTable.isCompleted:.integer(Int64(isChecked.intValue))],
@@ -504,15 +574,19 @@ extension YourTasksVc:UITableViewDataSource,UITableViewDelegate {
         
         navigationController?.pushViewController(TaskVc(taskForVc: task), animated: true)
     }
+    
+    
 
     
     
 }
 
 
-extension YourTasksVc:AddProjectDelegate {
-    func update() {
+extension YourTasksVc:AddTaskDelegate {
+    
+    func update(task:Task) {
         updateTasks()
+        showToast(message: " --\(task.name)-- added successfully", seconds: 5)
     }
 }
 

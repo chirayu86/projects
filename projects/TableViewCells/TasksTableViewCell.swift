@@ -12,9 +12,9 @@ class TasksTableViewCell: UITableViewCell {
     static let identifier = "taskTableCell"
     
     var checkBoxHandler: ((Bool) -> Void)?
-//    var taskString:String?
     
-    lazy var dateFormatter = {
+    
+   private lazy var dateFormatter = {
         
         let dateformatter  = DateFormatter()
         dateformatter.dateStyle  = .medium
@@ -23,9 +23,6 @@ class TasksTableViewCell: UITableViewCell {
         return dateformatter
     }()
     
-    func checkBoxHandler(action: @escaping (Bool) -> Void) {
-       self.checkBoxHandler = action
-    }
     
     override func prepareForReuse() {
         
@@ -35,7 +32,7 @@ class TasksTableViewCell: UITableViewCell {
     }
     
     
-    lazy var checkBox = {
+     private lazy var checkBox = {
         
        let checkBox = CheckBox()
        checkBox.translatesAutoresizingMaskIntoConstraints = false
@@ -46,11 +43,11 @@ class TasksTableViewCell: UITableViewCell {
     }()
     
     
-    lazy var taskNameLabel = {
+    private lazy var taskNameLabel = {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 15, weight: .bold)
+        label.font = .systemFont(ofSize: 15, weight: .medium)
         label.numberOfLines = 3
         
         return label
@@ -59,30 +56,50 @@ class TasksTableViewCell: UITableViewCell {
     
 
     
-    lazy var projectNameLabel = {
+   private lazy var projectNameLabel = {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 15)
+        label.font = .systemFont(ofSize: 13)
         label.numberOfLines = 3
     
         return label
     }()
     
     
-    lazy var dateLabel = {
+   private lazy var startDateLabel = {
         
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15)
+        label.font = .systemFont(ofSize: 13)
         label.translatesAutoresizingMaskIntoConstraints = false
-      
+       label.textAlignment = .center
+        
         return label
         
     }()
     
+    private lazy var seperatorLabel = {
+         
+         let label = UILabel()
+         label.translatesAutoresizingMaskIntoConstraints = false
+         label.text = "-"
+         
+         return label
+        
+     }()
     
+    private lazy var endDateLabel = {
+         
+         let label = UILabel()
+         label.font = .systemFont(ofSize: 13)
+         label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+
+        return label
+        
+    }()
     // stack holding date,taskName,projectName
-    lazy var verticalStack = {
+   private lazy var verticalStack = {
         
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -95,16 +112,38 @@ class TasksTableViewCell: UITableViewCell {
     
     
     //stack holding taskname,projectName
-    lazy var horizontalStack = {
+   private lazy var horizontalStack = {
         
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.distribution = .fillProportionally
         stack.alignment = .center
+        stack.spacing = 5
 
         
         return stack
+    }()
+    
+    
+    private lazy var dateHorizontalStack = {
+         
+         let stack = UIStackView()
+         stack.translatesAutoresizingMaskIntoConstraints = false
+         stack.axis = .horizontal
+         stack.spacing = 5
+
+         
+         return stack
+     }()
+    
+    private lazy var emptyView = {
+        
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+        
     }()
 
     
@@ -132,7 +171,12 @@ class TasksTableViewCell: UITableViewCell {
         
         verticalStack.addArrangedSubview(taskNameLabel)
         verticalStack.addArrangedSubview(projectNameLabel)
-        verticalStack.addArrangedSubview(dateLabel)
+        dateHorizontalStack.addArrangedSubview(startDateLabel)
+        dateHorizontalStack.addArrangedSubview(seperatorLabel)
+        dateHorizontalStack.addArrangedSubview(endDateLabel)
+        dateHorizontalStack.addArrangedSubview(emptyView)
+        
+        verticalStack.addArrangedSubview(dateHorizontalStack)
         
         horizontalStack.addArrangedSubview(checkBox)
         horizontalStack.addArrangedSubview(verticalStack)
@@ -142,14 +186,18 @@ class TasksTableViewCell: UITableViewCell {
     }
     
     
-    func setViewConstraints() {
+   private func setViewConstraints() {
+       
+       startDateLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+       endDateLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
         NSLayoutConstraint.activate([
             
             horizontalStack.topAnchor.constraint(equalTo: contentView.topAnchor,constant: 5),
-            horizontalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 15),
+            horizontalStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 10),
             horizontalStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -5),
             horizontalStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -5),
+            
             
             checkBox.heightAnchor.constraint(equalToConstant: 33),
             checkBox.widthAnchor.constraint(equalToConstant: 33)
@@ -161,7 +209,8 @@ class TasksTableViewCell: UITableViewCell {
     func setDetails(task:Task) {
         
         projectNameLabel.text = task.projectName
-        dateLabel.text = dateFormatter.string(from: task.deadLine)
+        startDateLabel.text = dateFormatter.string(from: task.startDate)
+        endDateLabel.text = dateFormatter.string(from: task.endDate)
         
         setCheckBox(ticked: task.isCompleted)
         setTaskAttributedString(text: task.name)
@@ -170,17 +219,17 @@ class TasksTableViewCell: UITableViewCell {
     }
     
     
-    func setCheckBox(ticked:Bool) {
+   private func setCheckBox(ticked:Bool) {
         
         checkBox.isChecked = ticked
-        
     }
     
-    func setCellAppearance() {
+    
+  func setCellAppearance() {
         
         taskNameLabel.textColor = currentTheme.primaryLabel
         projectNameLabel.textColor = currentTheme.secondaryLabel
-        dateLabel.textColor = currentTheme.tintColor
+        startDateLabel.textColor = currentTheme.tintColor
     }
   
     
@@ -198,7 +247,7 @@ class TasksTableViewCell: UITableViewCell {
     }
     
    
-    func setTaskAttributedString(text:String) {
+   private func setTaskAttributedString(text:String) {
         
         let attributeString:NSMutableAttributedString =  NSMutableAttributedString(string: text)
         

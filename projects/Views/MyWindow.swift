@@ -24,7 +24,7 @@ class MyWindow:UIWindow {
         applyTheme()
     }
     
-    func applyTheme() {
+   private func applyTheme() {
         if traitCollection.userInterfaceStyle == .dark {
             ThemeManager.shared.applyTheme(theme: DarkTheme())
         } else {

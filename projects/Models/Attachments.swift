@@ -11,7 +11,7 @@ import Foundation
 struct Attachment {
     
     let id:UUID
-    let itemId:UUID
+    let associatedId:UUID
     let name:String
     let path:URL
     let type:AttachmentType
@@ -19,7 +19,7 @@ struct Attachment {
     init(id: UUID, itemId: UUID, name: String, path: URL,type:AttachmentType) {
         
         self.id = id
-        self.itemId = itemId
+        self.associatedId = itemId
         self.name = name
         self.path = path
         self.type = type
@@ -29,7 +29,7 @@ struct Attachment {
     init(itemId: UUID, name: String, path: URL,type:AttachmentType) {
         
         self.id = UUID()
-        self.itemId = itemId
+        self.associatedId = itemId
         self.name = name
         self.path = path
         self.type = type

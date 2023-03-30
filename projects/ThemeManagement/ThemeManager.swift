@@ -12,10 +12,8 @@ var currentTheme:Theme = LightTheme()
 
 class ThemeManager {
    
-//    var currentTheme:Theme
-    
     private init() {
-//        self.currentTheme = LightTheme()
+        
     }
     
    static let shared = ThemeManager()

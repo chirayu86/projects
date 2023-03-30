@@ -14,9 +14,11 @@ class DatabaseHelper {
     let sqliteDb = Sqlite(path: "projects.sqlite")
     
     
-    typealias row = Dictionary<String,Value>
+    typealias InsertParam = Dictionary<String,Value>
     
+    typealias Row = Dictionary<String,Any>
  
+    
     private func openConnection() {
       
       sqliteDb.openConnection()
@@ -36,14 +38,12 @@ class DatabaseHelper {
         
         print(#function)
         
-        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS Projects(Id TEXT PRIMARY KEY,name TEXT,StartDate DOUBLE,EndDate DOUBLE,Descpription TEXT,status TEXT);" )
-        sqliteDb.execute(query:  "CREATE TABLE IF NOT EXISTS Tasks(Id TEXT PRIMARY KEY,name TEXT,DeadLine DOUBLE,priority TEXT,Description Text,isCompleted INTEGER,projectId TEXT,projectName TEXT,CONSTRAINT fk_projects FOREIGN KEY (projectId) REFERENCES Projects(Id) ON DELETE CASCADE);" )
-        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS ToDoList(Id TEXT PRIMARY KEY ON CONFLICT REPLACE ,Task TEXT,taskId TEXT,isComplete INTEGER,CONSTRAINT fk_tasks FOREIGN KEY (taskId) REFERENCES Tasks(Id) ON DELETE CASCADE );")
-        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS ProjectAttachments(Id TEXT PRIMARY KEY ,name TEXT,path TEXT,associatedId TEXT,type TEXT,CONSTRAINT fk_projects FOREIGN KEY (associatedId) REFERENCES Projects(Id) ON DELETE CASCADE);")
-        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS TaskAttachments(Id TEXT PRIMARY KEY ,name TEXT,path TEXT,associatedId TEXT, type TEXT,CONSTRAINT fk_tasks FOREIGN KEY (associatedId) REFERENCES Tasks(Id) ON DELETE CASCADE);")
-        
-        
-    }
+        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS PROJECTS(Id TEXT PRIMARY KEY,Name TEXT,StartDate DOUBLE,EndDate DOUBLE,Descpription TEXT,Status TEXT);" )
+        sqliteDb.execute(query:  "CREATE TABLE IF NOT EXISTS TASKS(Id TEXT PRIMARY KEY,Name TEXT,StartDate DOUBLE ,EndDate DOUBLE,Priority TEXT,Description Text,IsCompleted INTEGER,ProjectId TEXT,ProjectName TEXT,CONSTRAINT fk_projects FOREIGN KEY (projectId) REFERENCES Projects(Id) ON DELETE CASCADE);" )
+        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS TO_DO_LIST(Id TEXT PRIMARY KEY ON CONFLICT REPLACE ,Task TEXT,TaskId TEXT,IsCompleted INTEGER,CONSTRAINT fk_tasks FOREIGN KEY (taskId) REFERENCES Tasks(Id) ON DELETE CASCADE );")
+        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS PROJECT_ATTACHMENT(Id TEXT PRIMARY KEY ,Name TEXT,Path TEXT,AssociatedId TEXT,Type TEXT,CONSTRAINT fk_projects FOREIGN KEY (associatedId) REFERENCES Projects(Id) ON DELETE CASCADE);")
+        sqliteDb.execute(query: "CREATE TABLE IF NOT EXISTS TASK_ATTACHMENT(Id TEXT PRIMARY KEY ,Name TEXT,Path TEXT,AssociatedId TEXT, Type TEXT,CONSTRAINT fk_tasks FOREIGN KEY (associatedId) REFERENCES Tasks(Id) ON DELETE CASCADE);")
+        }
     
   
     func setupDataBase() {
@@ -55,7 +55,7 @@ class DatabaseHelper {
     
         
     
-    func insertInto(table:String,values:row) {
+    func insertInto(table:String,values:InsertParam) {
         
         var query = "INSERT INTO \(table)("
         
@@ -84,7 +84,7 @@ class DatabaseHelper {
     }
     
     
-    func selectFrom(table:String,columns:[String]?,wherec:row?)->Array<row> {
+    func selectFrom(table:String,columns:[String]?,wherec:InsertParam?)->Array<Row> {
         
         var values = [Value]()
         
@@ -122,7 +122,7 @@ class DatabaseHelper {
     
     
     
-    func deleteFrom(tableName:String,whereC:row) {
+    func deleteFrom(tableName:String,whereC: InsertParam) {
         
         var values = [Value]()
        
@@ -147,7 +147,7 @@ class DatabaseHelper {
     
     
     
-    func update(tableName:String,columns:row,whereArugment:row) {
+    func update(tableName:String,columns:InsertParam,whereArugment:InsertParam) {
         
         var query = "UPDATE \(tableName) "
         let and = "And "

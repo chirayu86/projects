@@ -18,7 +18,7 @@ extension UIViewController {
             
             let toast = UIView()
             toast.translatesAutoresizingMaskIntoConstraints = false
-            toast.backgroundColor = currentTheme.tintColor
+            toast.backgroundColor = currentTheme.tintColor.withAlphaComponent(0.5)
             
             let label = UILabel()
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -32,6 +32,7 @@ extension UIViewController {
             label.text = message
             
             return toast
+            
         }()
         
         self.view.addSubview(toastView)
@@ -39,7 +40,7 @@ extension UIViewController {
         toastView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         toastView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         toastView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        toastView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10).isActive = true
+        toastView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor,constant: -10).isActive = true
         toastView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
        
         

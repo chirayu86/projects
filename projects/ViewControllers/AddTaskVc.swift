@@ -14,9 +14,13 @@ enum AddTaskFormSection:String {
   
     case Project
     
-    case Details
+    case Name
     
-    case DeadLine
+    case Priority
+
+    case StartDate
+    
+    case EndDate
     
     case Description
 }
@@ -25,7 +29,8 @@ enum AddTaskFormSection:String {
 struct AddTaskForm {
     
     var project:Project?
-    var deadline:Date?
+    var startDate = Date()
+    var endDate = Date()
     var name:String?
     var priority:TaskPriority?
     var taskDescription:String?
@@ -34,34 +39,40 @@ struct AddTaskForm {
 
 
 protocol AddTaskDelegate {
-    func update()
+    func update(task:Task)
 }
 
 
 class AddTaskVc: UIViewController {
     
-    var delegate:AddProjectDelegate?
-    
-    var canSelectProject:Bool
-    
-    var canSelectDate:Bool
+    var delegate:AddTaskDelegate?
     
     var addTaskForm = AddTaskForm()
         
     let priorityArray = TaskPriority.allCases.map { $0.rawValue }
     
-    
+    var savedPressed:Bool = false
     
     let form:[TableViewSection] = [
+        
         TableViewSection(title: AddTaskFormSection.Project.rawValue , fields:
-                        [TableViewField(title: "Select Project",type: .Button)]),
-        TableViewSection(title: AddTaskFormSection.Details.rawValue, fields:
-                        [TableViewField(title: "Task Name", type: .TextField),
-                         TableViewField(title: "priority", type: .Picker)]),
-        TableViewSection(title: AddTaskFormSection.DeadLine.rawValue, fields:
-                         [TableViewField(title: "DeadLine", image: UIImage(systemName: "calendar"), type: .DatePicker)]),
+                        [TableViewField(title: "Select Project",type: .button)]),
+        
+        TableViewSection(title: AddTaskFormSection.Name.rawValue, fields:
+                        [TableViewField(title: "Task Name", type: .textField),]),
+        
+        TableViewSection(title: AddTaskFormSection.Priority.rawValue, fields:
+                         [TableViewField(title: "priority", type: .picker)]),
+        
+        TableViewSection(title: AddTaskFormSection.StartDate.rawValue, fields:
+                        [TableViewField(title: "StartDate", image: UIImage(systemName: "calendar"),
+                         type: .datePicker)]),
+        
+        TableViewSection(title: AddTaskFormSection.EndDate.rawValue, fields:
+                         [TableViewField(title: "EndDate", image: UIImage(systemName: "calendar"), type: .datePicker)]),
+        
         TableViewSection(title: AddTaskFormSection.Description.rawValue, fields:
-                        [TableViewField(title: "desc", type: .TextView)])
+                        [TableViewField(title: "desc", type: .textView)])
         ]
     
   
@@ -69,13 +80,18 @@ class AddTaskVc: UIViewController {
 
     
     lazy var dateFormatter = {
-        DateFormatter()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        
+        return dateFormatter
     }()
     
     
     lazy var addTaskTableView = {
         
-        let tableView =  UITableView(frame: .zero, style: .insetGrouped)
+        let tableView =  UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self
@@ -84,7 +100,8 @@ class AddTaskVc: UIViewController {
         tableView.register(TextFieldTableViewCell.self,forCellReuseIdentifier: TextFieldTableViewCell.identifier)
         tableView.register(ButtonTableViewCell.self, forCellReuseIdentifier: ButtonTableViewCell.identifier)
         tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeaderView.identifier)
-        tableView.separatorInset = .zero
+        tableView.separatorColor = .clear
+        tableView.backgroundColor = .clear
         
         return tableView
         
@@ -94,7 +111,7 @@ class AddTaskVc: UIViewController {
     lazy var saveBarButton = {
         
         let barButton = UIBarButtonItem()
-        barButton.image = UIImage(systemName: "folder.badge.plus")
+        barButton.title = "Save"
         barButton.target = self
         barButton.action = #selector(self.save)
         
@@ -102,14 +119,22 @@ class AddTaskVc: UIViewController {
         
     }()
     
+    lazy var cancelBarButton = {
+        
+        let barButton = UIBarButtonItem()
+        barButton.title = "Cancel"
+        barButton.target = self
+        barButton.action = #selector(self.cancel)
+        
+        return barButton
+    }()
+    
     
     init(project:Project?,date:Date?) {
         
         self.addTaskForm.project = project
-        self.addTaskForm.deadline = date ?? Date()
-        self.canSelectDate =  date == nil ? true : false
-        self.canSelectProject = project == nil ? true : false
-        
+        self.addTaskForm.endDate = date ?? Date()
+        self.addTaskForm.startDate = date ?? Date()
         super.init(nibName: nil, bundle: nil)
         
     }
@@ -121,16 +146,19 @@ class AddTaskVc: UIViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-//        additionalSafeAreaInsets  = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        additionalSafeAreaInsets  = UIEdgeInsets(top: 5, left: 20, bottom: 0, right: 20)
+      
         
         setNavigationBar()
-        setDateFormatter()
         setupTableView()
       
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
         super.viewWillAppear(animated)
+        navigationController?.presentationController?.delegate = self
+        
         setApperance()
     }
     
@@ -139,6 +167,13 @@ class AddTaskVc: UIViewController {
         setApperance()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    
+        }
+    
+    
+ 
     
     func setupTableView() {
         view.addSubview(addTaskTableView)
@@ -146,18 +181,21 @@ class AddTaskVc: UIViewController {
     }
     
     func setNavigationBar() {
-        self.title = "Add New Task"
+        self.title = "Add Task"
         navigationItem.setRightBarButton(saveBarButton, animated: true)
+        navigationItem.setLeftBarButton(cancelBarButton, animated: true)
     }
     
-    func setDateFormatter() {
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-    }
+
     
     func setApperance() {
+        
         view.backgroundColor = currentTheme.backgroundColor
+        navigationController?.navigationBar.tintColor = currentTheme.tintColor
+        navigationController?.navigationBar.backgroundColor = currentTheme.secondaryLabel.withAlphaComponent(0.1)
     }
+    
+    
     
     func setTableViewConstraints() {
         
@@ -174,56 +212,98 @@ class AddTaskVc: UIViewController {
     
     
     @objc func projectSelected() {
+        
         let projectSelectionVc = SelectProjectVc()
         projectSelectionVc.modalPresentationStyle = .formSheet
         projectSelectionVc.selectionDelegate = self
-        present(projectSelectionVc, animated: true)
+        projectSelectionVc.selectedProject = addTaskForm.project
+        present( UINavigationController(rootViewController: projectSelectionVc), animated: true)
+        
     }
     
     @objc func save() {
         
-        guard let unproject = addTaskForm.project  else {
-            showToast(message: "Select a project for the task", seconds: 2)
+        let generator  = UIImpactFeedbackGenerator(style: .heavy)
+        
+        savedPressed = true
+        addTaskTableView.reloadData()
+        
+      guard let untaskName = addTaskForm.name,untaskName.trimmingCharacters(in: .whitespaces).isEmpty == false,
+            untaskName.count < 120,
+            let unpriority = addTaskForm.priority,
+            let unproject = addTaskForm.project
+            else {
+            generator.impactOccurred()
+            showToast(message: "Enter all the required Details", seconds: 5)
+                
             return
         }
         
-        guard let untaskName = addTaskForm.name else {
-            showToast(message: "Select a name for the task", seconds: 2)
-            return
-        }
+        
+    let task = Task(name: untaskName,
+                startDate: addTaskForm.startDate ,
+                endDate: addTaskForm.endDate,
+                projectId: unproject.id,
+                projectName: unproject.name,
+                priority: unpriority,
+                description: addTaskForm.taskDescription ?? "",
+                isCompleted: false)
         
         
-        guard let unpriority = addTaskForm.priority else {
-            showToast(message: "please select a priority", seconds: 2)
-            return
-        }
-        
-        guard let deadline = addTaskForm.deadline else {
-            showToast(message: "please select a deadLine", seconds: 2)
-            return
-        }
-        
-        let task = Task(name: untaskName, deadLine: deadline, projectId: unproject.projectId,projectName: unproject.name, priority: unpriority, description: addTaskForm.taskDescription ?? "", isCompleted: false)
-        
+         
         DatabaseHelper.shared.insertInto(table: TaskTable.title,
-                                         values: [TaskTable.id:.text(task.id.uuidString),
-                                                        TaskTable.name:.text(task.name),
-                                                        TaskTable.deadLine:.double(task.deadLine.timeIntervalSince1970),
-                                                        TaskTable.priority:.text(task.priority.rawValue),
-                                                        TaskTable.description:.text(task.description),
-                                                        TaskTable.isCompleted:.integer(Int64(task.isCompleted.intValue)),
-                                                        TaskTable.projectId:.text(task.projectId.uuidString),
-                                                        TaskTable.projectName:.text(task.projectName)])
+                        values: [TaskTable.id: .text(task.id.uuidString),
+                                TaskTable.name: .text(task.name.trimmingCharacters(in: .whitespaces)),
+                                TaskTable.startDate:.double(task.startDate.timeIntervalSince1970),
+                                TaskTable.endDate:.double(task.endDate.timeIntervalSince1970),
+                                TaskTable.priority: .text(task.priority.rawValue),
+                                TaskTable.description: .text(task.description.trimmingCharacters(in:.whitespacesAndNewlines)),
+                                TaskTable.isCompleted: .integer(Int64(task.isCompleted.intValue)),
+                                TaskTable.projectId: .text(task.projectId.uuidString),
+                                TaskTable.projectName: .text(task.projectName)])
           
-         delegate?.update()
+         delegate?.update(task:task)
          dismiss(animated: true)
     }
     
+    
+    func showDismissAlert() {
+        
+        let alert = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: { _ in
+                    
+                }))
+        
+        alert.addAction(UIAlertAction(title: "Discard Changes", style: .destructive,handler: { _ in
+            self.dismiss(animated: true)
+        }))
+        
+        
+       if addTaskForm.project == nil,
+           addTaskForm.priority == nil,
+           addTaskForm.name == nil || addTaskForm.name?.isEmpty == true {
+               dismiss(animated: true)
+           } else {
+               present(alert, animated: true)
+           }
+    }
+   
+    
+    @objc func cancel() {
+    
+        showDismissAlert()
+     
+    }
+    
+    
     @objc func description() {
+        
        let descriptionVc = DescriptionVc(text: addTaskForm.taskDescription ?? "")
         descriptionVc.delegate = self
         
         navigationController?.pushViewController(descriptionVc, animated: true)
+        
     }
     
 }
@@ -241,11 +321,18 @@ extension AddTaskVc:UITableViewDelegate,UITableViewDataSource {
      
         let title = form[section].title
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! SectionHeaderView
-        view.setupCell(text: title)
+        view.setupCell(text: title,fontSize: 18)
         
         return view
     }
     
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        .leastNormalMagnitude
+    }
+   
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        nil
+    }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -260,67 +347,120 @@ extension AddTaskVc:UITableViewDelegate,UITableViewDataSource {
         
         switch formItem.type {
             
-        case .Button:
+        case .button:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "button") as!ButtonTableViewCell
             cell.configure(forItem: formItem)
-         
-            if canSelectProject {
-               cell.button.addTarget(self, action: #selector(projectSelected), for: .touchUpInside)
-                cell.button.setTitle(addTaskForm.project?.name ?? "Select Project", for: .normal)
-            } else {
-                cell.button.setTitle(addTaskForm.project?.name, for: .normal)
-                cell.button.isEnabled = false
-            }
+            let project = addTaskForm.project
+              
+            cell.button.addTarget(self, action: #selector(projectSelected), for: .touchUpInside)
+            cell.button.setTitle(project?.name ?? "Select Project", for: .normal)
             
+            
+            if savedPressed {
+                if addTaskForm.project != nil {
+                    cell.hideValidationLabel()
+                } else {
+                    cell.showValidationMessage(msg: "Select a Project For the Task")
+                }
+                
+            }
+     
             return cell
             
-        case .Picker:
+        case .picker:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
+            let priority = addTaskForm.priority
+            
             cell.pickerViewData = priorityArray
             cell.configure(forItem: formItem)
-            cell.setText(text: addTaskForm.priority?.rawValue)
+            cell.setText(text:priority?.rawValue)
+            
             cell.textChanged = {  text in
                 
             guard let unWrappedText = text,unWrappedText.isEmpty == false else {
                  return
             }
                 self.addTaskForm.priority = TaskPriority(rawValue: text ?? TaskPriority.Medium.rawValue)
+//                self.isModalInPresentation = true
+                
+            }
+            
+            
+            if savedPressed {
+                if addTaskForm.priority != nil {
+                    cell.hideValidationMessage()
+                } else {
+                    cell.showValidationMessage(msg: "Please select a priority for the task")
+                }
                 
             }
         
             
             return cell
             
-        case .DatePicker:
+        case .datePicker:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
-            cell.selectedDate = addTaskForm.deadline
-            cell.configure(forItem: formItem)
-            if canSelectDate == false {
-                cell.textField.isUserInteractionEnabled = false
+           
+            if formItem.title == "StartDate" {
+                
+                cell.selectedDate = self.addTaskForm.startDate
+                cell.configure(forItem: formItem)
+                cell.textChanged = { _ in
+                    self.addTaskForm.startDate = cell.selectedDate
+                }
             }
-            cell.textChanged = { _ in
-                self.addTaskForm.deadline = cell.selectedDate
+            
+            
+            if formItem.title == "EndDate" {
+                
+                cell.selectedDate = self.addTaskForm.endDate
+                cell.configure(forItem: formItem)
+                cell.textChanged = { _ in
+                    self.addTaskForm.endDate = cell.selectedDate
+                }
+                
             }
+            
             
             return cell
             
-        case .TextField:
+        case .textField:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
             cell.configure(forItem: formItem)
             cell.setText(text: addTaskForm.name)
+         
             cell.textChanged = { text in
+                
                 if formItem.title == "Task Name" {
                     self.addTaskForm.name = text
+                    self.navigationController?.isModalInPresentation = true
                 }
+                
+                if self.savedPressed {
+                    if let name = self.addTaskForm.name,name.trimmingCharacters(in: .whitespaces).isEmpty == false {
+                        if name.count > 120 {
+                            cell.showValidationMessage(msg: "Task Name can only be 120 characters")
+                        } else {
+                            cell.hideValidationMessage()
+                        }
+                    } else {
+                        cell.showValidationMessage(msg: "Enter a name for the Task")
+                    }
+                    
+                    
+                }
+                
             }
+            
+      
             
             return cell
    
-        case .TextView:
+        case .textView:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: TextViewButtonTableViewCell.identifier) as! TextViewButtonTableViewCell
             cell.textView.text = addTaskForm.taskDescription
@@ -333,26 +473,27 @@ extension AddTaskVc:UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-      
-        if form[indexPath.section].title == AddTaskFormSection.Project.rawValue ||
-            form[indexPath.section].title == AddTaskFormSection.Details.rawValue ||
-            form[indexPath.section].title == AddTaskFormSection.DeadLine.rawValue {
-            return 60
-        }
         
-        return 120
+        if form[indexPath.section].title == AddTaskFormSection.Description.rawValue{
+            
+            return 100
+        }
+     
+        return 70
+    }
         
     }
     
 
     
-}
+
 
 
 extension AddTaskVc:ProjectSelectionDelegate {
     
     func showSelectedProject(_ project: Project?) {
         self.addTaskForm.project = project
+//        self.navigationController?.isModalInPresentation = true
         addTaskTableView.reloadData()
     }
     
@@ -367,4 +508,16 @@ extension AddTaskVc:DescriptionViewDelegate {
     }
     
     
+}
+
+
+extension AddTaskVc:UIAdaptivePresentationControllerDelegate {
+    
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        false
+    }
+    
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        showDismissAlert()
+    }
 }

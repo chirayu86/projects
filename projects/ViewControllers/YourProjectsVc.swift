@@ -19,8 +19,10 @@ enum ProjectStatus:String,CaseIterable {
     case Delayed
 }
 
-struct ProjectViewSections {
+struct ProjectViewSection {
+    
     var title:String
+    
     var projects:[Project]
     
 }
@@ -29,17 +31,18 @@ struct ProjectViewSections {
 class YourProjectsVc: UIViewController {
     
     
-    var projectSections = [ProjectViewSections]()
+    var projectSections = [ProjectViewSection]()
     
     
     lazy var projectsTableView = {
         
-        let table = UITableView(frame: .zero, style: .plain)
+        let table = UITableView(frame: .zero, style: .insetGrouped)
         table.translatesAutoresizingMaskIntoConstraints = false
         table.delegate = self
         table.dataSource = self
         table.register(ProjectTableViewCell.self, forCellReuseIdentifier: ProjectTableViewCell.identifier)
         table.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeaderView.identifier)
+       
         
         return table
         
@@ -59,19 +62,21 @@ class YourProjectsVc: UIViewController {
     
     lazy var noProjectView = {
         
-        let image = EmptyView(frame: .zero)
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.emptyListImageView.image = UIImage(systemName: "folder")
-        image.boldMessage.text = "No Projects"
-        image.lightMessage.text = "Press + to Add New Project"
-        image.isHidden = true
+        let view = EmptyView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.emptyListImageView.image = UIImage(systemName: "folder")
+        view.boldMessage.text = "No Projects"
+        view.lightMessage.text = "Press + to Add New Project"
+        view.isHidden = true
+        view.button.addTarget(self, action: #selector(addProject), for: .touchUpInside)
         
-        return image
+        return view
     }()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.keyboardLayoutGuide.followsUndockedKeyboard = true
         
         updateData()
         setupNavigationBar()
@@ -86,7 +91,7 @@ class YourProjectsVc: UIViewController {
         projectSections.removeAll()
         
         getAllProjects().forEach({ (key: ProjectStatus, value: [Project]) in
-            projectSections.append(ProjectViewSections(title: key.rawValue, projects: value))
+            projectSections.append(ProjectViewSection(title: key.rawValue, projects: value))
         })
         
        projectSections =  projectSections.sorted {$0.title < $1.title}
@@ -171,19 +176,23 @@ class YourProjectsVc: UIViewController {
 
        output.forEach { row in
 
-           guard let id  =  row[ProjectTable.id]?.stringValue,
-                 let name =  row[ProjectTable.name]?.stringValue,
-                 let startDate = row[ProjectTable.startDate]?.doubleValue,
-                 let endDate = row[ProjectTable.endDate]?.doubleValue,
-                 let desc = row[ProjectTable.description]?.stringValue,
-                 let status = ProjectStatus(rawValue: row[ProjectTable.status]!.stringValue!)
+           guard let id  =  row[ProjectTable.id] as? String,
+                 let name =  row[ProjectTable.name] as? String,
+                 let startDate = row[ProjectTable.startDate] as? Double,
+                 let endDate = row[ProjectTable.endDate] as? Double,
+                 let desc = row[ProjectTable.description] as? String,
+                 let status = ProjectStatus(rawValue: (row[ProjectTable.status] as? String)!)
            else {
                print("cannot create a project at row \(row)")
                return
             }
+           
+           guard let pid = UUID(uuidString: id) else {
+               return
+           }
 
            
-           let project = Project(projectId: UUID(uuidString: id)!,
+           let project = Project(projectId: pid,
                                  projectName: name,
                                  startDate: Date(timeIntervalSince1970: startDate),
                                  endDate: Date(timeIntervalSince1970:endDate),
@@ -202,18 +211,30 @@ class YourProjectsVc: UIViewController {
         return projects
     }
     
-    
-    func getNumberOfTaskForProject(project:Project)->Int {
+    func getAllAttachmentsPaths(project:Project)->[URL] {
         
-        var output = Array<DatabaseHelper.row>()
+        var output = [Dictionary<String,Any>]()
+        var attachments = [URL]()
         
-        output = DatabaseHelper.shared.selectFrom(
-            table: TaskTable.title,
-            columns: nil,
-            wherec:[TaskTable.projectId:.text(project.projectId.uuidString)])
+        output = DatabaseHelper.shared.selectFrom(table: AttachmentTable.projectAttachmentTable, columns: [AttachmentTable.path], wherec: [AttachmentTable.associatedId:.text(project.id.uuidString)])
         
-        return output.count
+        output.forEach { row in
+            
+            guard let path = row[AttachmentTable.path] as? String else {
+                return
+            }
+            
+            guard let url = URL(string: path) else {
+                return
+            }
+            
+            attachments.append(url)
+            
+        }
+        
+        return attachments
     }
+  
 
     @objc func addProject() {
         
@@ -238,7 +259,7 @@ extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
    
         let text = projectSections[section].title
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: SectionHeaderView.identifier) as! SectionHeaderView
-        view.setupCell(text: text)
+        view.setupCell(text: text,fontSize: 21)
         
         return view
     }
@@ -256,8 +277,13 @@ extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
             
             let project = projectSections[indexPath.section].projects[indexPath.row]
             
+            getAllAttachmentsPaths(project: project).forEach { url in
+                
+                try? FileManager.default.removeItem(at: url)
+            }
+            
             DatabaseHelper.shared.deleteFrom(tableName: ProjectTable.title,
-                                             whereC:[ProjectTable.id:.text(project.projectId.uuidString)])
+                                             whereC:[ProjectTable.id:.text(project.id.uuidString)])
            
             updateData()
             self.projectsTableView.reloadData()
@@ -266,7 +292,7 @@ extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
             
         })
         
-        deleteAction.backgroundColor  = currentTheme.tintColor
+        deleteAction.backgroundColor  = .systemRed
         
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         config.performsFirstActionWithFullSwipe = true
@@ -280,9 +306,9 @@ extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProjectTableViewCell.identifier) as! ProjectTableViewCell
         
         let project = projectSections[indexPath.section].projects[indexPath.row]
-        let numberOfTasks = getNumberOfTaskForProject(project: project)
+
         
-        cell.setDetails(project:project,numberOfTasks: numberOfTasks)
+        cell.setDetails(project:project)
 
         
         return cell
@@ -293,7 +319,7 @@ extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
         
        let project = projectSections[indexPath.section].projects[indexPath.row]
         
-        let projectVc = ProjectVc1(projectForVc: project, isPresented: false)
+        let projectVc = ProjectVc1(projectForVc: project)
         
         navigationController?.pushViewController(projectVc, animated: true)
     }
@@ -304,8 +330,10 @@ extension YourProjectsVc:UITableViewDelegate,UITableViewDataSource {
 
 extension YourProjectsVc:AddProjectDelegate {
     
-    func update() {
-         updateData()
-         projectsTableView.reloadData()
+    func update(project: Project) {
+        updateData()
+        projectsTableView.reloadData()
+        showToast(message: "--\(project.name)-- added successfully", seconds: 5)
     }
+    
 }

@@ -22,7 +22,7 @@ import SQLite3
 
 class Sqlite {
     
-    typealias sqlite_row = Dictionary<String,Value>
+//    typealias sqlite_row = Dictionary<String,Value>
     
     
     var connection:OpaquePointer?
@@ -69,11 +69,11 @@ class Sqlite {
     }
     
     
-    func read(query:String,arguments:[Value])->Array<sqlite_row> {
+    func read(query:String,arguments:[Value])->Array<Dictionary<String,Any>> {
         
         var statement:OpaquePointer?
-        var finalOutput = Array<Dictionary<String,Value>>()
-        var rowOutput = Dictionary<String,Value>()
+        var finalOutput = Array<Dictionary<String,Any>>()
+        var rowOutput = Dictionary<String,Any>()
         
         if sqlite3_prepare(connection, query, -1, &statement, nil) == SQLITE_OK {
             
@@ -87,7 +87,7 @@ class Sqlite {
                
                 for column in (0..<columnCount) {
                     let name = String(cString: sqlite3_column_name(statement, column))
-                    let value =  value(for: statement, at: column)
+                    let value =  getValue(for: statement, at: column)
                     rowOutput[name] = value
                 }
                 
@@ -101,23 +101,23 @@ class Sqlite {
     }
     
     
-    private func value(for statement: OpaquePointer?, at column: Int32) -> Value? {
-        let type = sqlite3_column_type(statement, column)
-        
-        switch type {
-        case SQLITE_FLOAT:
-            return .double(sqlite3_column_double(statement, column))
-        case SQLITE_INTEGER:
-            return .integer(sqlite3_column_int64(statement, column))
-        case SQLITE_NULL:
-            return .null
-        case SQLITE_TEXT:
-            guard let cString = sqlite3_column_text(statement, column) else { return .null }
-            return .text(String(cString: cString))
-        default:
-            return nil
-        }
-    }
+//    private func value(for statement: OpaquePointer?, at column: Int32) -> Value? {
+//        let type = sqlite3_column_type(statement, column)
+//
+//        switch type {
+//        case SQLITE_FLOAT:
+//            return .double(sqlite3_column_double(statement, column))
+//        case SQLITE_INTEGER:
+//            return .integer(sqlite3_column_int64(statement, column))
+//        case SQLITE_NULL:
+//            return .null
+//        case SQLITE_TEXT:
+//            guard let cString = sqlite3_column_text(statement, column) else { return .null }
+//            return .text(String(cString: cString))
+//        default:
+//            return nil
+//        }
+//    }
     
     
     private func getValue(for statement: OpaquePointer?, at column: Int32) -> Any? {
@@ -125,14 +125,14 @@ class Sqlite {
         
         switch type {
         case SQLITE_FLOAT:
-            return sqlite3_column_double(statement, column) as Double
+            return sqlite3_column_double(statement, column)
         case SQLITE_INTEGER:
-            return  Int(sqlite3_column_int64(statement, column) as Int64)
+            return  Int(sqlite3_column_int64(statement, column))
         case SQLITE_NULL:
             return nil
         case SQLITE_TEXT:
-            guard let cString = sqlite3_column_text(statement, column) else { return .null }
-            return .text(String(cString: cString))
+            guard let cString = sqlite3_column_text(statement, column) else { return nil }
+            return String(cString: cString)
         default:
             return nil
         }
@@ -181,40 +181,40 @@ class Sqlite {
 }
 
 
-extension Value {
-    
-    public var boolValue: Bool? {
-        guard case .integer(let int) = self else {
-            return nil
-            
-        }
-        return int == 0 ? false : true
-    }
-
-
-    public var doubleValue: Double? {
-        guard case .double(let double) = self else {
-            return nil
-            
-        }
-        return double
-    }
-
-    public var intValue: Int? {
-        guard case .integer(let int) = self else {
-            return nil
-            
-        }
-        return Int(int)
-    }
-
-
-    public var stringValue: String? {
-        guard case .text(let string) = self else {
-            return nil
-            
-        }
-        return string
-    }
-    
-}
+//extension Value {
+//
+//    public var boolValue: Bool? {
+//        guard case .integer(let int) = self else {
+//            return nil
+//            
+//        }
+//        return int == 0 ? false : true
+//    }
+//
+//
+//    public var doubleValue: Double? {
+//        guard case .double(let double) = self else {
+//            return nil
+//
+//        }
+//        return double
+//    }
+//
+//    public var intValue: Int? {
+//        guard case .integer(let int) = self else {
+//            return nil
+//
+//        }
+//        return Int(int)
+//    }
+//
+//
+//    public var stringValue: String? {
+//        guard case .text(let string) = self else {
+//            return nil
+//
+//        }
+//        return string
+//    }
+//
+//}

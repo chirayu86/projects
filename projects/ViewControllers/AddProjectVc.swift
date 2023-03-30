@@ -12,7 +12,9 @@ enum AddProjectFormSection:String {
     
     case Name
     
-    case Duration
+    case StartDate
+    
+    case EndDate
     
     case Status
     
@@ -21,7 +23,7 @@ enum AddProjectFormSection:String {
 
 
 protocol AddProjectDelegate {
-    func update()
+    func update(project: Project)
 }
 
 struct AddProjectForm {
@@ -40,18 +42,24 @@ class AddProjectVc: UIViewController {
     var delegate:AddProjectDelegate?
     let statusArray = ProjectStatus.allCases.map({$0.rawValue})
     var addProjectForm = AddProjectForm()
+    var savePressed = false
     
     let form:[TableViewSection] = [
         
         TableViewSection(title: AddProjectFormSection.Name.rawValue, fields:
-              [TableViewField(title: "Project Name",type: .TextField)]),
-        TableViewSection(title: AddProjectFormSection.Duration.rawValue, fields:
-              [TableViewField(title: "Start Date", image:UIImage(systemName: "calendar") , type:.DatePicker),
-              TableViewField(title: "End Date", image: UIImage(systemName: "calendar"), type: .DatePicker)]),
+              [TableViewField(title: "Project Name",type: .textField)]),
+        
         TableViewSection(title: AddProjectFormSection.Status.rawValue, fields:
-              [TableViewField(title: "Status",type: .Picker)]),
+              [TableViewField(title: "Status",type: .picker)]),
+        
+        TableViewSection(title: AddProjectFormSection.StartDate.rawValue, fields:
+              [TableViewField(title: "Start Date", image:UIImage(systemName: "calendar") , type:.datePicker)]),
+        
+        TableViewSection(title: AddProjectFormSection.EndDate.rawValue, fields:
+                [TableViewField(title: "End Date", image:UIImage(systemName: "calendar") , type:.datePicker)]),
+        
         TableViewSection(title: AddProjectFormSection.Description.rawValue, fields:
-              [TableViewField(title: "Description",type: .TextView)])
+              [TableViewField(title: "Description",type: .textView)])
     ]
     
     
@@ -59,7 +67,7 @@ class AddProjectVc: UIViewController {
     
     lazy var addProjectTableView = {
         
-        let tableView =  UITableView(frame: .zero, style: .plain)
+        let tableView =  UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self
         tableView.dataSource = self
@@ -67,7 +75,9 @@ class AddProjectVc: UIViewController {
         tableView.register(TextFieldTableViewCell.self,forCellReuseIdentifier: TextFieldTableViewCell.identifier)
         tableView.register(ButtonTableViewCell.self, forCellReuseIdentifier: ButtonTableViewCell.identifier)
         tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeaderView.identifier)
-        tableView.separatorInset = .zero
+        tableView.separatorColor = .clear
+        tableView.backgroundColor = .clear
+        tableView.allowsSelection = false
         
         return tableView
         
@@ -76,7 +86,7 @@ class AddProjectVc: UIViewController {
     lazy var saveBarButton = {
         
         let barButton = UIBarButtonItem()
-        barButton.image = UIImage(systemName: "folder.badge.plus")
+        barButton.title = "Save"
         barButton.target = self
         barButton.action = #selector(self.save)
         
@@ -86,7 +96,7 @@ class AddProjectVc: UIViewController {
     lazy var cancelBarButton = {
         
         let barButton = UIBarButtonItem()
-        barButton.image  = UIImage(systemName: "multiply")
+        barButton.title = "Cancel"
         barButton.target = self
         barButton.action = #selector(self.cancel)
         
@@ -96,7 +106,7 @@ class AddProjectVc: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        additionalSafeAreaInsets = UIEdgeInsets(top: 5, left: 20, bottom: 0, right: 20)
         setupNavigationBar()
         view.addSubview(addProjectTableView)
         setTableViewConstraint()
@@ -109,6 +119,8 @@ class AddProjectVc: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.presentationController?.delegate = self
+        
         setApperance()
     }
     
@@ -120,6 +132,7 @@ class AddProjectVc: UIViewController {
     
     func setApperance() {
         view.backgroundColor = currentTheme.backgroundColor
+        navigationController?.navigationBar.backgroundColor  = currentTheme.secondaryLabel.withAlphaComponent(0.1)
         self.navigationController?.navigationBar.tintColor = currentTheme.tintColor
     }
     
@@ -130,7 +143,7 @@ class AddProjectVc: UIViewController {
         keyBoardLayoutGuide.priority = .defaultLow
         
         NSLayoutConstraint.activate([
-            addProjectTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 30),
+            addProjectTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant:0),
             addProjectTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             addProjectTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             keyBoardLayoutGuide
@@ -138,49 +151,78 @@ class AddProjectVc: UIViewController {
         
     }
     
+    func showDismissAlert() {
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: { _ in
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Discard Changes", style: .destructive,handler: { _ in
+            self.dismiss(animated: true)
+        }))
+        
+        if addProjectForm.status == nil,
+           addProjectForm.name == nil || addProjectForm.name?.isEmpty == true {
+               dismiss(animated: true)
+           } else {
+               present(alert, animated: true)
+           }
+    }
+    
     @objc func save() {
         
-        guard let unProjectname = addProjectForm.name,unProjectname.isEmpty == false else {
-            showToast(message: "Project name cannot be empty", seconds: 2)
-            return
-        }
-
-
-        guard let unStatus = addProjectForm.status else {
-            showToast(message: "Pls select Project Status", seconds: 2)
-            return
-        }
-
-        guard addProjectForm.endDate >= addProjectForm.startDate else {
-            showToast(message: "End Date should be after Start Date", seconds: 2)
-            return
-        }
+        let generator = UIImpactFeedbackGenerator(style: .medium)
         
+        savePressed = true
+        addProjectTableView.reloadData()
+        
+       
+        
+        guard let unProjectname = addProjectForm.name,
+              unProjectname.trimmingCharacters(in: .whitespaces).isEmpty == false,
+              unProjectname.count < 120,
+              let unStatus = addProjectForm.status
+                
+            else {
+            
+            generator.impactOccurred()
+            showToast(message: "Enter all the Required Details", seconds: 5)
+            return
+            
+           }
+
         
         let project = Project(projectName: unProjectname, startDate: addProjectForm.startDate, endDate: addProjectForm.endDate, description: addProjectForm.description ?? "", status: unStatus)
        
         DatabaseHelper.shared.insertInto(table: ProjectTable.title,
-                                         values:   [ProjectTable.id: .text(project.projectId.uuidString),
+                                         values:   [ProjectTable.id: .text(project.id.uuidString),
                                                    ProjectTable.name: .text(project.name),
                                                    ProjectTable.startDate: .double(project.startDate.timeIntervalSince1970),
                                                    ProjectTable.endDate: .double(project.endDate.timeIntervalSince1970),
                                                    ProjectTable.description: .text(project.description),
                                                    ProjectTable.status: .text(project.status.rawValue)])
     
-        delegate?.update()
-        navigationController?.pushViewController(ProjectVc1(projectForVc: project, isPresented: true), animated: true)
-    }
-    
-    @objc func cancel() {
+        delegate?.update(project: project)
         dismiss(animated: true)
     }
     
+    @objc func cancel() {
+        showDismissAlert()
+    }
+    
+    
     @objc func description() {
+        
        let descriptionVc = DescriptionVc(text: addProjectForm.description ?? "")
         descriptionVc.delegate = self
         
         navigationController?.pushViewController(descriptionVc, animated: true)
+        
     }
+    
 }
 
 
@@ -190,9 +232,18 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
         
         let title = form[section].title
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! SectionHeaderView
-        view.setupCell(text: title)
+        view.setupCell(text: title,fontSize: 18)
         
         return view
+    }
+    
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+         nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        .leastNormalMagnitude
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -205,14 +256,12 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if form[indexPath.section].title == AddProjectFormSection.Name.rawValue ||
-           form[indexPath.section].title == AddProjectFormSection.Duration.rawValue ||
-            form[indexPath.section].title == AddProjectFormSection.Status.rawValue
-        {
-            return 60
+        
+        if form[indexPath.section].title == AddProjectFormSection.Description.rawValue {
+            return 100
         }
         
-        return 120
+        return 60
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -223,21 +272,21 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
         
         switch formItem.type {
             
-        case .Button:
+        case .button:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "button") as!ButtonTableViewCell
             cell.configure(forItem: formItem)
             
             return cell
             
-        case .Picker:
+        case .picker:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
             cell.pickerViewData = statusArray
             cell.configure(forItem: formItem)
             cell.setText(text: addProjectForm.status?.rawValue)
+           
             cell.textChanged = {  text in
-                
                 guard let unWrappedText = text,unWrappedText.isEmpty == false else {
                     return
                 }
@@ -245,11 +294,19 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
                 self.addProjectForm.status = ProjectStatus(rawValue: unWrappedText) ?? ProjectStatus.Active
                 
             }
-        
+            
+            if savePressed {
+                if addProjectForm.status != nil {
+                    cell.hideValidationMessage()
+                } else {
+                    cell.showValidationMessage(msg: "Please select a Status for the Project")
+                }
+                
+            }
             
             return cell
             
-        case .DatePicker:
+        case .datePicker:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
           
@@ -279,21 +336,34 @@ extension AddProjectVc:UITableViewDataSource,UITableViewDelegate {
             
             return cell
             
-        case .TextField:
+        case .textField:
             let cell = tableView.dequeueReusableCell(withIdentifier: "textField") as! TextFieldTableViewCell
             cell.configure(forItem: formItem)
             cell.setText(text: addProjectForm.name)
-            cell.textChanged =  { text in
-    
-                if formItem.title == "Project Name" {
+            
+            if formItem.title == "Project Name" {
+                cell.textChanged =  { text in
                     self.addProjectForm.name = text
+                }
+                
+                if savePressed {
+                    
+                    if let name = addProjectForm.name,name.trimmingCharacters(in: .whitespaces).isEmpty == false {
+                        if name.count > 120 {
+                            cell.showValidationMessage(msg: "Project name can only be 120 characters")
+                        } else {
+                            cell.hideValidationMessage()
+                        }
+                    } else {
+                        cell.showValidationMessage(msg: "Enter a name for the Project")
+                    }
                 }
                 
             }
             
             return cell
    
-        case .TextView:
+        case .textView:
             
             let cell = tableView.dequeueReusableCell(withIdentifier: TextViewButtonTableViewCell.identifier) as! TextViewButtonTableViewCell
             cell.textView.text = addProjectForm.description
@@ -317,5 +387,17 @@ extension AddProjectVc:DescriptionViewDelegate {
         addProjectTableView.reloadData()
     }
     
+    
+}
+
+extension AddProjectVc:UIAdaptivePresentationControllerDelegate {
+    
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        false
+    }
+    
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        showDismissAlert()
+    }
     
 }

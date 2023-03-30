@@ -27,7 +27,7 @@ class TextViewButtonTableViewCell: UITableViewCell {
         
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.font = .systemFont(ofSize: 15)
+        textView.font = .systemFont(ofSize: 14)
         textView.isScrollEnabled = false
         textView.textContainer.lineBreakMode  = .byTruncatingTail
         textView.addDoneButtonOnInputView(true)
@@ -43,7 +43,6 @@ class TextViewButtonTableViewCell: UITableViewCell {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage(systemName: "chevron.compact.right")
-        image.tintColor = .orange
 
         return image
         
@@ -54,6 +53,8 @@ class TextViewButtonTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.backgroundColor = .systemFill
+        contentView.layer.borderWidth = 1
+        contentView.layer.cornerRadius = 10
         
         setupTextView()
         setupImage()
@@ -69,6 +70,8 @@ class TextViewButtonTableViewCell: UITableViewCell {
     
     func setAppearance() {
         contentView.backgroundColor = currentTheme.backgroundColor
+        contentView.layer.borderColor = currentTheme.tintColor.cgColor
+        image.tintColor = currentTheme.tintColor 
     }
 
     
@@ -81,8 +84,8 @@ class TextViewButtonTableViewCell: UITableViewCell {
             image.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -5),
             image.leadingAnchor.constraint(equalTo: textView.trailingAnchor),
             image.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            image.heightAnchor.constraint(equalToConstant: 30),
-            image.widthAnchor.constraint(equalToConstant: 30)
+            image.heightAnchor.constraint(equalToConstant: 15),
+            image.widthAnchor.constraint(equalToConstant: 15)
             
         ])
     }
@@ -94,7 +97,6 @@ class TextViewButtonTableViewCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             textView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-//            textView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             textView.topAnchor.constraint(equalTo: contentView.topAnchor),
             textView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])

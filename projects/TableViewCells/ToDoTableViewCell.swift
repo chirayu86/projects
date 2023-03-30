@@ -36,7 +36,7 @@ class ToDoTableViewCell: UITableViewCell {
         
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.font = .systemFont(ofSize: 15)
+        textView.font = .systemFont(ofSize: 14)
         textView.isScrollEnabled = false
         textView.delegate = self
         textView.addDoneButtonOnInputView(true)
@@ -96,8 +96,8 @@ class ToDoTableViewCell: UITableViewCell {
             checkBox.topAnchor.constraint(equalTo: contentView.topAnchor),
             checkBox.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             
-            checkBox.heightAnchor.constraint(equalToConstant: 33),
-            checkBox.widthAnchor.constraint(equalToConstant: 33)
+            checkBox.heightAnchor.constraint(equalToConstant: 35),
+            checkBox.widthAnchor.constraint(equalToConstant: 35)
         ])
     }
     
@@ -152,5 +152,6 @@ extension ToDoTableViewCell:UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
                   textChanged?(textView.text)
             }
+    
     }
 

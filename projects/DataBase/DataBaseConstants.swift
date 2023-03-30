@@ -10,54 +10,55 @@ import Foundation
 
 struct ProjectTable {
     
-    static let title = "Projects"
+    static let title = "PROJECTS"
     
-    static let name = "name"
+    static let name = "Name"
     static let id = "Id"
     static let startDate = "StartDate"
     static let endDate = "EndDate"
     static let description = "Descpription"
-    static let status = "status"
+    static let status = "Status"
 }
 
 
 struct TaskTable {
     
-    static let title = "Tasks"
+    static let title = "TASKS"
     
-    static let name = "name"
+    static let name = "Name"
     static let id = "Id"
-    static let deadLine = "DeadLine"
-    static let priority = "priority"
+    static let startDate = "StartDate"
+    static let endDate = "EndDate"
+    static let priority = "Priority"
     static let description = "Description"
-    static let isCompleted = "isCompleted"
-    static let projectId = "projectId"
-    static let projectName = "projectName"
+    static let isCompleted = "IsCompleted"
+    static let projectId = "ProjectId"
+    static let projectName = "ProjectName"
     
 }
 
 
 struct ToDoTable {
     
-    static let title = "ToDoList"
+    static let title = "To_DO_LIST"
     static let id = "Id"
     static let task = "Task"
-    static let taskId = "taskId"
-    static let isComplete = "isComplete"
+    static let taskId = "TaskId"
+    static let isComplete = "IsCompleted"
     
 }
 
 
 struct AttachmentTable {
     
-    static let projectAttachmentTable = "ProjectAttachments"
-    static let taskAttachmentsTable = "TaskAttachments"
+    static let projectAttachmentTable = "PROJECT_ATTACHMENT"
+    static let taskAttachmentsTable = "TASK_ATTACHMENT"
     
     static let id = "Id"
-    static let name = "name"
-    static let path = "path"
-    static let associatedId = "associatedId"
-    static let type = "type"
+    static let name = "Name"
+    static let path = "Path"
+    static let associatedId = "AssociatedId"
+    static let type = "Type"
     
 }
 

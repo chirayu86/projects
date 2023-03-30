@@ -48,12 +48,28 @@ class DescriptionVc: UIViewController {
         super.viewDidLoad()
         self.title = "Description"
         additionalSafeAreaInsets  = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        
         setupViews()
         
     }
     
+    
+    func setAppearance() {
+        navigationController?.navigationBar.backgroundColor = currentTheme.secondaryLabel.withAlphaComponent(0.1)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+//        setAppearance()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+//        setAppearance()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         textView.becomeFirstResponder()
     }
     

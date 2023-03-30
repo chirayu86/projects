@@ -24,11 +24,12 @@ class TabBarViewController: UITabBarController {
     
     func setApperance() {
             tabBar.tintColor = currentTheme.tintColor
+            tabBar.backgroundColor = currentTheme.backgroundColor
     }
     
     func setTabBarItems() {
         
-        let tasksVc = UINavigationController(rootViewController: YourTasksVc(stateForVc: .YourTasks))
+        let tasksVc = UINavigationController(rootViewController: YourTasksVc(stateForVc: .TaskForProject))
         let calendarVc = UINavigationController(rootViewController: CalendarVc())
         let projectsVc = UINavigationController(rootViewController: YourProjectsVc())
       

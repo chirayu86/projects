@@ -9,20 +9,21 @@ import UIKit
 
 class CheckBox: UIButton {
     
-    let uncheckedImage = UIImage(named: "uncheckedCheckbox")?.withTintColor(.label)
-    let checkedImage = UIImage(named: "checkedCheckbox")?.withTintColor(.label)
+    private var uncheckedImage = UIImage(named: "uncheckedCheckbox")?.withTintColor(currentTheme.tintColor)
+    private var checkedImage = UIImage(named: "checkedCheckbox")?.withTintColor(currentTheme.tintColor)
     
     
     var isChecked = false {
-        
+       
         didSet {
             if isChecked == true {
                 self.setImage(checkedImage, for: .normal)
             } else {
                 self.setImage(uncheckedImage, for: .normal)
-            }
+           }
         }
     }
+    
     
     override init(frame: CGRect) {
         
@@ -31,11 +32,18 @@ class CheckBox: UIButton {
         
     }
     
-    func setImageSize() {
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        uncheckedImage = UIImage(named: "uncheckedCheckbox")?.withTintColor(currentTheme.tintColor)
+        checkedImage = UIImage(named: "checkedCheckbox")?.withTintColor(currentTheme.tintColor)
+    }
+    
+   private func setImageSize() {
         
         self.contentVerticalAlignment = .fill
         self.contentHorizontalAlignment = .fill
     }
+    
     
     
     required init?(coder: NSCoder) {

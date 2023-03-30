@@ -24,18 +24,21 @@ enum AttachmentsFor:String {
 }
 
 
-struct AttachmentTableSection {
+enum PickerOption:String {
     
-    let title:String
+    case Files
     
-    let attachments:[Attachment]
+    case Gallery
+    
+    case Camera
 }
+
 
 
 class AttachmentsVc: UIViewController {
     
     
-    var attachments = [AttachmentTableSection]()
+    var attachments = [Attachment]()
     var attachmentsFor:AttachmentsFor
     var idForAttachments:UUID
     
@@ -58,7 +61,7 @@ init(id:UUID,attachmentsFor:AttachmentsFor) {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(AttachmentsTableViewCell.self, forCellReuseIdentifier: AttachmentsTableViewCell.identifier)
         tableView.register(SectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SectionHeaderView.identifier)
         
         return tableView
@@ -69,36 +72,31 @@ init(id:UUID,attachmentsFor:AttachmentsFor) {
        
         let barButton = UIBarButtonItem()
         barButton.title = "Import"
-        barButton.image = UIImage(systemName: "square.and.arrow.down")
+        barButton.image = UIImage(systemName: "paperclip")
         barButton.primaryAction = nil
         barButton.target = self
-        barButton.action = #selector(importDocuments)
+        barButton.action = #selector(addAttachments)
         
         return barButton
     }()
     
     lazy var noAttachmentsView = {
         
-        let image = EmptyView(frame: .zero)
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.emptyListImageView.image = UIImage(systemName: "paperclip")
-        image.boldMessage.text = "No Attachments"
-        image.lightMessage.text = "Press + to Add New To-Do"
-        image.isHidden = true
+        let view = EmptyView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.emptyListImageView.image = UIImage(systemName: "paperclip")
+        view.boldMessage.text = "No Attachments"
+        view.lightMessage.text = "Press + to Add New To-Do"
+        view.button.addTarget(self, action: #selector(addAttachments), for: .touchUpInside)
+        view.isHidden = true
         
-        return image
+        return view
     }()
     
     func updateData() {
         
-        attachments.removeAll()
-        
-        getAttachments().forEach { (key: AttachmentType, value: [Attachment]) in
-            attachments.append(AttachmentTableSection(title: key.rawValue, attachments: value))
-        }
-        
-       attachments = attachments.sorted(by: {$0.title < $1.title})
-        
+        attachments = getAttachments()
+         
         noAttachmentsView.isHidden = !attachments.isEmpty
         
     }
@@ -129,6 +127,7 @@ init(id:UUID,attachmentsFor:AttachmentsFor) {
     
     
     func setApperance() {
+        
         view.backgroundColor = currentTheme.backgroundColor
         noAttachmentsView.emptyListImageView.tintColor = currentTheme.tintColor
         navigationController?.navigationBar.tintColor  = currentTheme.tintColor
@@ -153,7 +152,7 @@ init(id:UUID,attachmentsFor:AttachmentsFor) {
         
         self.title = "Attachments"
         navigationItem.setRightBarButton(importBarButton, animated: true)
-        navigationController?.navigationBar.prefersLargeTitles = true
+      
         
     }
     
@@ -171,10 +170,10 @@ init(id:UUID,attachmentsFor:AttachmentsFor) {
     }
     
     
-    func getAttachments()->[AttachmentType:[Attachment]] {
+    func getAttachments()->[Attachment] {
     
-        var output = [DatabaseHelper.row]()
-        var attachments = [AttachmentType:[Attachment]]()
+        var output = [Dictionary<String,Any>]()
+        var attachments = [Attachment]()
         
         switch attachmentsFor {
             
@@ -188,13 +187,14 @@ init(id:UUID,attachmentsFor:AttachmentsFor) {
             
         }
         
-        output.forEach { row in
+        output.forEach { rows in
             
-            guard let id = row["Id"]?.stringValue,
-                  let name = row["name"]?.stringValue,
-                  let path = row["path"]?.stringValue,
-                  let assocaitedId = row["associatedId"]?.stringValue,
-                  let type = row["type"]?.stringValue
+            guard let id = rows[AttachmentTable.id] as? String,
+                  let name = rows[AttachmentTable.name] as? String,
+                  let path = rows[AttachmentTable.path] as? String,
+                  let assocaitedId = rows[AttachmentTable.associatedId] as? String,
+                  let type = rows[AttachmentTable.type] as? String
+                    
             else {
             
                 return
@@ -222,11 +222,7 @@ init(id:UUID,attachmentsFor:AttachmentsFor) {
             
             let attachment = Attachment(id:attachmentId, itemId:associatedId, name: name, path: url, type: attachmentType)
             
-            if attachments[attachment.type] != nil {
-                attachments[attachment.type]?.append(attachment)
-            } else {
-                attachments[attachment.type] = [attachment]
-            }
+            attachments.append(attachment)
         }
     
         return attachments
@@ -234,52 +230,80 @@ init(id:UUID,attachmentsFor:AttachmentsFor) {
     
     
     
-    @objc func importDocuments() {
+    @objc func addAttachments() {
         
-        let  picker = UIDocumentPickerViewController(forOpeningContentTypes: [.image,.pdf],asCopy: true)
-        picker.delegate = self
-        picker.modalPresentationStyle = .formSheet
-        present(picker, animated: true)
+        let alert = UIAlertController(title:nil, message:nil, preferredStyle: .actionSheet)
+        
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: { _ in
+                    
+                }))
+        
+        alert.addAction(UIAlertAction(title: PickerOption.Files.rawValue, style: .default,handler: { _ in
+            
+            let  picker = UIDocumentPickerViewController(forOpeningContentTypes: [.image,.pdf],asCopy: true)
+            picker.delegate = self
+            picker.modalPresentationStyle = .formSheet
+            self.present(picker, animated: true)
+            
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: PickerOption.Gallery.rawValue, style: .default,handler: { _ in
+            
+            let  picker = UIImagePickerController()
+            picker.delegate = self
+            picker.mediaTypes = ["public.image"]
+            picker.modalPresentationStyle = .formSheet
+            self.present(picker, animated: true)
+            
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: PickerOption.Camera.rawValue, style: .default,handler: {_ in
+           
+            let  picker = UIImagePickerController()
+            picker.delegate = self
+            picker.sourceType = .camera
+            picker.modalPresentationStyle = .formSheet
+            self.present(picker, animated: true)
+            
+            
+        }))
+        
+       present(alert, animated: true)
         
     }
 }
 
 
 extension AttachmentsVc: UITableViewDataSource,UITableViewDelegate {
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        attachments.count
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-      
-        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: SectionHeaderView.identifier) as! SectionHeaderView
-        view.setupCell(text: attachments[section].title)
-        
-        return view
-    }
-  
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
       
-        attachments[section].attachments.count
+       attachments.count
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let attachment = attachments[indexPath.section].attachments[indexPath.row]
+        let attachment = attachments[indexPath.row]
       
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
-        cell?.textLabel?.text = attachment.name
+        let cell = tableView.dequeueReusableCell(withIdentifier: AttachmentsTableViewCell.identifier) as! AttachmentsTableViewCell
+        cell.configure(for: attachment)
         
-        return cell!
+        return cell
     }
+    
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let deleteAction = UIContextualAction(style: .normal, title: "Delete", handler: { [self]
              (action,source,completion) in
             
-            let attachment = attachments[indexPath.section].attachments[indexPath.row]
+            let attachment = attachments[indexPath.row]
+            
+           try? FileManager.default.removeItem(at: attachment.path)
             
             switch attachmentsFor {
             
@@ -302,7 +326,7 @@ extension AttachmentsVc: UITableViewDataSource,UITableViewDelegate {
             
         })
         
-        deleteAction.backgroundColor  = currentTheme.tintColor
+        deleteAction.backgroundColor  = .systemRed
         
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         config.performsFirstActionWithFullSwipe = true
@@ -313,9 +337,9 @@ extension AttachmentsVc: UITableViewDataSource,UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let attachment = attachments[indexPath.section].attachments[indexPath.row]
+        let attachment = attachments[indexPath.row]
+      
         let documentViewer = UIDocumentInteractionController(url: attachment.path)
-        
         documentViewer.delegate = self
         documentViewer.presentPreview(animated: true)
         
@@ -374,4 +398,63 @@ extension AttachmentsVc:UIDocumentInteractionControllerDelegate {
         
            return self
        }
+}
+
+
+extension AttachmentsVc:UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+     
+       
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        
+      
+        
+        guard let image = info[.originalImage] as? UIImage else {
+                    print("No image found")
+                    return
+                }
+        
+        
+        let imageId = UUID()
+        let imageName = "\(imageId.uuidString.prefix(10)).jpeg"
+        let imagePath = paths.appendingPathComponent(imageName)
+
+        
+        if let jpegData = image.jpegData(compressionQuality: 0.8) {
+                    print("Image Save to path \(imagePath)")
+                    try? jpegData.write(to: imagePath)
+                }
+        
+        let attachment = Attachment(id: imageId, itemId: idForAttachments, name: imageName, path: imagePath, type: .Image)
+        
+        switch attachmentsFor {
+            
+        case .Projects:
+            
+            DatabaseHelper.shared.insertInto(table: AttachmentTable.projectAttachmentTable,
+                                    values: [AttachmentTable.id:.text(attachment.id.uuidString),
+                                                      AttachmentTable.name:.text(attachment.name),
+                                                      AttachmentTable.path:.text(attachment.path.absoluteString),
+                                                      AttachmentTable.associatedId:.text(idForAttachments.uuidString),
+                                                      AttachmentTable.type:.text(attachment.type.rawValue)])
+            
+        case .Tasks:
+            
+            
+            DatabaseHelper.shared.insertInto(table: AttachmentTable.taskAttachmentsTable,
+                                    values: [AttachmentTable.id:.text(attachment.id.uuidString),
+                                                      AttachmentTable.name:.text(attachment.name),
+                                                      AttachmentTable.path:.text(attachment.path.absoluteString),
+                                                      AttachmentTable.associatedId:.text(idForAttachments.uuidString),
+                                                      AttachmentTable.type:.text(attachment.type.rawValue)])
+        }
+
+        updateData()
+        attachmentsTableView.reloadData()
+        dismiss(animated: true)
+       
+        
+    }
+    
 }

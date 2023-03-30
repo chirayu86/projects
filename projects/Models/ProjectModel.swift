@@ -10,7 +10,7 @@ import Foundation
 
 struct Project {
     
-    let projectId:UUID
+    let id:UUID
     var name:String
     var startDate:Date
     var endDate:Date
@@ -20,7 +20,7 @@ struct Project {
     
     init(projectId: UUID, projectName: String, startDate: Date, endDate: Date, description: String, status: ProjectStatus) {
         
-        self.projectId = projectId
+        self.id = projectId
         self.name = projectName
         self.startDate = startDate
         self.endDate = endDate
@@ -28,9 +28,10 @@ struct Project {
         self.status = status
     }
     
+    
     init(projectName:String,startDate:Date,endDate:Date,description:String,status:ProjectStatus) {
         
-        self.projectId = UUID()
+        self.id = UUID()
         self.name = projectName
         self.startDate = startDate
         self.endDate = endDate

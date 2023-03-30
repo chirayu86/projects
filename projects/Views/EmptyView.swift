@@ -18,6 +18,16 @@ class EmptyView: UIView {
         return image
     }()
     
+    
+    lazy var button = {
+        
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
+    
     lazy var boldMessage = {
         
         let nameLabel = UILabel()
@@ -30,11 +40,12 @@ class EmptyView: UIView {
         
     }()
     
+    
     lazy var lightMessage = {
         
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.font = .systemFont(ofSize: 8, weight: .light)
+        nameLabel.font = .systemFont(ofSize: 12, weight: .light)
         nameLabel.numberOfLines = 3
         nameLabel.textAlignment = .center
         
@@ -43,7 +54,7 @@ class EmptyView: UIView {
     }()
 
 
-    lazy var verticalStack = {
+   private lazy var verticalStack = {
         
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -64,10 +75,12 @@ class EmptyView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupStack() {
+    
+  private func setupStack() {
         
         self.addSubview(emptyListImageView)
         self.addSubview(verticalStack)
+        addSubview(button)
         
         verticalStack.addArrangedSubview(boldMessage)
         verticalStack.addArrangedSubview(lightMessage)
@@ -86,6 +99,12 @@ class EmptyView: UIView {
             verticalStack.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         
+      NSLayoutConstraint.activate([
+        button.topAnchor.constraint(equalTo: topAnchor),
+        button.leadingAnchor.constraint(equalTo: leadingAnchor),
+        button.bottomAnchor.constraint(equalTo: bottomAnchor),
+        button.trailingAnchor.constraint(equalTo: trailingAnchor)
+      ])
 
     }
     

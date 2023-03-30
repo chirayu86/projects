@@ -9,7 +9,7 @@ import UIKit
 
 class CalendarVc: UIViewController {
     
-    var dates = Set<Date>()
+    var dates = [Date]()
     var dateComponents = [DateComponents]()
     
  lazy var calendar = {
@@ -22,31 +22,45 @@ class CalendarVc: UIViewController {
         let selection = UICalendarSelectionSingleDate(delegate: self)
         calendar.selectionBehavior = selection
         calendar.delegate = self
-        
+     
         return calendar
+     
+    }()
+    
+    
+    lazy var todayBarButton = {
+        
+        let barButton = UIBarButtonItem()
+        barButton.title = "Today"
+        barButton.target = self
+        barButton.action = #selector(setToday)
+        
+        return barButton
+        
     }()
     
 
-    
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        navigationItem.setRightBarButton(todayBarButton, animated: false)
         self.title = "Calendar"
+        
         dates = getDates()
         setupDatepicker()
    }
     
+    
     func setupDatepicker() {
+        
         view.addSubview(calendar)
         setDatePickerContraints()
     }
 
     
-    func reloadDecoration() {
+    func reloadDecoration(forDates:[Date]) {
         
-        dates = getDates()
- 
-      dateComponents.removeAll()
+        dateComponents.removeAll()
         
         dates.forEach { Date in
             
@@ -56,24 +70,29 @@ class CalendarVc: UIViewController {
         }
         
        calendar.reloadDecorations(forDateComponents: dateComponents , animated: true)
+        
     }
 
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print(#function)
-        reloadDecoration()
+        
+        dates = getDates()
+        reloadDecoration(forDates: dates)
         setAppearance()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-       
-        setAppearance()
+       setAppearance()
+        
     }
     
     func setAppearance() {
+        
         view.backgroundColor = currentTheme.backgroundColor
         calendar.tintColor = currentTheme.tintColor
+        calendar.backgroundColor = .tertiarySystemGroupedBackground
    
     }
     
@@ -89,17 +108,25 @@ class CalendarVc: UIViewController {
     
 
     
-    func getDates()->Set<Date> {
+    @objc func setToday() {
+        
+        let dateComponent = Calendar.current.dateComponents(in: .current, from: Date())
+        calendar.setVisibleDateComponents(dateComponent, animated: true)
+        
+    }
+    
+    
+    func getDates()->[Date] {
 
         let output = DatabaseHelper.shared.selectFrom(table: TaskTable.title, columns:
-                                                        [TaskTable.deadLine], wherec: nil)
+                                                        [TaskTable.startDate], wherec: nil)
         var dates = [Date]()
         
         output.forEach { row in
             
-            var contains = false
+           var contains = false
             
-            guard let deadline =  row["DeadLine"]?.doubleValue else {
+            guard let deadline =  row[TaskTable.startDate] as? Double else {
                 return
             }
             
@@ -117,33 +144,13 @@ class CalendarVc: UIViewController {
           
         }
        
-        return Set(dates)
+        return dates
     }
 
   
 }
 
 
-extension CalendarVc:UITableViewDataSource,UITableViewDelegate {
-    
-  
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
-    }
-    
-  
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-     
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! TasksTableViewCell
-        cell.layoutIfNeeded()
-        cell.setCellAppearance()
-        
-        return cell
-        
-    }
-    
-    
-}
 
 
 extension CalendarVc:UICalendarViewDelegate,UICalendarSelectionSingleDateDelegate {

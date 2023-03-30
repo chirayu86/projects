@@ -72,6 +72,7 @@ class CheckListToDoVc: UIViewController {
         setupNoProjectView()
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateTasks()
@@ -86,6 +87,7 @@ class CheckListToDoVc: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
         setApperance()
     }
+    
     
     func setupChecklistTableview() {
         view.addSubview(checkListListTableView)
@@ -105,6 +107,7 @@ class CheckListToDoVc: UIViewController {
     func setApperance() {
         view.backgroundColor = currentTheme.backgroundColor
         noCheckListView.emptyListImageView.tintColor = currentTheme.tintColor
+        navigationController?.navigationBar.tintColor = currentTheme.tintColor
     }
     
     
@@ -128,7 +131,7 @@ class CheckListToDoVc: UIViewController {
       
         checkListItems.forEach { toDoItem in
          
-            guard toDoItem.toDo.isEmpty == false else {
+            guard toDoItem.toDo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
                 return
             }
             
@@ -145,7 +148,7 @@ class CheckListToDoVc: UIViewController {
             checkListListTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,constant: 10),
             checkListListTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             checkListListTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            checkListListTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            checkListListTableView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor,constant: -20)
         ])
     }
     
@@ -159,9 +162,9 @@ class CheckListToDoVc: UIViewController {
         
         output.forEach { row in
             
-            guard let id = row[ToDoTable.id]?.stringValue,
-                  let desc = row[ToDoTable.task]?.stringValue,
-                  let isComplete = row[ToDoTable.isComplete]?.boolValue else {
+            guard let id = row[ToDoTable.id] as? String,
+                  let desc = row[ToDoTable.task] as? String,
+                  let isComplete = row[ToDoTable.isComplete] as? Int else {
             
                 return
             }
@@ -173,7 +176,7 @@ class CheckListToDoVc: UIViewController {
             
             let toDoItem = ToDoItem(taskId: task.id,
                                     Id: itemId, task: desc,
-                                    isComplete: isComplete)
+                                    isComplete: isComplete.boolValue)
             
             toDolist.append(toDoItem)
         }
@@ -183,18 +186,28 @@ class CheckListToDoVc: UIViewController {
     }
     
     func insertEmptyToDoItem() {
+        
         let toDoItem = ToDoItem(taskId: task.id, task: "", isComplete: false)
         
         checkListItems.append(toDoItem)
         checkListListTableView.reloadData()
+        
         noCheckListView.isHidden = !checkListItems.isEmpty
+        
+        print("----------------------")
+        print(checkListItems.count)
     }
     
     
    @objc func addToDoItem() {
-       
+              
+       guard checkListItems.last!.toDo.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty == false  else {
+           showToast(message: "To Do item cannot be Empty ", seconds: 2)
+           print(checkListItems.count)
+           return
+       }
+       view.endEditing(true)
        insertEmptyToDoItem()
-       checkListListTableView.reloadData()
     }
     
 }
@@ -203,7 +216,10 @@ class CheckListToDoVc: UIViewController {
 extension CheckListToDoVc:UITableViewDataSource,UITableViewDelegate {
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        checkListItems.count
+        
+        print(checkListItems.count)
+        print(#function)
+        return checkListItems.count
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -213,7 +229,11 @@ extension CheckListToDoVc:UITableViewDataSource,UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "toDo") as! ToDoTableViewCell
+
+        
         let toDoItem = checkListItems[indexPath.row]
+        
+      
         
         cell.setupItem(toDo: toDoItem)
         
@@ -223,7 +243,7 @@ extension CheckListToDoVc:UITableViewDataSource,UITableViewDelegate {
             
          }
         
-//       cell.textView.becomeFirstResponder()
+        
        cell.textChanged = { [self] textViewText in
             
            checkListItems[indexPath.row].toDo = textViewText
@@ -232,14 +252,21 @@ extension CheckListToDoVc:UITableViewDataSource,UITableViewDelegate {
             self.checkListListTableView.endUpdates()
         }
         
-        return cell
+        
+        if toDoItem.Id == self.checkListItems.last?.Id {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                cell.textView.becomeFirstResponder()
+            })
+        }
+        
+       return cell
         
     }
     
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
-        let deleteAction = UIContextualAction(style: .normal, title: "Delete", handler: { [self]
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete", handler: { [self]
              (action,source,completion) in
             
             let toDoItem = checkListItems[indexPath.row]
@@ -255,7 +282,7 @@ extension CheckListToDoVc:UITableViewDataSource,UITableViewDelegate {
             completion(true)
         })
         
-        deleteAction.backgroundColor  = currentTheme.tintColor
+        deleteAction.backgroundColor  = .systemRed
         
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         config.performsFirstActionWithFullSwipe = true

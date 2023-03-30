@@ -14,8 +14,8 @@ struct DarkTheme:Theme {
     
     var primaryLabel: UIColor = .white
     
-    var secondaryLabel: UIColor = .gray
+    var secondaryLabel: UIColor = .white.withAlphaComponent(0.8)
     
-    var tintColor: UIColor = .orange
+    var tintColor: UIColor = UIColor(red: 30/255, green: 177/255, blue: 255/255, alpha: 1)
     
 }
